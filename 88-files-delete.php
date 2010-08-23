@@ -1,5 +1,5 @@
 <div class="wrap" style="max-width:950px !important;">
-<h2>List Yo' Files - Delete Files</h2>
+<h2>Delete Files</h2>
 <div id="poststuff" style="margin-top:10px;">
 <div id="mainblock" style="width:710px">
 <div class="dbx-content">
@@ -15,7 +15,7 @@
 <br>2. Click the "List Files" button.</br>
 <br>3. Selectively click on "Delete" buttons to delete files.</br>
 <p />
-<p>Be careful when deleting files!</p>
+<p>As always, <em>be careful</em> when deleting files!</p>
 
 <p><div>Folder to list: <input type="text" name="folder" size="55" /><input type="submit" name="list_files" value="List Files" /></div></p>
 

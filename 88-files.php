@@ -3,9 +3,11 @@
 Plugin Name: List Yo' Files
 Plugin URI: http://www.wandererllc.com/company/plugins/listyofiles/
 Description: Adds the ability to list files by file name for a given folder with hyperlinks to each file so it is downloadable.  The plugin admin pages also allow you conveniently upload and delete files.
-Version: 0.7
+Version: 0.8
 Author: Billy Baker
 */
+
+require_once "helpers.php";
 
 // Empty directory message
 $EMPTY_FOLDER = 'No files found.';
@@ -14,6 +16,9 @@ $EMPTY_FOLDER = 'No files found.';
 add_shortcode( 'listyofiles', DisplayFiles );
 add_action( 'admin_menu', AddSettingsPage );
 add_action( 'admin_head', LoadScripts );
+
+// Global counter for distinguishing multiple lists
+$fileListCounter = 1;
 
 // LoadScripts()
 //
@@ -26,31 +31,41 @@ function LoadScripts()
 
 // DisplayFiles()
 //
-// This function reads the shortcode from the blog post or page and displays the list of files for the folder
-// requested.  Several options are allowed, see these in the $values variable.  This function ultimately
-// generates an HTML table to display the list of files.
-//
+// This function reads the shortcode from the blog post or page and displays the
+// list of files for the folder requested.  Several options are allowed, see these
+// in the $values variable.  This function ultimately generates an HTML table to
+// display the list of files.
 function DisplayFiles( $params )
 {
 	// Store the various options values in an array.
 	$values = shortcode_atts( array
 		( 'folder' => '',
 		  'link' => '',
-		  'filter' => '*'
+		  'sort' => '',
+		  'filter' => '',
+		  'options' => ''
 		), $params );
 
 	// Get the folder and link options.
 	$folder = $values['folder'];
 	$link = $values['link'];
+	$sort = $values['sort'];
+	$filter = $values['filter'];
+	$options = $values['options'];
 
-	// "link" isn't currently exposed, so this is most likely just blank.  So, set it to $folder.
+	// Warn the user if there is no "folder" argument
+	if ( empty( $folder ) )
+		return "<p><em>List Yo' Files Warning:  There is no 'folder' argument specified.</em></p>";
+
+	// "link" isn't currently exposed, so this is most likely just blank.  So, set
+	// it to $folder.
 	if ( '' == $link )
 	{
 		$link = $folder;
 	}
 
 	// The $filelist variable will hold a list of files.
-	$filelist = GenerateFileList( $folder, $link );
+	$filelist = GenerateFileList( $folder, $link, $filter );
 
 	// if there are no items, this folder is empty.
 	if( !count( $filelist ) )
@@ -61,18 +76,21 @@ function DisplayFiles( $params )
 	else
 	{
 		// Using the list of files, generate an HTML representation of the folder.
-		return ListFiles( $filelist );
+		return ListFiles( $filelist, $sort, $options );
 	}
 }
 
 // GenerateFileList()
 //
-// This function takes a $path argument that is relative the the WordPress installation.  The
-// $linkTarget is currently unused and requested to be the exact same value as $path.  With
-// this relative path info, the function will loop through each file matching the criteria
-// and add resulting files to a list which are returned.
+// @param $path - the folder to list, relative the the WordPress installation.
+// @param $linkTarget - currently unused and requested to be the exact same
+//	value as $path.  With this relative path info, the function will loop
+//	through each file matching the criteria and add resulting files to a list
+//	which are returned.
+// @param $filter - Pass a filter ('*.txt', for example) to apply to the list
+//	of files to display.
 //
-function GenerateFileList( $path, $linkTarget )
+function GenerateFileList( $path, $linkTarget, $filter )
 {
 	// array to build the list in
 	$filelist = array();
@@ -80,28 +98,32 @@ function GenerateFileList( $path, $linkTarget )
 	// Convert to the absolute path
 	$path = ABSPATH . $path;
 
-	// DEBUG MESSAGE
-//	print "<p>Full path is:  $path</p>";
-
 	// Attempt to open the folder
 	if ( ( $p = openDir( $path ) ) !== false )
 	{
 		// Read the directory for items inside it.
 		while ( ( $item = readDir( $p ) ) !== false )
 		{
-			// Exclude dotfiles, current, and parent dirs.
-			if( $item{0} != '.' )
+			// Find the file's extension then determine if a filter is turned
+			// on and this file type fits the filter.
+			$ext = substr( strrchr( $item, '.' ), 1 );
+			$canView = true;
+			if ( !empty( $filter ) )
+			{
+				if ( FALSE === stripos( $filter, $ext ) )
+					$canView = false;
+			}
+
+			// Exclude dotfiles, current, and parent dirs.  Also skip if the
+			// filter doesn't yield a match.
+			if ( $item[0] != '.' && $canView )
 			{
 				// Set up the relative path to the item.
 				$newPath = $path.'/'.$item;
 				$newTarget = $linkTarget.'/'.$item;
 
-				// DEBUG MESSAGE
-//				print "<p>Path to Item is:  $newPath</p>";
-//				print "<p>Target to Item is:  $newTarget</p>";
-
 				// If current item is a file, do more stuff.  Otherwise, just skip it.
-				if( is_file( $newPath ) )
+				if ( is_file( $newPath ) )
 				{
 					// Special processing for links.  Read the path to the link and store it.
 					if ( function_exists( 'is_link' ) && is_link( $newPath ) )
@@ -110,6 +132,8 @@ function GenerateFileList( $path, $linkTarget )
 					// Save the paths.
 					$filelist[$item]['path'] = $newPath;
 					$filelist[$item]['link'] = $newTarget;
+					$filelist[$item]['size'] = filesize( $newPath );
+					$filelist[$item]['date'] = filemtime( $newPath );
 				}
 			}
 		}
@@ -122,37 +146,105 @@ function GenerateFileList( $path, $linkTarget )
 //
 // This function takes a list of files and generates an HTML table to show them inside.
 //
-function ListFiles( $filelist )
+function ListFiles( $filelist, $sort, $options )
 {
+	// Use this as a static variable
+	global $fileListCounter;
+
 	// Sort the items
-	uksort( $filelist, 'strnatcasecmp' );
+	if ( 'reverse_alphabetic' == $sort )
+	{
+		// Reverse alphabetically sort
+		krsort( $filelist );
+	}
+	elseif ( 'reverse_filesize' == $sort )
+	{
+		uasort( $filelist, 'ReverseFileSizeSort' );
+	}
+	elseif ( 'filesize' == $sort )
+	{
+		uasort( $filelist, 'FileSizeSort' );
+	}
+	elseif ( 'reverse_date' == $sort )
+	{
+		uasort( $filelist, 'ReverseDateSort' );
+	}
+	elseif ( 'date' == $sort )
+	{
+		uasort( $filelist, 'DateSort' );
+	}
+	else
+	{
+		// By default, alphabetically sort
+		ksort( $filelist );
+	}
+
+	// Convert options into booleans
 
 	$files = '';
 
 	// Get the URL to the blog.  The path to the files will be added to this.
 	$wpurl = get_bloginfo( "wpurl" );
+	$isTable = ( FALSE !== stripos( $options, 'table' ) );
+	$isNewWindow = ( FALSE !== stripos( $options, 'new_window' ) );
+	$isFilesize = ( FALSE !== stripos( $options, 'filesize' ) );
+	$isDate = ( FALSE !== stripos( $options, 'date' ) );
 
-	// do something with each file, ignoring everything else
-	foreach( $filelist as $itemName => $item )
+	// Start generating the HTML
+	$retVal = "<div id='filelist$fileListCounter'>";
+
+	// Generate either a table or a list based on the user's options
+	if ( $isTable )
 	{
-		$link = $wpurl.'/'.$item['link'];
-		$files .= '<li><a href="'.$link.'">'.$itemName.'</a></li>'.PHP_EOL;
+		$retVal .= '<table width="100%" border="0" cellpadding="5">'.PHP_EOL;
+		foreach( $filelist as $itemName => $item )
+		{
+			// Get file variables
+			$size = FormatFileSize( $item['size'] );
+			$date = date( "F j, Y", $item['date'] );
+			$link = $wpurl.'/'.$item['link'];
+			// Generate list elements
+			if ( $isNewWindow )
+				$retVal .= '</tr>'.PHP_EOL.'<td><a href="'.$link.'" target="_blank">'.$itemName.'</a></td>'.PHP_EOL;
+			else
+				$retVal .= '</tr>'.PHP_EOL.'<td><a href="'.$link.'">'.$itemName.'</a></td>'.PHP_EOL;
+			if ( $isFilesize )
+				$retVal .= '<td>'.$size.'</td>'.PHP_EOL;
+			if ( $isDate )
+				$retVal .= '<td>'.$date.'</td>'.PHP_EOL;
+			$retVal .= '</tr>';
+		}
+		$retVal .= '</table>'.PHP_EOL;
+	}
+	else
+	{
+		foreach( $filelist as $itemName => $item )
+		{
+			// Get file variables
+			$size = FormatFileSize( $item['size'] );
+			$date = date( "F j, Y", $item['date'] );
+			$link = $wpurl.'/'.$item['link'];
+			// Generate list elements
+			if ( $isNewWindow )
+				$files .= '<li><a href="'.$link.'" target="_blank">'.$itemName.'</a>';
+			else
+				$files .= '<li><a href="'.$link.'">'.$itemName.'</a>';
+			if ( $isFilesize )
+				$files .= ' Size: ' . $size . PHP_EOL;
+			if ( $isDate )
+				$files .= ' Date: ' . $date . PHP_EOL;
+			$files .='</li>'.PHP_EOL;
+		}
 
-		// DEBUG MESSAGE
-//		print "<p>Link is:  $link</p>";
-//		print "<p>Item Name is:  $itemName</p>";
+		// Encase the ouput in class and ID
+		$fileListCounter++;
+		$retVal .= '<ul>'.PHP_EOL.$files.'</ul>'.PHP_EOL;
 	}
 
-	// Set the output
-	$output = $files;
-
-	// Encase the ouput in class and ID
-	$retval = '';
-	$retVal .= '<div id=\'filelist\'>';
-	$retVal .= '<ul>'.PHP_EOL.$output.'</ul>'.PHP_EOL;
+	// Close out the div
 	$retVal .= '</div>'.PHP_EOL;
 
-	// return the list
+	// return the HTML
 	return $retVal;
 }
 
@@ -202,19 +294,36 @@ function ListFilesToDelete( $filelist, $folder )
 //
 function AddSettingsPage()
 {
-	add_menu_page( 'List Yo\' Files Options', 'List Yo\' Files', 'edit_files', basename(__FILE__), HandleSettingsPage );
-    add_submenu_page( basename(__FILE__), 'Delete Files', 'Delete Files', 'edit_files', 'Delete', HandleDeleteFilesPage );
+	add_menu_page( 'List Yo\' Files Options', 'List Yo\' Files', 'edit_published_posts', basename(__FILE__), HandleAboutPage );
+    add_submenu_page( basename(__FILE__), 'Upload Files', 'Upload Files', 'edit_published_posts', 'Upload', HandleUploadFilesPage );
+    add_submenu_page( basename(__FILE__), 'Delete Files', 'Delete Files', 'delete_published_pages', 'Delete', HandleDeleteFilesPage );
 }
 
-// HandleSettingsPage()
+// HandleAboutPage()
 //
-// This function handles the main settings page (the upload page).  It handles both displaying the page
-// and uploading any files.
+// This function handles the very simple "about" page.
 //
-function HandleSettingsPage()
+function HandleAboutPage()
 {
 	// Stop the user if they don't have permission
-	if ( !current_user_can( 'edit_files' ) )
+	if ( !current_user_can( 'edit_published_posts' ) )
+	{
+    	wp_die( __('You do not have sufficient permissions to access this page.') );
+  	}
+
+	// Include the settings page here.
+	include('88-files-about.php');
+}
+
+// HandleUploadFilesPage()
+//
+// This function handles the page that manages uploading files and occasionally
+// creating folders.
+//
+function HandleUploadFilesPage()
+{
+	// Stop the user if they don't have permission
+	if ( !current_user_can( 'edit_published_posts' ) )
 	{
     	wp_die( __('You do not have sufficient permissions to access this page.') );
   	}
@@ -227,11 +336,18 @@ function HandleSettingsPage()
 		UploadFiles( $_POST['folder'] );
 	}
 
-	// The file that will handle uploads is this one (see the "if" above)
+	// If a folder is being created
+	if ( isset( $_POST['create_folder'] ) )
+	{
+		check_admin_referer( 'filez-nonce' );
+		CreateFolder( $_POST['new_folder'] );
+	}
+
+	// The file that will handle uploads is this one (see the "if"s above)
 	$action_url = $_SERVER['REQUEST_URI'];
 
 	// Include the settings page here.
-	include('88-files-settings.php');
+	include('88-files-upload.php');
 }
 
 // HandleDeleteFilesPage()
@@ -242,7 +358,7 @@ function HandleSettingsPage()
 function HandleDeleteFilesPage()
 {
 	// Stop the user if they don't have permission
-	if ( !current_user_can( 'edit_files' ) )
+	if ( !current_user_can( 'delete_published_pages' ) )
 	{
     	wp_die( __('You do not have sufficient permissions to access this page.') );
   	}
@@ -261,7 +377,7 @@ function HandleDeleteFilesPage()
 		check_admin_referer( 'filez-nonce' );
 
 		// This function will generate an array of any file in the folder to be deleted.
-		$filelist = GenerateFileList( $_POST['folder'], $_POST['folder'] );
+		$filelist = GenerateFileList( $_POST['folder'], $_POST['folder'], "" );
 
 		// if there are no items, this folder is empty.
 		if( !count( $filelist ) )
@@ -291,7 +407,7 @@ function HandleDeleteFilesPage()
 		echo '<div id="message" class="updated fade"><p>' . $file . ' from ' . $folder . ' has been deleted.</p></div>';
 
 		// Regenerate the list of files now that one of them has been deleted.
-		$filelist = GenerateFileList( $folder, $folder );
+		$filelist = GenerateFileList( $folder, $folder, "" );
 
 		// if there are no items, this folder is empty.
 		if( !count( $filelist ) )
@@ -376,6 +492,7 @@ function UploadFiles( $folder )
 	return $files;
 }
 */
+
 function SetOptions()
 {
 	if ( '' == $shortcode[ 'filter' ] )
