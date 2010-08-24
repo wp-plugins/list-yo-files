@@ -6,7 +6,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: admin, files, upload, download, FTP, display, list, show, ul, li, table
 Requires at least: 2.8
 Tested up to: 3.0
-Stable tag: 0.8
+Stable tag: 0.81
 
 == Description ==
 
@@ -29,6 +29,10 @@ Just go to <http://www.wandererllc.com/company/plugins/listyofiles/> and follow 
 
 == Changelog ==
 
+= 0.81 =
+
+* Bug fix: Upload UI supports uploading 10 files at once.
+
 = 0.8 =
 
 * Added a "sort" option for sorting files.
@@ -39,6 +43,10 @@ Just go to <http://www.wandererllc.com/company/plugins/listyofiles/> and follow 
 * Leaving "folder" argument undeclared now produces a text warning instead of listing the WordPress root folder.
 
 == Upgrade Notice ==
+
+= 0.81 =
+
+Recommended for all users.  Fixed the Uploads page so that 10 files can be uploaded at once.
 
 = 0.8 =
 
