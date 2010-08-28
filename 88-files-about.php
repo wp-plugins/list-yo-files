@@ -42,6 +42,12 @@ files in the specified folder.</br>
 <br>b. <em>filesize</em> - Includes the file size in the list.</br>
 <br>c. <em>date</em> - Includes the file modified date in the list.</br>
 <br>d. <em>new_window</em> - Will open links in a new window.</br>
+<br>e. <em>icon</em> - Works only with the <em>table</em> option.  This option displays a file
+icon to the left of the filename.  If you want to support
+additional file types, you can upload a 16x16 png file for the file type that you'd like to
+support.  The name of the file needs to match the extension that you want to display.  For
+example, if you want to provide an icon for mp3 files, you would need to upload a file called
+"mp3.png" to the plugin's "icons" folder.</br>
 <p />
 
 <h4>Uploading Files:</h4>

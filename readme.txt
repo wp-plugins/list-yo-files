@@ -10,7 +10,7 @@ Stable tag: 0.81
 
 == Description ==
 
-Adds the ability to list files by file name for the given folder with hyperlinks to each file so it is downloadable.  You can include file size and date as part of the file list.  You can even sort by filename, size, or date (and reverse).  The plugin admin pages also allow you conveniently upload and delete files.  This is a convenient way for organizations, groups, and clubs to share files with members.  For example, Home Owner Associations have used this plugin to list their minutes.  Music websites use this plugin to show a list of downloadable sample files to visitors.  
+Adds the ability to list files by file name for the given folder with hyperlinks to each file so it is downloadable.  You can include file size, date, and even an icon as part of the file list.  You can sort by filename, size, or date (and reverse).  The plugin admin pages also allow you conveniently upload and delete files.  This is a convenient way for organizations, groups, and clubs to share files with members.  For example, Home Owner Associations have used this plugin to list their minutes.  Music websites use this plugin to show a list of downloadable sample files to visitors.  
 
 == Screenshots ==
 
@@ -23,11 +23,21 @@ Adds the ability to list files by file name for the given folder with hyperlinks
 
 To use, add the List Yo' Files shortcode ("listyofiles") enclosed in brackets to the text of your page or post and specify the folder name with the "folder" directive.  For example:  [listyofiles folder="wp-content/gallery/my-new-gallery"]  The plugin will then generate a list of files with a link to each so that every file is downloadable.  See the plugin About page for more instructions.
 
+= The file icon that I want to display isn't available.  What can I do? =
+
+You can upload a 16x16 png file for the file type that you'd like to support.  The name of the file needs to match the extension that you want to display.  For example, if you want to provide an icon for mp3 files, you would need to upload a file called "mp3.png" to the plugin's "icons" folder.
+
+If you want to share a single icon across many different file types, then, for now, you need to duplicate each png file for each extension that you want to support.
+
 = How do I make suggestions or report bugs for this plugin? =
 
 Just go to <http://www.wandererllc.com/company/plugins/listyofiles/> and follow the instructions.
 
 == Changelog ==
+
+= 0.82 =
+
+* Added an "icon" feature which adds icons to file lists which are based on the "table" option.  Includes a small set of 16x16 icons.  Users can add their own icon files by uploading to the plugin's 'icon' folder a .png file with the file name matching the extension of the file you want to provide an icon for.  For example:  "mp3.png", "pdf.png", etc.
 
 = 0.81 =
 
@@ -43,6 +53,10 @@ Just go to <http://www.wandererllc.com/company/plugins/listyofiles/> and follow 
 * Leaving "folder" argument undeclared now produces a text warning instead of listing the WordPress root folder.
 
 == Upgrade Notice ==
+
+= 0.82 =
+
+Non-critical update for users who want to have a file icon in front of their file.
 
 = 0.81 =
 

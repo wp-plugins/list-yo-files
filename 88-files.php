@@ -3,7 +3,9 @@
 Plugin Name: List Yo' Files
 Plugin URI: http://www.wandererllc.com/company/plugins/listyofiles/
 Description: Adds the ability to list files by file name for a given folder with hyperlinks to each file so it is downloadable.  The plugin admin pages also allow you conveniently upload and delete files.
-Version: 0.81
+Version: 0.82
+You can upload a 16x16 png file for the file type that you'd like to support.  The name of the file needs to match the extension that you want to display.  For example, if you want to provide an icon for mp3 files, you would need to upload a file called "mp3.png" to the plugin's "icons" folder.
+You can upload a 16x16 png file for the file type that you'd like to support.  The name of the file needs to match the extension that you want to display.  For example, if you want to provide an icon for mp3 files, you would need to upload a file called "mp3.png" to the plugin's "icons" folder.You can upload a 16x16 png file for the file type that you'd like to support.  The name of the file needs to match the extension that you want to display.  For example, if you want to provide an icon for mp3 files, you would need to upload a file called "mp3.png" to the plugin's "icons" folder.
 Author: Billy Baker
 */
 
@@ -197,22 +199,43 @@ function ListFiles( $filelist, $sort, $options )
 	// Generate either a table or a list based on the user's options
 	if ( $isTable )
 	{
-		$retVal .= '<table width="100%" border="0" cellpadding="5">'.PHP_EOL;
+		$retVal .= '<table width="100%" border="0" cellpadding="7">'.PHP_EOL;
 		foreach( $filelist as $itemName => $item )
 		{
 			// Get file variables
 			$size = FormatFileSize( $item['size'] );
 			$date = date( "F j, Y", $item['date'] );
 			$link = $wpurl.'/'.$item['link'];
+
 			// Generate list elements
+
+			// Generate a column for icons
+			if ( isIcon )
+			{
+				$ext = substr( strrchr( $item['link'], '.' ), 1 );
+				$pluginFolder = $wpurl . '/wp-content/plugins/' . dirname( plugin_basename( __FILE__ ) ) . '/';
+				$extensionFile = $pluginFolder . "icons/$ext.png";
+				$theFile = file( $extensionFile );
+				// If a file for this extension doesn't exist, then load the generic icon
+				if ( FALSE == $theFile )
+					$extensionFile = $pluginFolder . "icons/generic.png";
+				$retVal .= '<td><img src="'.$extensionFile.'"></td>'.PHP_EOL;
+			}
+
+			// This part is required.  But show links in a new window or not?
 			if ( $isNewWindow )
-				$retVal .= '</tr>'.PHP_EOL.'<td><a href="'.$link.'" target="_blank">'.$itemName.'</a></td>'.PHP_EOL;
+				$retVal .= '<td><a href="'.$link.'" target="_blank">'.$itemName.'</a></td>'.PHP_EOL;
 			else
-				$retVal .= '</tr>'.PHP_EOL.'<td><a href="'.$link.'">'.$itemName.'</a></td>'.PHP_EOL;
+				$retVal .= '<td><a href="'.$link.'">'.$itemName.'</a></td>'.PHP_EOL;
+
+			// Show the file size
 			if ( $isFilesize )
 				$retVal .= '<td>'.$size.'</td>'.PHP_EOL;
+
+			// Show the date
 			if ( $isDate )
 				$retVal .= '<td>'.$date.'</td>'.PHP_EOL;
+
 			$retVal .= '</tr>';
 		}
 		$retVal .= '</table>'.PHP_EOL;
