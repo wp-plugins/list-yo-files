@@ -2,11 +2,9 @@
 /*
 Plugin Name: List Yo' Files
 Plugin URI: http://www.wandererllc.com/company/plugins/listyofiles/
-Description: Adds the ability to list files by file name for a given folder with hyperlinks to each file so it is downloadable.  The plugin admin pages also allow you conveniently upload and delete files.
+Description: Adds the ability to list files by file name for a given folder with hyperlinks to each file making it downloadable.  The plugin admin pages also allow you to conveniently upload and delete files.
 Version: 0.82
-You can upload a 16x16 png file for the file type that you'd like to support.  The name of the file needs to match the extension that you want to display.  For example, if you want to provide an icon for mp3 files, you would need to upload a file called "mp3.png" to the plugin's "icons" folder.
-You can upload a 16x16 png file for the file type that you'd like to support.  The name of the file needs to match the extension that you want to display.  For example, if you want to provide an icon for mp3 files, you would need to upload a file called "mp3.png" to the plugin's "icons" folder.You can upload a 16x16 png file for the file type that you'd like to support.  The name of the file needs to match the extension that you want to display.  For example, if you want to provide an icon for mp3 files, you would need to upload a file called "mp3.png" to the plugin's "icons" folder.
-Author: Billy Baker
+Author: Wanderer LLC Dev Team
 */
 
 require_once "helpers.php";
@@ -17,19 +15,21 @@ $EMPTY_FOLDER = 'No files found.';
 // Various hooks and actions for this plug-in
 add_shortcode( 'listyofiles', DisplayFiles );
 add_action( 'admin_menu', AddSettingsPage );
-add_action( 'admin_head', LoadScripts );
+add_filter( 'plugin_row_meta', 'AddListYoFilesPluginLinks', 10, 2 ); // Expand the links on the plugins page
+
+// Inspired by NextGen Gallery by Alex Rabe
+function AddListYoFilesPluginLinks($links, $file)
+{
+	if ( $file == plugin_basename(__FILE__) )
+	{
+		$links[] = '<a href="http://wordpress.org/extend/plugins/list-yo-files/">' . __('Overview', 'list-yo-files') . '</a>';
+		$links[] = '<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TC7MECF2DJHHY&lc=US">' . __('Donate', 'list-yo-files') . '</a>';
+	}
+	return $links;
+}
 
 // Global counter for distinguishing multiple lists
 $fileListCounter = 1;
-
-// LoadScripts()
-//
-// Loads the script that is used to select and show which files are being uploaded.
-//
-function LoadScripts()
-{
- 	echo '<script type="text/javascript" src="' . get_bloginfo('wpurl') . '/wp-content/plugins/' . dirname( plugin_basename( __FILE__ ) ) . '/multiselect.js"></script>' . PHP_EOL;
-}
 
 // DisplayFiles()
 //

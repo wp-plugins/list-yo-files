@@ -19,25 +19,27 @@ $pluginFolder = get_bloginfo('wpurl') . '/wp-content/plugins/' . dirname( plugin
     			<td>Restrict files to registered users? Try <a style="text-decoration:none;" href="http://member.wishlistproducts.com/wlp.php?af=1080050">Wishlist</a></td>
     		</tr>
     	</table></li>
+    	<li>Contact <a href="http://www.wandererllc.com/company/contact/">Wanderer LLC</a> to sponsor a feature or write a plugin just for you.</li>
+    	<li>Leave a good rating or comments for <a href="http://wordpress.org/extend/plugins/list-yo-files/">List Yo' Files</a>.</li>
 	</ul>
 </div>
 <h4>Displaying File Lists:</h4>
 <p>To display a list of files in your posts, add the special <em>listyofiles</em> code
 to your page or post where you want to display the file list and include the folder
 to list.  For example:
-<em>[listyofiles folder="wp-content/gallery/my-new-gallery"]</em>.
+<small>[listyofiles folder="wp-content/gallery/my-new-gallery"]</small>.
 <strong>NOTE:</strong>  Do not add opening or closing slashes ("/") to the "folder" path.
 There are several options that you can chose as well to customize your file list:</p>
 1. <em>sort</em> - include one of the following:  "alphabetic", "reverse_alphabetic", "filesize",
 "reverse_filesize", "date", or "reverse_date".  The <em>default</em> is "alphabetic" and
 is used if "sort" isn't specified.  Example usage:
-<em>[listyofiles folder="wp-content/gallery/my-new-gallery" sort="reverse_filesize"]</em>
-<br>2. <em>filter</em> - include a list of extensions (no period) separated by commas to only display
+<small>[listyofiles folder="wp-content/gallery/my-new-gallery" sort="reverse_filesize"]</small>
+<p>2. <em>filter</em> - include a list of extensions (no period) separated by commas to only display
 matching files.  For example,
-<em>[listyofiles folder="wp-content/gallery/my-new-gallery" filter = "mp3,wav,aif"]</em> will
+<small>[listyofiles folder="wp-content/gallery/my-new-gallery" filter = "mp3,wav,aif"]</small> will
 only display audio files in your file list.  Not including this option will list all
-files in the specified folder.</br>
-<br>3. <em>options</em> - A list of comma-separated options to further customize your file list.  Supported options:</br>
+files in the specified folder.</p>
+3. <em>options</em> - A list of comma-separated options to further customize your file list.  An example: <small>[listyofiles folder="wp-content/gallery/my-new-gallery" options="table,filesize,icon"]</small> Supported options:
 <br>a. <em>table</em> - Renders your file list as a table (no border).</br>
 <br>b. <em>filesize</em> - Includes the file size in the list.</br>
 <br>c. <em>date</em> - Includes the file modified date in the list.</br>
