@@ -6,7 +6,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: admin, files, upload, download, FTP, display, list, show, ul, li, table
 Requires at least: 2.8
 Tested up to: 3.0
-Stable tag: 0.82
+Stable tag: 0.83
 
 == Description ==
 
@@ -25,7 +25,7 @@ To use, add the List Yo' Files shortcode ("listyofiles") enclosed in brackets to
 
 = The file icon that I want to display isn't available.  What can I do? =
 
-You can upload a 16x16 png file for the file type that you'd like to support.  The name of the file needs to match the extension that you want to display.  For example, if you want to provide an icon for mp3 files, you would need to upload a file called "mp3.png" to the plugin's "icons" folder.
+You can upload a 16x16 png file for the file type that you'd like to support.  The name of the file needs to match the extension that you want to display.  All letters should be lowercase.  For example, if you want to provide an icon for mp3 files, you would need to upload a file called "mp3.png" to the plugin's "icons" folder.
 
 If you want to share a single icon across many different file types, then, for now, you need to duplicate each png file for each extension that you want to support.
 
@@ -40,6 +40,7 @@ Just go to <http://www.wandererllc.com/company/plugins/listyofiles/> and follow 
 * Fixed the "icon" feature to be turned off by default.
 * Icon extensions are now case insensitive.
 * Using a method that does not generate a warning when a file cannot be loaded.
+* Added icons for mp3, htm, and html.
 
 = 0.82 =
 

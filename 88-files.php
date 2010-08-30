@@ -187,6 +187,8 @@ function ListFiles( $filelist, $sort, $options )
 
 	// Get the URL to the blog.  The path to the files will be added to this.
 	$wpurl = get_bloginfo( "wpurl" );
+	
+	// Get the various options
 	$isTable = ( FALSE !== stripos( $options, 'table' ) );
 	$isNewWindow = ( FALSE !== stripos( $options, 'new_window' ) );
 	$isFilesize = ( FALSE !== stripos( $options, 'filesize' ) );
@@ -216,9 +218,9 @@ function ListFiles( $filelist, $sort, $options )
 				$ext = strtolower( $ext );
 				$pluginFolder = $wpurl . '/wp-content/plugins/' . dirname( plugin_basename( __FILE__ ) ) . '/';
 				$extensionFile = $pluginFolder . "icons/$ext.png";
-				$theFile = file( $extensionFile );
+				$theFile = @file( $extensionFile );
 				// If a file for this extension doesn't exist, then load the generic icon
-				if ( FALSE == $theFile )
+				if ( FALSE === $theFile )
 					$extensionFile = $pluginFolder . "icons/generic.png";
 				$retVal .= '<td><img src="'.$extensionFile.'"></td>'.PHP_EOL;
 			}
