@@ -3,7 +3,7 @@
 Plugin Name: List Yo' Files
 Plugin URI: http://www.wandererllc.com/company/plugins/listyofiles/
 Description: Adds the ability to list files by file name for a given folder with hyperlinks to each file making it downloadable.  The plugin admin pages also allow you to conveniently upload and delete files.
-Version: 0.82
+Version: 0.83
 Author: Wanderer LLC Dev Team
 */
 
@@ -210,9 +210,10 @@ function ListFiles( $filelist, $sort, $options )
 			// Generate list elements
 
 			// Generate a column for icons
-			if ( isIcon )
+			if ( $isIcon )
 			{
 				$ext = substr( strrchr( $item['link'], '.' ), 1 );
+				$ext = strtolower( $ext );
 				$pluginFolder = $wpurl . '/wp-content/plugins/' . dirname( plugin_basename( __FILE__ ) ) . '/';
 				$extensionFile = $pluginFolder . "icons/$ext.png";
 				$theFile = file( $extensionFile );

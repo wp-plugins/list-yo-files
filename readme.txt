@@ -35,6 +35,12 @@ Just go to <http://www.wandererllc.com/company/plugins/listyofiles/> and follow 
 
 == Changelog ==
 
+= 0.83 =
+
+* Fixed the "icon" feature to be turned off by default.
+* Icon extensions are now case insensitive.
+* Using a method that does not generate a warning when a file cannot be loaded.
+
 = 0.82 =
 
 * Added an "icon" feature which adds icons to file lists which are based on the "table" option.  Includes a small set of 16x16 icons.  Users can add their own icon files by uploading to the plugin's 'icon' folder a .png file with the file name matching the extension of the file you want to provide an icon for.  For example:  "mp3.png", "pdf.png", etc.
@@ -53,6 +59,10 @@ Just go to <http://www.wandererllc.com/company/plugins/listyofiles/> and follow 
 * Leaving "folder" argument undeclared now produces a text warning instead of listing the WordPress root folder.
 
 == Upgrade Notice ==
+
+= 0.83 =
+
+Recommended for users of 0.82.  Fixes non-critical bugs.
 
 = 0.82 =
 
