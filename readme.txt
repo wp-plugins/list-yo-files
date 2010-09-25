@@ -6,11 +6,11 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: admin, files, upload, download, FTP, display, list, show, ul, li, table
 Requires at least: 2.8
 Tested up to: 3.0
-Stable tag: 0.83
+Stable tag: 1.0
 
 == Description ==
 
-Adds the ability to list files by file name for the given folder with hyperlinks to each file making it downloadable.  You can include file size, date, and even an icon as part of the file list.  You can sort by filename, size, or date (and reverse).  The plugin admin pages also allow you to conveniently upload and delete files.  This is a convenient way for organizations, groups, and clubs to share files with members.  For example, Home Owner Associations have used this plugin to list their minutes.  Music websites use this plugin to show a list of downloadable sample files to visitors.  
+Adds the ability to list files by file name for the given folder with hyperlinks to each file making it downloadable.  You can include file size, date, and even an icon as part of the file list.  You can sort by filename, size, or date (and reverse).  The plugin admin pages also allow you to conveniently upload and delete files.  This is a easy way for organizations, groups, and clubs to share files with members.  For example, Home Owner Associations have used this plugin to list their minutes.  Music websites use this plugin to show a list of downloadable sample files to visitors.  
 
 == Screenshots ==
 
