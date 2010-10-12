@@ -23,6 +23,44 @@ $pluginFolder = get_bloginfo('wpurl') . '/wp-content/plugins/' . dirname( plugin
     	<li>Leave a good rating or comments for <a href="http://wordpress.org/extend/plugins/list-yo-files/">List Yo' Files</a>.</li>
 	</ul>
 </div>
+<?php
+add_meta_box('displaying_lists', 'Displaying Files Lists:', 'LYFShowDisplayingFileListsInstructions', 'page' );
+do_meta_boxes('displaying_lists','normal',null);
+
+function LYFShowDisplayingFileListsInstructions()
+{
+?>
+<h4>Displaying File Lists:</h4>
+<p>To display a list of files in your posts, add the special <em>listyofiles</em> code
+to your page or post where you want to display the file list and include the folder
+to list.  For example:
+<small>[listyofiles folder="wp-content/gallery/my-new-gallery"]</small>.
+<strong>NOTE:</strong>  Do not add opening or closing slashes ("/") to the "folder" path.
+There are several options that you can chose as well to customize your file list:</p>
+1. <em>sort</em> - include one of the following:  "alphabetic", "reverse_alphabetic", "filesize",
+"reverse_filesize", "date", or "reverse_date".  The <em>default</em> is "alphabetic" and
+is used if "sort" isn't specified.  Example usage:
+<small>[listyofiles folder="wp-content/gallery/my-new-gallery" sort="reverse_filesize"]</small>
+<p>2. <em>filter</em> - include a list of extensions (no period) separated by commas to only display
+matching files.  For example,
+<small>[listyofiles folder="wp-content/gallery/my-new-gallery" filter = "mp3,wav,aif"]</small> will
+only display audio files in your file list.  Not including this option will list all
+files in the specified folder.</p>
+3. <em>options</em> - A list of comma-separated options to further customize your file list.  An example: <small>[listyofiles folder="wp-content/gallery/my-new-gallery" options="table,filesize,icon"]</small> Supported options:
+<br>a. <em>table</em> - Renders your file list as a table (no border).</br>
+<br>b. <em>filesize</em> - Includes the file size in the list.</br>
+<br>c. <em>date</em> - Includes the file modified date in the list.</br>
+<br>d. <em>new_window</em> - Will open links in a new window.</br>
+<br>e. <em>icon</em> - Works only with the <em>table</em> option.  This option displays a file
+icon to the left of the filename.  If you want to support
+additional file types, you can upload a 16x16 png file for the file type that you'd like to
+support.  The name of the file needs to match the extension that you want to display.  All letters should be lowercase.  For
+example, if you want to provide an icon for mp3 files, you would need to upload a file called
+"mp3.png" to the plugin's "icons" folder.</br>
+<p />
+<?php
+}
+?>
 <h4>Displaying File Lists:</h4>
 <p>To display a list of files in your posts, add the special <em>listyofiles</em> code
 to your page or post where you want to display the file list and include the folder

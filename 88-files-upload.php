@@ -29,7 +29,7 @@ function MultiSelector( list_target, max ){this.list_target = list_target;this.c
 
 <form enctype="multipart/form-data" action="<?php echo $action_url ?>" method="post">
 
-<input type="hidden" name="MAX_FILE_SIZE" value="3000000" />
+<input type="hidden" name="MAX_FILE_SIZE" value="8000000" />
 
 <?php wp_nonce_field('filez-nonce');?>
 
@@ -39,14 +39,13 @@ function MultiSelector( list_target, max ){this.list_target = list_target;this.c
 	<p>Folder name: <input type="text" name="folder" size="55" /></p>
 
 	<input id="my_file_element" type="file" name="file_1" />
+	<div id="files_list">
+		<h3>Selected Files <small>(You can upload up to 10 files at once)</small>:</h3>
+	</div>
 
 <div class="submit"><input type="submit" name="upload_files" value="Upload Files" /></div>
 
 </form>
-
-<div id="files_list">
-	<h3>Selected Files <small>(You can upload up to 10 files at once)</small>:</h3>
-</div>
 
 <script>
 	<!-- Create an instance of the multiSelector class, pass it the output target and the max number of files -->

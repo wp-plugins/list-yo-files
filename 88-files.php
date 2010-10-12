@@ -3,11 +3,15 @@
 Plugin Name: List Yo' Files
 Plugin URI: http://www.wandererllc.com/company/plugins/listyofiles/
 Description: Adds the ability to list files by file name for a given folder with hyperlinks to each file making it downloadable.  The plugin admin pages also allow you to conveniently upload and delete files.
-Version: 0.83
+Version: 1.00
 Author: Wanderer LLC Dev Team
 */
 
 require_once "helpers.php";
+
+// Important ID names
+define( "LYF_LIST_YO_FILES", 'List Yo\' Files' );
+define( "LYF_MENU_TEXT", "lyf_menu_text" );
 
 // Empty directory message
 $EMPTY_FOLDER = 'No files found.';
@@ -41,11 +45,12 @@ function DisplayFiles( $params )
 {
 	// Store the various options values in an array.
 	$values = shortcode_atts( array
-		( 'folder' => '',
-		  'link' => '',
-		  'sort' => '',
-		  'filter' => '',
-		  'options' => ''
+		( 	'folder' => '',
+		 	'link' => '',
+			'sort' => '',
+			'filter' => '',
+			'wpaudio' => '',
+			'options' => ''
 		), $params );
 
 	// Get the folder and link options.
@@ -53,7 +58,14 @@ function DisplayFiles( $params )
 	$link = $values['link'];
 	$sort = $values['sort'];
 	$filter = $values['filter'];
+	$wpaudio = $values['wpaudio'];
 	$options = $values['options'];
+
+	// Create the shortcode for the wpaudio plugin, if present.
+	if ( strlen( $wpaudio ) > 0 )
+	{
+		$wpaudioProcessed = do_shortcode( '[' . $wpaudio . ']' );
+	}
 
 	// Warn the user if there is no "folder" argument
 	if ( empty( $folder ) )
@@ -187,7 +199,7 @@ function ListFiles( $filelist, $sort, $options )
 
 	// Get the URL to the blog.  The path to the files will be added to this.
 	$wpurl = get_bloginfo( "wpurl" );
-	
+
 	// Get the various options
 	$isTable = ( FALSE !== stripos( $options, 'table' ) );
 	$isNewWindow = ( FALSE !== stripos( $options, 'new_window' ) );
@@ -321,16 +333,52 @@ function ListFilesToDelete( $filelist, $folder )
 //
 function AddSettingsPage()
 {
-	add_menu_page( 'List Yo\' Files Options', 'List Yo\' Files', 'edit_published_posts', basename(__FILE__), HandleAboutPage );
-    add_submenu_page( basename(__FILE__), 'Upload Files', 'Upload Files', 'edit_published_posts', 'Upload', HandleUploadFilesPage );
-    add_submenu_page( basename(__FILE__), 'Delete Files', 'Delete Files', 'delete_published_pages', 'Delete', HandleDeleteFilesPage );
+	// The master menu text is dynamic.
+	$menuText = get_option( LYF_MENU_TEXT );
+	if ( 0 == strlen( $menuText ) )
+		$menuText = LYF_LIST_YO_FILES;
+
+	$pageText = $menuText . ' Options';
+
+	add_menu_page( $pageText, $menuText, 'edit_published_posts', basename(__FILE__), LYFHandleAboutPage );
+    add_submenu_page( basename(__FILE__) , 'Usage', 'Usage', 'edit_published_posts', basename(__FILE__), LYFHandleAboutPage );
+	add_submenu_page( basename(__FILE__), 'Upload Files', 'Upload Files', 'edit_published_posts', 'Upload', LYFHandleUploadFilesPage );
+    add_submenu_page( basename(__FILE__), 'Delete Files', 'Delete Files', 'edit_published_posts', 'Delete', LYFHandleDeleteFilesPage );
+    add_submenu_page( basename(__FILE__), 'Administer List Yo\' Files', 'Administer', 'add_users', 'Administer', LYFHandleAdminPage );
 }
 
-// HandleAboutPage()
+// LYFHandleAdminPage()
+//
+// This function handles the all-important admin page.
+//
+function LYFHandleAdminPage()
+{
+	$menuText = get_option( LYF_MENU_TEXT );
+
+	// The user must be an admin to see this page
+	if ( !current_user_can( 'add_users' ) )
+	{
+    	wp_die( __('You do not have sufficient permissions to access this page.') );
+  	}
+
+	if ( isset( $_POST['save_admin_settings'] ) )
+	{
+		// Security check
+		check_admin_referer( 'filez-nonce' );
+
+		$menuText = $_POST['menu_name'];
+		update_option( LYF_MENU_TEXT, $menuText );
+	}
+
+	// Include the settings page here.
+	include('88-files-admin.php');
+}
+
+// LYFHandleAboutPage()
 //
 // This function handles the very simple "about" page.
 //
-function HandleAboutPage()
+function LYFHandleAboutPage()
 {
 	// Stop the user if they don't have permission
 	if ( !current_user_can( 'edit_published_posts' ) )
@@ -338,16 +386,24 @@ function HandleAboutPage()
     	wp_die( __('You do not have sufficient permissions to access this page.') );
   	}
 
+  	// If the upload_files POST option is set, then files are being uploaded
+	if ( isset( $_POST['upload_files'] ) )
+	{
+		// Security check
+		check_admin_referer( 'filez-nonce' );
+		UploadFiles( $_POST['folder'] );
+	}
+
 	// Include the settings page here.
 	include('88-files-about.php');
 }
 
-// HandleUploadFilesPage()
+// LYFHandleUploadFilesPage()
 //
 // This function handles the page that manages uploading files and occasionally
 // creating folders.
 //
-function HandleUploadFilesPage()
+function LYFHandleUploadFilesPage()
 {
 	// Stop the user if they don't have permission
 	if ( !current_user_can( 'edit_published_posts' ) )
@@ -377,12 +433,12 @@ function HandleUploadFilesPage()
 	include('88-files-upload.php');
 }
 
-// HandleDeleteFilesPage()
+// LYFHandleDeleteFilesPage()
 //
 // This functions handles the delete files page.  It manages both displaying the page and deleting the
 // files.
 //
-function HandleDeleteFilesPage()
+function LYFHandleDeleteFilesPage()
 {
 	// Stop the user if they don't have permission
 	if ( !current_user_can( 'delete_published_pages' ) )
