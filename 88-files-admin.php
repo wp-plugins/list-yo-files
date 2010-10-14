@@ -1,5 +1,5 @@
 <div class="wrap" style="max-width:950px !important;">
-<h2>How to Use</h2>
+<h2>Administration</h2>
 <div id="poststuff" style="margin-top:10px;">
 <div id="mainblock" style="width:710px">
 <div class="dbx-content">
@@ -31,28 +31,28 @@ $pluginFolder = get_bloginfo('wpurl') . '/wp-content/plugins/' . dirname( plugin
 <p>Rename the master menu to: <input type="text" name="menu_name" value="<?php echo $menuText;?>"size="25" /></p>
 
 <?php
-$allowAnyFolder = "0";
-print "<p><input type=CHECKBOX value=\"on_allow_folders\" name=\"on_allow_folders\" ";
-if ( "0" === $allowAnyFolder || empty( $allowAnyFolder ) ){} else
-	print "checked";
-print "> Allow users to upload to any folder</p>";
+print '<p><input type=CHECKBOX name="on_restrict_types" ';
+if ( "0" === $restrictTypes || empty( $restrictTypes ) ){} else
+	print 'checked';
+print '> Restrict uploads to the following file types (no periods, separated by commas): ';
+?>
+
+<input type="text" name="file_types" value="<?php echo $allowedFileTypes;?>"size="25" /> <small>For example: mp3,wav,aif,mov</small></p>
+
+<?php
+print '<p><input type=CHECKBOX name="on_enable_folders" ';
+if ( "0" === $enableUserFolders || empty( $enableUserFolders ) ){} else
+	print 'checked';
+print '> Enable Subscriber folders</p>';
 ?>
 
 <fieldset style="margin-left: 20px;">
 
-<?php
-$restrictTypes = "0";
-print "<p><input type=CHECKBOX value=\"on_restrict_types\" name=\"on_restrict_types\" ";
-if ( "0" === $restrictTypes || empty( $restrictTypes ) ){} else
-	print "checked";
-print "> Restrict uploads to the following file types: ";
-?>
-<input type="text" name="file_types" size="25" /> <small>For example: mp3,wav,aif,wmv</small></p>
-
-<p>Limit the number of user folders to: <input type="text" name="num_folders" size="10" />
+<p>Limit the number of user folders to: <input type="text" name="num_folders" value="<?php echo $subfolderCount;?>"size="10" />
 <small>Leave empty for unlimited</small>
 </p>
-<p>Upload space per user (in MB): <input type="text" name="num_folders" size="10" />
+
+<p>Upload space per user (in MB): <input type="text" name="folder_size" value="<?php echo $folderSize;?>"size="10" />
 <small>Leave empty for unlimited</small>
 </p>
 </fieldset>

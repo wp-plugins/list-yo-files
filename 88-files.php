@@ -10,8 +10,13 @@ Author: Wanderer LLC Dev Team
 require_once "helpers.php";
 
 // Important ID names
-define( "LYF_LIST_YO_FILES", 'List Yo\' Files' );
-define( "LYF_MENU_TEXT", "lyf_menu_text" );
+define( 'LYF_LIST_YO_FILES', 'List Yo\' Files' );
+define( 'LYF_MENU_TEXT', 'lyf_menu_text' );
+define( 'LYF_ENABLE_USER_FOLDERS', 'lyf_user_folders' );
+define( 'LYF_ENABLE_ALLOWED_FILE_TYPES', 'lyf_enable_allowed_file_types' );
+define( 'LYF_ALLOWED_FILE_TYPES', 'lyf_allowed_file_types' );
+define( 'LYF_USER_SUBFOLDER_LIMIT', 'lyf_subfolder_limit' );
+define( 'LYF_USER_USER_FOLDER_SIZE', 'lyf_user_folder_size' );
 
 // Empty directory message
 $EMPTY_FOLDER = 'No files found.';
@@ -58,14 +63,15 @@ function DisplayFiles( $params )
 	$link = $values['link'];
 	$sort = $values['sort'];
 	$filter = $values['filter'];
-	$wpaudio = $values['wpaudio'];
+//	$wpaudio = $values['wpaudio'];
 	$options = $values['options'];
 
 	// Create the shortcode for the wpaudio plugin, if present.
-	if ( strlen( $wpaudio ) > 0 )
-	{
-		$wpaudioProcessed = do_shortcode( '[' . $wpaudio . ']' );
-	}
+//	if ( strlen( $wpaudio ) > 0 )
+//	{
+//		$wpaudioProcessed = do_shortcode( '[' . $wpaudio . ']' );
+//		return $wpaudioProcessed;
+//	}
 
 	// Warn the user if there is no "folder" argument
 	if ( empty( $folder ) )
@@ -206,6 +212,8 @@ function ListFiles( $filelist, $sort, $options )
 	$isFilesize = ( FALSE !== stripos( $options, 'filesize' ) );
 	$isDate = ( FALSE !== stripos( $options, 'date' ) );
 	$isIcon = ( FALSE !== stripos( $options, 'icon' ) );
+	$isWPAudio = ( FALSE !== stripos( $options, 'wpaudio' ) );
+	$isWPAudioDownloadable = ( FALSE !== stripos( $options, 'wpaudiodownloadable' ) );
 
 	// Start generating the HTML
 	$retVal = "<div id='filelist$fileListCounter'>";
@@ -237,11 +245,21 @@ function ListFiles( $filelist, $sort, $options )
 				$retVal .= '<td><img src="'.$extensionFile.'"></td>'.PHP_EOL;
 			}
 
-			// This part is required.  But show links in a new window or not?
-			if ( $isNewWindow )
-				$retVal .= '<td><a href="'.$link.'" target="_blank">'.$itemName.'</a></td>'.PHP_EOL;
-			else
-				$retVal .= '<td><a href="'.$link.'">'.$itemName.'</a></td>'.PHP_EOL;
+			// This part is required.  However, it can be altered by the "wpaudio" option
+			if ( $isWPAudio )
+			{
+				$onOff = ($isWPAudioDownloadable) ? $link : "0";
+				$wpaudioProcessed = do_shortcode( '[' . "wpaudio url=\"$link\" text=\" $itemName\" dl=\"$onOff\"" . ']' );
+				$retVal .= '<td>'.$wpaudioProcessed.'</td>'.PHP_EOL;
+			}
+			else // This is the primary element - the linked file.
+			{
+				// Show links in a new window or not?
+				if ( $isNewWindow )
+					$retVal .= '<td><a href="'.$link.'" target="_blank">'.$itemName.'</a></td>'.PHP_EOL;
+				else
+					$retVal .= '<td><a href="'.$link.'">'.$itemName.'</a></td>'.PHP_EOL;
+			}
 
 			// Show the file size
 			if ( $isFilesize )
@@ -354,6 +372,11 @@ function AddSettingsPage()
 function LYFHandleAdminPage()
 {
 	$menuText = get_option( LYF_MENU_TEXT );
+	$restrictTypes = get_option( LYF_ENABLE_ALLOWED_FILE_TYPES );
+	$allowedFileTypes = get_option( LYF_ALLOWED_FILE_TYPES );
+	$enableUserFolders = get_option( LYF_ENABLE_USER_FOLDERS );
+	$subfolderCount = get_option( LYF_USER_SUBFOLDER_LIMIT );
+	$folderSize = get_option( LYF_USER_USER_FOLDER_SIZE );
 
 	// The user must be an admin to see this page
 	if ( !current_user_can( 'add_users' ) )
@@ -366,8 +389,32 @@ function LYFHandleAdminPage()
 		// Security check
 		check_admin_referer( 'filez-nonce' );
 
+		// Save the menu text
 		$menuText = $_POST['menu_name'];
 		update_option( LYF_MENU_TEXT, $menuText );
+
+		// File types
+		$restrictTypes = $_POST['on_restrict_types'];
+		update_option( LYF_ENABLE_ALLOWED_FILE_TYPES, $restrictTypes );
+
+		if ( "on" == $restrictTypes )
+		{
+			$allowedFileTypes = $_POST['file_types'];
+			update_option( LYF_ALLOWED_FILE_TYPES, $allowedFileTypes );
+		}
+
+		// Save various user folder options
+		$enableUserFolders = $_POST['on_enable_folders'];
+		update_option( LYF_ENABLE_USER_FOLDERS, $enableUserFolders );
+
+		if ( "on" == $enableUserFolders )
+		{
+			$subfolderCount = $_POST['num_folders'];
+			update_option( LYF_USER_SUBFOLDER_LIMIT, $subfolderCount );
+
+			$folderSize = $_POST['folder_size'];
+			update_option( LYF_USER_USER_FOLDER_SIZE, $folderSize );
+		}
 	}
 
 	// Include the settings page here.
