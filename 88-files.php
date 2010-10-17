@@ -11,15 +11,19 @@ require_once "helpers.php";
 
 // Important ID names
 define( 'LYF_LIST_YO_FILES', 'List Yo\' Files' );
+define( 'LYF_USER_FOLDER', 'wp-content/list_yo_files/' );
+
+// Database options
 define( 'LYF_MENU_TEXT', 'lyf_menu_text' );
 define( 'LYF_ENABLE_USER_FOLDERS', 'lyf_user_folders' );
+define( 'LYF_MINIMUM_ROLE', 'lyf_minimum_role' );
 define( 'LYF_ENABLE_ALLOWED_FILE_TYPES', 'lyf_enable_allowed_file_types' );
 define( 'LYF_ALLOWED_FILE_TYPES', 'lyf_allowed_file_types' );
 define( 'LYF_USER_SUBFOLDER_LIMIT', 'lyf_subfolder_limit' );
 define( 'LYF_USER_USER_FOLDER_SIZE', 'lyf_user_folder_size' );
 
 // Empty directory message
-$EMPTY_FOLDER = 'No files found.';
+define( 'EMPTY_FOLDER', 'No files found.' );
 
 // Various hooks and actions for this plug-in
 add_shortcode( 'listyofiles', DisplayFiles );
@@ -305,45 +309,6 @@ function ListFiles( $filelist, $sort, $options )
 	return $retVal;
 }
 
-// ListFilesToDelete()
-//
-// This function is very similar to the "ListFiles()" function.  The only difference is that this function
-// generates a list of files to be deleted in the Settings page.  So, the admin will only see the results
-// of this function, not your average site user.
-//
-function ListFilesToDelete( $filelist, $folder )
-{
-	// sort the items
-	uksort( $filelist, 'strnatcasecmp' );
-
-	$files = '';
-
-	// Generate a table entry for each file, showing the file name, the folder, and a "Delete" link.
-	foreach( $filelist as $itemName => $item )
-	{
-		$files .= '<tr class="alternate"><td>' . $itemName . '</td><td><a href="admin.php?page=Delete&amp;tab=del&amp;id=' . $itemName . '&amp;folder=' . $folder . '" class="delete">Delete</a></td></tr>';
-	}
-
-	// Set the output
-	$output = $files;
-
-	// Encase the ouput in class and ID
-	$retval = '';
-	$retVal .= '<div id=\'filelist\'>';
-	$retVal .= '<table class="widefat">
-			<thead>
-			<tr>
-				<th scope="col">Name</th>
-				<th scope="col">Delete</th>
-			</tr>
-			</thead>';
-	$retVal .= $output . PHP_EOL;
-	$retVal .= '</table>' . PHP_EOL . '</div>' . PHP_EOL;
-
-	// return the list
-	return $retVal;
-}
-
 // AddSettingsPage()
 //
 // This function is called by WordPress to add settings menus to the Dashboard.  It adds two menus:
@@ -375,6 +340,7 @@ function LYFHandleAdminPage()
 	$restrictTypes = get_option( LYF_ENABLE_ALLOWED_FILE_TYPES );
 	$allowedFileTypes = get_option( LYF_ALLOWED_FILE_TYPES );
 	$enableUserFolders = get_option( LYF_ENABLE_USER_FOLDERS );
+	$minimumRole = get_option( LYF_MINIMUM_ROLE );
 	$subfolderCount = get_option( LYF_USER_SUBFOLDER_LIMIT );
 	$folderSize = get_option( LYF_USER_USER_FOLDER_SIZE );
 
@@ -409,6 +375,9 @@ function LYFHandleAdminPage()
 
 		if ( "on" == $enableUserFolders )
 		{
+			$minimumRole = $_POST['minimum_role'];
+			update_option( LYF_MINIMUM_ROLE, $minimumRole );
+
 			$subfolderCount = $_POST['num_folders'];
 			update_option( LYF_USER_SUBFOLDER_LIMIT, $subfolderCount );
 
@@ -470,7 +439,7 @@ function LYFHandleUploadFilesPage()
 	if ( isset( $_POST['create_folder'] ) )
 	{
 		check_admin_referer( 'filez-nonce' );
-		CreateFolder( $_POST['new_folder'] );
+		CreateUserFolder( $_POST['folder'] );
 	}
 
 	// The file that will handle uploads is this one (see the "if"s above)
@@ -551,57 +520,6 @@ function LYFHandleDeleteFilesPage()
 			echo ListFilesToDelete( $filelist, $folder );
 		}
 	}
-}
-
-// UploadFiles()
-//
-// This function uploads a list of files into a folder.
-//
-function UploadFiles( $folder )
-{
-	// Assemble the full path and ensure there is a trailing slash.
-	$upload_folder = trailingslashit( ABSPATH . $folder );
-
-	// Using the "updated fade" class to make the resulting message prominent.
-	echo '<div id="message" class="updated fade">';
-
-	// Check if the folder exists
-	if ( !is_dir( $upload_folder ) )
-	{
-		// If not, create the folder.  Let the user know if something goes wrong.
-		if ( !mkdir( $upload_folder ) )
-		{
-			echo '<p><strong>Failed</strong> to create the folder ' . $upload_folder . '.  Make sure your server file permissions are correct.</p>';
-			// Reset the upload data.  No upload will happen until a folder can be created.
-			$_FILES = array();
-		}
-	}
-
-	// There are up to 10 files that can be uploaded yet.
-	foreach ( $_FILES as $file )
-	{
-		// I don't know why there's an extra blank file in here.  Not much of a PHP dork yet.
-		// Sorry for this hack.
-		if ( '' == $file['tmp_name'] )
-			continue;
-
-		// $final_name holds the full path to the file.
-		$final_name = $upload_folder . $file['name'];
-
-		// Copy the file over...
-		$success = copy( $file['tmp_name'], $final_name );
-
-		// ...and report the results of the upload.
-		if ( $success )
-		{
-			echo '<p><strong>Successfully uploaded ' .$file['name']. '.</strong></p>';
-		}
-		else
-		{
-			echo '<p>Error occurred on ' .$file['name']. ' with code ' . $file['error'] . '</p>';
-		}
-	}
-	echo '</div>';
 }
 
 /*function ApplyFilter( $files )

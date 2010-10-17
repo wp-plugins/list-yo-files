@@ -37,7 +37,7 @@ if ( "0" === $restrictTypes || empty( $restrictTypes ) ){} else
 print '> Restrict uploads to the following file types (no periods, separated by commas): ';
 ?>
 
-<input type="text" name="file_types" value="<?php echo $allowedFileTypes;?>"size="25" /> <small>For example: mp3,wav,aif,mov</small></p>
+<input type="text" name="file_types" value="<?php echo $allowedFileTypes;?>"size="25" /> <small>For example: 'mp3,wav,aif,mov'. Leave blank for any file type.</small></p>
 
 <?php
 print '<p><input type=CHECKBOX name="on_enable_folders" ';
@@ -47,6 +47,21 @@ print '> Enable Subscriber folders</p>';
 ?>
 
 <fieldset style="margin-left: 20px;">
+
+<p>Choose the minimum role that can manage files:  <select name="minimum_role">
+<?php
+	$roles = array( 'Subscriber', 'Contributor', 'Author', 'Editor', 'Administrator' );
+	// Loop through each sub folder
+	foreach( $roles as $role )
+	{
+		$selText = ( $minimumRole == $role ) ? '<option selected>' : '<option>';
+		// print an option for each folder
+		print $selText . $role . '</option>';
+	}
+?>
+</select>
+<br><small>The least powerful role is 'Subscriber', the most powerful is 'Administrator'.</small></br>
+</p>
 
 <p>Limit the number of user folders to: <input type="text" name="num_folders" value="<?php echo $subfolderCount;?>"size="10" />
 <small>Leave empty for unlimited</small>

@@ -45,13 +45,15 @@ if ( "on" == $enableUserFolders /*&& !current_user_can( 'add_users' ) */)
 {
 ?>
 <h4>Create a subfolder:</h4>
-<p>You must create at least one subfolder to upload your files to.  You may create <?php echo $subfolderCount;?> folders.</p>
+<p>You must create at least one subfolder to upload your files to.  You may create up to <?php echo $subfolderCount;?> folders.</p>
 <p>Folder name: <input type="text" name="folder" size="35" /></p><div class="submit"><input type="submit" name="create_folder" value="Create Folder" /></div>
 
 <h4>Upload Files:</h4>
 <p>Pick a folder to upload to:  <select name="upload_folder">
 <?php
-	$folders = array( 'Relic', 'The Four Heads of Frozen Taco', 'Primordial Nostalgia', 'What Win Won Der Wizard' );
+	$path = GetUserUploadFolder();
+	$folders = GenerateFolderList( $path );
+
 	// Loop through each sub folder
 	foreach( $folders as $folder )
 	{
