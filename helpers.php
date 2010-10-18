@@ -1,4 +1,11 @@
 <?php
+
+// Define error and success codes
+define( 'LYF_ERROR_CREATE_FOLDER_PERMISSIONS', -10 ); 
+define( 'LYF_ERROR_CREATE_FOLDER_EXISTS', -11 );
+
+define( 'LYF_SUCCESS_CREATE_FOLDER', 10 );
+
 function FormatFileSize( $size )
 {
 	if ( strlen($size) <= 9 && strlen($size) >= 7 )
@@ -19,34 +26,34 @@ function FormatFileSize( $size )
 }
 
 //
-//	GetUserUploadFolder
+//	LYFGetUserUploadFolder
 //
 //	This function guarantees a terminating slash.
 //
-function GetUserUploadFolder()
+function LYFGetUserUploadFolder( $isAbsolute )
 {
 	// Get this user's user name.  User folders are created with that name.
 	global $current_user;
 	get_currentuserinfo();
 
-	return trailingslashit( ABSPATH . LYF_USER_FOLDER . $current_user->user_login );
+	if ( $isAbsolute )
+		return trailingslashit( ABSPATH . LYF_USER_FOLDER . $current_user->user_login );
+	else
+		return trailingslashit( LYF_USER_FOLDER . $current_user->user_login );
 }
 
 //
-//	CreateUserFolder()
+//	LYFCreateUserFolder()
 //
 //	This function creates the requested user folder.  A user folder is a
 //	special folder created in a special place.  Only end users typically
 //	use this function.
 //
-function CreateUserFolder( $folderName )
+function LYFCreateUserFolder( $folderName )
 {
 	// Assemble the full path and ensure there is a trailing slash.
-	$createFolder = GetUserUploadFolder();
+	$createFolder = LYFGetUserUploadFolder();
 	$createFolder .= $folderName;
-
-	// Using the "updated fade" class to make the resulting message prominent.
-	echo '<div id="message" class="updated fade">';
 
 	// Check if the folder exists
 	if ( !is_dir( $createFolder ) )
@@ -54,56 +61,121 @@ function CreateUserFolder( $folderName )
 		// If not, create the folder.  Let the user know if something goes wrong.
 		// NOTE:  This will fail if you try to recursively create folders!  In
 		// other words, this isnt' allowed.
-		if ( !mkdir( $createFolder ) )
+		if ( !mkdir( $createFolder, 0777 ) )
 		{
-			echo '<p><strong>Failed</strong> to create the subfolder "' . $folderName . '".  Make sure your server file permissions are correct or contact support.</p>';
-		}
-		else
-		{
-		echo '<p>The subfolder ' . $folderName . ' was successfully created..</p>';
+			return LYF_ERROR_CREATE_FOLDER_PERMISSIONS;
 		}
 	}
 	else
 	{
-		echo '<p>strong>Failed</strong> to create the subfolder ' . $folderName . ' because it already exists.  Choose a different folder name.</p>';
+		return LYF_ERROR_CREATE_FOLDER_EXISTS;
 	}
-	echo '</div>';
+	
+	// Arriving here means success
+	return LYF_SUCCESS_CREATE_FOLDER;
 }
 
-// UploadFiles()
 //
-// This function uploads a list of files into a folder.
+//	LYFConvertError()
+//
+function LYFConvertError( $error, $userMessage )
+{
+	$message = '';
+	switch( $error )
+	{
+		case LYF_ERROR_CREATE_FOLDER_PERMISSIONS:
+			$message = '<strong>Failed</strong> to create the subfolder "' . $userMessage . '".  Make sure your server file permissions are correct or contact support.';
+			break;
+		case LYF_ERROR_CREATE_FOLDER_EXISTS:
+			$message = 'strong>Failed</strong> to create the subfolder ' . $userMessage . ' because it already exists.  Choose a different folder name.';
+			break;
+		case LYF_SUCCESS_CREATE_FOLDER:
+			$message = 'The subfolder ' . $userMessage . ' was successfully created.';
+			break;
+		default:
+			break;
+	}
+	return $message;
+}
+
+//
+//	LYFConvertUploadError
+//
+function LYFConvertUploadError( $error )
+{
+	$message = '';
+	switch( $error )
+	{
+		case 1:
+			$message ='the file exceeded the maximum upload size allowed';
+			break;
+		case 2:
+			$message ='the file exceeded the form\'s maximum upload size';
+			break;
+		case 3:
+			$message ='the file was only partially uploaded';
+			break;
+		case 4:
+			$message ='no file was uploaded';
+			break;
+		case 6:
+			$message ='no temporary directory exists';
+			break;
+		case 7:
+			$message ='the file failed to write to disk';
+			break;
+		case 8:
+			$message ='the upload wsa prevented by an extension';
+			break;
+		default:
+			break;
+	}
+	return $message;
+}
+
+//
+//	UploadFiles()
+//
+//	This function uploads a list of files into a folder.
 //
 function UploadFiles( $folder )
 {
-	// Assemble the full path and ensure there is a trailing slash.
-	$upload_folder = trailingslashit( ABSPATH . $folder );
-
 	// Using the "updated fade" class to make the resulting message prominent.
 	echo '<div id="message" class="updated fade">';
 
 	// Check if the folder exists
-	if ( !is_dir( $upload_folder ) )
+	$res = opendir( $folder );
+	if ( FALSE === $res )
 	{
 		// If not, create the folder.  Let the user know if something goes wrong.
-		if ( !mkdir( $upload_folder ) )
+		if ( !mkdir( $folder ) )
 		{
-			echo '<p><strong>Failed</strong> to create the folder ' . $upload_folder . '.  Make sure your server file permissions are correct.</p>';
-			// Reset the upload data.  No upload will happen until a folder can be created.
-			$_FILES = array();
+			echo '<p><strong>Failed</strong> to create the folder.  Make sure your server file permissions are correct.</p>';
 		}
+		// Reset the upload data.  No upload will happen until a folder can be created.
+		$_FILES = array();
+	}
+	else
+	{
+		closedir( $res );
 	}
 
 	// There are up to 10 files that can be uploaded yet.
 	foreach ( $_FILES as $file )
 	{
-		// I don't know why there's an extra blank file in here.  Not much of a PHP dork yet.
-		// Sorry for this hack.
+		// I don't know why there's an extra blank file in here.  Sorry about this hack.
 		if ( '' == $file['tmp_name'] )
 			continue;
+			
+		if ( UPLOAD_ERR_OK != $file['error'] )
+		{
+			$errorString = LYFConvertUploadError( $file['error'] );
+			echo '<p><strong>Failed</strong> to upload ' .$file['name']. ' because ' . $errorString . '.</p>';
+			continue;
+		}
 
 		// $final_name holds the full path to the file.
-		$final_name = $upload_folder . $file['name'];
+		$final_name = $folder . '/' . $file['name'];
 
 		// Copy the file over...
 		$success = copy( $file['tmp_name'], $final_name );
@@ -111,11 +183,7 @@ function UploadFiles( $folder )
 		// ...and report the results of the upload.
 		if ( $success )
 		{
-			echo '<p><strong>Successfully uploaded ' .$file['name']. '.</strong></p>';
-		}
-		else
-		{
-			echo '<p>Error occurred on ' .$file['name']. ' with code ' . $file['error'] . '</p>';
+			echo '<p><strong>Successfully</strong> uploaded ' .$file['name']. '.</p>';
 		}
 	}
 	echo '</div>';
@@ -124,7 +192,7 @@ function UploadFiles( $folder )
 //
 //	Generate a folder list
 //
-function GenerateFolderList( $path )
+function LYFGenerateFolderList( $path )
 {
 	// Store the folders in an array
 	$folders = array();
@@ -133,9 +201,18 @@ function GenerateFolderList( $path )
 	$contents = scandir( $path );
 	foreach ( $contents as $item )
 	{
-		if ( ( is_dir( $item ) ) && ( substr( $item, 0, 1 ) != '.' ) )
+		// Ignore all files starting with a .
+		if ( substr( $item, 0, 1 ) != '.' )
 		{
-			$folders[] = $item;
+			// Only add folders - is_dir() is problematic for me, using opendir() and
+			// closedir() instead.  is_dir() works fine on OS X, but seems to behave
+			// incorrectly on Ubuntu with absolute paths.
+			$dir = opendir( $path . '/' . $item );
+			if ( FALSE != $dir ) 
+			{
+				$folders[] = $item;
+				closedir( $dir );
+			}
 		}
 	}
 	return $folders;
@@ -166,7 +243,7 @@ function ListFilesToDelete( $filelist, $folder )
 	// Encase the ouput in class and ID
 	$retval = '';
 	$retVal .= '<div id=\'filelist\'>';
-	$retVal .= '<table class="widefat">
+	$retVal .= '<table class="widefat" style="width:710px">
 			<thead>
 			<tr>
 				<th scope="col">Name</th>

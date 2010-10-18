@@ -1,7 +1,9 @@
 <div class="wrap" style="max-width:950px !important;">
+<h2>Uploading Files</h2>
 <div id="poststuff" style="margin-top:10px;">
 <div id="mainblock" style="width:710px">
 <div class="dbx-content">
+
 <?php
 $pluginFolder = get_bloginfo('wpurl') . '/wp-content/plugins/' . dirname( plugin_basename( __FILE__ ) ) . '/';
 
@@ -11,8 +13,11 @@ $enableUserFolders = get_option( LYF_ENABLE_USER_FOLDERS );
 // How many folders can the user upload?
 $subfolderCount = get_option( LYF_USER_SUBFOLDER_LIMIT );
 if ( empty( $subfolderCount ) )
+{
 	$subfolderCount = "unlimited";
+}
 ?>
+
 <div style="float:right;width:220px;margin-left:10px;border: 1px solid #ddd;background: #fdffee; padding: 10px 0 10px 10px;">
  	<h2 style="margin: 0 0 5px 0 !important;">Information</h2>
  	<ul id="dbx-content" style="text-decoration:none;">
@@ -41,18 +46,42 @@ function MultiSelector( list_target, max ){this.list_target = list_target;this.c
 <?php wp_nonce_field('filez-nonce');?>
 
 <?php
+
 if ( "on" == $enableUserFolders /*&& !current_user_can( 'add_users' ) */)
 {
+	//
+	//	START:  UI for admins
+	//
+
+	// First, make sure their user folder exists.  If it doesn't then create it
+	$userFolder = LYFGetUserUploadFolder( TRUE );
+
+	if ( !is_dir( $userFolder ) )
+	{
+		$result = LYFCreateUserFolder( $userFolder );
+		
+		if ( $result < 0 )
+		{
+			global $current_user;
+			get_currentuserinfo();
+		
+			$message = '<div id="message" class="updated fade"><p>Problem creating your user folder! ';
+			$message .= LYFConvertError( $result, $current_user->user_login );
+			$message .= '</p></div>';
+			echo $message;
+		}
+	}	
 ?>
+
 <h4>Create a subfolder:</h4>
-<p>You must create at least one subfolder to upload your files to.  You may create up to <?php echo $subfolderCount;?> folders.</p>
+<p>You must create at least one subfolder to upload your files to.  You may create <?php echo $subfolderCount;?> folders.</p>
 <p>Folder name: <input type="text" name="folder" size="35" /></p><div class="submit"><input type="submit" name="create_folder" value="Create Folder" /></div>
 
 <h4>Upload Files:</h4>
 <p>Pick a folder to upload to:  <select name="upload_folder">
+
 <?php
-	$path = GetUserUploadFolder();
-	$folders = GenerateFolderList( $path );
+	$folders = LYFGenerateFolderList( $userFolder );
 
 	// Loop through each sub folder
 	foreach( $folders as $folder )
@@ -61,6 +90,7 @@ if ( "on" == $enableUserFolders /*&& !current_user_can( 'add_users' ) */)
 		print '<option>' . $folder . '</option>';
 	}
 ?>
+
 </select>
 </p>
 
@@ -69,7 +99,7 @@ if ( "on" == $enableUserFolders /*&& !current_user_can( 'add_users' ) */)
 	<h3>Selected Files <small>(You can upload up to 10 files at once)</small>:</h3>
 </div>
 
-<div class="submit"><input type="submit" name="upload_files" value="Upload Files" /></div>
+<div class="submit"><input type="submit" name="upload_user_files" value="Upload Files" /></div>
 
 </form>
 
@@ -84,11 +114,16 @@ if ( "on" == $enableUserFolders /*&& !current_user_can( 'add_users' ) */)
 }
 else
 {
+
+//
+//	START:  UI for admins
+//
+
 ?>
 
 	<p>Type in the name of the folder that you want to upload to.  The folder is a relative path located in your WordPress installation folder.  For example:  "wp-content/gallery/my-new-gallery".  <strong>NOTE:</strong>  Do not add opening or closing slashes ("/") to the path.</p>
 	<p>If the folder doesn't exist, then List Yo' Files will attempt to create it for you.</p>
-	<p>Folder name: <input type="text" name="folder" size="55" /></p>
+	<p>Folder name: <input type="text" name="upload_folder" size="55" /></p>
 
 	<input id="my_file_element" type="file" name="file_1" />
 	<div id="files_list">

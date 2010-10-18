@@ -1,5 +1,5 @@
 <div class="wrap" style="max-width:950px !important;">
-<h2>How to Use</h2>
+<h2>Usage Guide</h2>
 <div id="poststuff" style="margin-top:10px;">
 <div id="mainblock" style="width:710px">
 <div class="dbx-content">

@@ -11,7 +11,10 @@ require_once "helpers.php";
 
 // Important ID names
 define( 'LYF_LIST_YO_FILES', 'List Yo\' Files' );
-define( 'LYF_USER_FOLDER', 'wp-content/list_yo_files/' );
+define( 'LYF_USER_FOLDER', 'wp-content/list_yo_files_user_folders/' );
+define( 'LYF_ADMIN', 1 );
+define( 'LYF_USER', 2 );
+define( 'LYF_USER_MUSIC', 3 );
 
 // Database options
 define( 'LYF_MENU_TEXT', 'lyf_menu_text' );
@@ -26,7 +29,10 @@ define( 'LYF_USER_USER_FOLDER_SIZE', 'lyf_user_folder_size' );
 define( 'EMPTY_FOLDER', 'No files found.' );
 
 // Various hooks and actions for this plug-in
-add_shortcode( 'listyofiles', DisplayFiles );
+add_shortcode( 'listyofiles', LYFShowAdminFiles );
+add_shortcode( 'showmyfiles', LYFShowUserFiles );
+add_shortcode( 'showmp3s', LYFShowMP3Files );
+
 add_action( 'admin_menu', AddSettingsPage );
 add_filter( 'plugin_row_meta', 'AddListYoFilesPluginLinks', 10, 2 ); // Expand the links on the plugins page
 
@@ -44,42 +50,79 @@ function AddListYoFilesPluginLinks($links, $file)
 // Global counter for distinguishing multiple lists
 $fileListCounter = 1;
 
-// DisplayFiles()
 //
-// This function reads the shortcode from the blog post or page and displays the
-// list of files for the folder requested.  Several options are allowed, see these
-// in the $values variable.  This function ultimately generates an HTML table to
-// display the list of files.
-function DisplayFiles( $params )
+//	LYFShowAdminFiles
+//
+function LYFShowAdminFiles( $params )
+{
+	return LYFDisplayFiles( $params, LYF_ADMIN );
+}
+
+//
+//	LYFShowUserFiles
+//
+function LYFShowUserFiles( $params )
+{
+	return LYFDisplayFiles( $params, LYF_USER );
+}
+
+//
+//	LYFShowMP3Files
+//
+function LYFShowMP3Files( $params )
+{
+	return LYFDisplayFiles( $params, LYF_USER_MUSIC );
+}
+
+//
+//	LYFDisplayFiles()
+//
+// 	This function reads the shortcode from the blog post or page and displays the
+//	list of files for the folder requested.  Several options are allowed, see these
+// 	in the $values variable.  This function ultimately generates an HTML table to
+// 	display the list of files.
+//
+function LYFDisplayFiles( $params, $mode )
 {
 	// Store the various options values in an array.
-	$values = shortcode_atts( array
-		( 	'folder' => '',
-		 	'link' => '',
-			'sort' => '',
-			'filter' => '',
-			'wpaudio' => '',
-			'options' => ''
-		), $params );
+	$values = shortcode_atts( array( 	'folder' => '',
+									 	'link' => '',
+										'sort' => '',
+										'filter' => '',
+										'wpaudio' => '',
+										'options' => ''
+									), $params );
 
 	// Get the folder and link options.
-	$folder = $values['folder'];
+	// Here's a difference in modes...simply generates a different folder to
+	// simplify the shortcode for the user.
+	if ( LYF_ADMIN === $mode )
+	{
+		// Read the folder as if it's constructed off the site's route.
+		$folder = $values['folder'];
+	}
+	else
+	{
+		// Allow the user to pass only the name of the subfolder they want to list.
+		$folder = LYF_USER_FOLDER . $values['folder'];
+	}
 	$link = $values['link'];
 	$sort = $values['sort'];
 	$filter = $values['filter'];
-//	$wpaudio = $values['wpaudio'];
-	$options = $values['options'];
-
-	// Create the shortcode for the wpaudio plugin, if present.
-//	if ( strlen( $wpaudio ) > 0 )
-//	{
-//		$wpaudioProcessed = do_shortcode( '[' . $wpaudio . ']' );
-//		return $wpaudioProcessed;
-//	}
+	// Special mode for mp3s
+	if ( LYF_USER_MUSIC === $mode )
+	{
+		$options = $values['options'];
+		$options .= 'table,wpaudio';
+	}
+	else
+	{
+		$options = $values['options'];
+	}
 
 	// Warn the user if there is no "folder" argument
 	if ( empty( $folder ) )
-		return "<p><em>List Yo' Files Warning:  There is no 'folder' argument specified.</em></p>";
+		return "<p><em>Warning:  There is no 'folder' specified.</em></p>";
 
 	// "link" isn't currently exposed, so this is most likely just blank.  So, set
 	// it to $folder.
@@ -90,6 +133,8 @@ function DisplayFiles( $params )
 
 	// The $filelist variable will hold a list of files.
 	$filelist = GenerateFileList( $folder, $link, $filter );
+	
+	print_r( $fileList );
 
 	// if there are no items, this folder is empty.
 	if( !count( $filelist ) )
@@ -100,10 +145,12 @@ function DisplayFiles( $params )
 	else
 	{
 		// Using the list of files, generate an HTML representation of the folder.
-		return ListFiles( $filelist, $sort, $options );
+		$output = ListFiles( $filelist, $sort, $options );
+		return $output;
 	}
 }
 
+//
 // GenerateFileList()
 //
 // @param $path - the folder to list, relative the the WordPress installation.
@@ -123,7 +170,7 @@ function GenerateFileList( $path, $linkTarget, $filter )
 	$path = ABSPATH . $path;
 
 	// Attempt to open the folder
-	if ( ( $p = openDir( $path ) ) !== false )
+	if ( ( $p = openDir( $path ) ) !== FALSE )
 	{
 		// Read the directory for items inside it.
 		while ( ( $item = readDir( $p ) ) !== false )
@@ -166,6 +213,7 @@ function GenerateFileList( $path, $linkTarget, $filter )
 	return $filelist;
 }
 
+//
 // ListFiles()
 //
 // This function takes a list of files and generates an HTML table to show them inside.
@@ -250,7 +298,7 @@ function ListFiles( $filelist, $sort, $options )
 			}
 
 			// This part is required.  However, it can be altered by the "wpaudio" option
-			if ( $isWPAudio )
+			if ( TRUE === $isWPAudio )
 			{
 				$onOff = ($isWPAudioDownloadable) ? $link : "0";
 				$wpaudioProcessed = do_shortcode( '[' . "wpaudio url=\"$link\" text=\" $itemName\" dl=\"$onOff\"" . ']' );
@@ -309,6 +357,7 @@ function ListFiles( $filelist, $sort, $options )
 	return $retVal;
 }
 
+//
 // AddSettingsPage()
 //
 // This function is called by WordPress to add settings menus to the Dashboard.  It adds two menus:
@@ -330,6 +379,7 @@ function AddSettingsPage()
     add_submenu_page( basename(__FILE__), 'Administer List Yo\' Files', 'Administer', 'add_users', 'Administer', LYFHandleAdminPage );
 }
 
+//
 // LYFHandleAdminPage()
 //
 // This function handles the all-important admin page.
@@ -390,6 +440,7 @@ function LYFHandleAdminPage()
 	include('88-files-admin.php');
 }
 
+//
 // LYFHandleAboutPage()
 //
 // This function handles the very simple "about" page.
@@ -414,6 +465,7 @@ function LYFHandleAboutPage()
 	include('88-files-about.php');
 }
 
+//
 // LYFHandleUploadFilesPage()
 //
 // This function handles the page that manages uploading files and occasionally
@@ -432,14 +484,31 @@ function LYFHandleUploadFilesPage()
 	{
 		// Security check
 		check_admin_referer( 'filez-nonce' );
-		UploadFiles( $_POST['folder'] );
+
+		$uploadFolder = ABSPATH . $_POST['upload_folder'];	
+		UploadFiles( $uploadFolder );
+	}
+	
+	// This is the handler for the users other than admins
+	if ( isset($_POST['upload_user_files'] ) )
+	{
+		// Security check
+		check_admin_referer( 'filez-nonce' );
+		
+		$uploadFolder = LYFGetUserUploadFolder( TRUE );
+		$uploadFolder .= $_POST['upload_folder'];	
+		UploadFiles( $uploadFolder );
 	}
 
 	// If a folder is being created
 	if ( isset( $_POST['create_folder'] ) )
 	{
 		check_admin_referer( 'filez-nonce' );
-		CreateUserFolder( $_POST['folder'] );
+		$result = LYFCreateUserFolder( $_POST['folder'] );
+		$message = '<div id="message" class="updated fade">';
+		$message .= LYFConvertError( $result, $_POST['folder'] );
+		$message .= '</div>';
+		echo $message;
 	}
 
 	// The file that will handle uploads is this one (see the "if"s above)
@@ -449,6 +518,7 @@ function LYFHandleUploadFilesPage()
 	include('88-files-upload.php');
 }
 
+//
 // LYFHandleDeleteFilesPage()
 //
 // This functions handles the delete files page.  It manages both displaying the page and deleting the
@@ -476,18 +546,44 @@ function LYFHandleDeleteFilesPage()
 		check_admin_referer( 'filez-nonce' );
 
 		// This function will generate an array of any file in the folder to be deleted.
-		$filelist = GenerateFileList( $_POST['folder'], $_POST['folder'], "" );
+		$filelist = GenerateFileList( $_POST['folder'], $_POST['folder'], '' );
 
 		// if there are no items, this folder is empty.
 		if( !count( $filelist ) )
 		{
 			// Show the user an empty folder message.
-			echo '<p>'.EMPTY_DIR.'</p>';
+			echo '<p>'.EMPTY_FOLDER.'</p>';
 		}
 		else
 		{
 			// List files to be deleted.
 			echo ListFilesToDelete( $filelist, $_POST['folder'] );
+		}
+	}
+	
+	// This if block handles non-admin deletes
+	if ( isset( $_POST['list_user_files'] ) )
+	{
+		// Security check
+		check_admin_referer( 'filez-nonce' );
+		
+		// Generate the folder to list
+		$listFolder = LYFGetUserUploadFolder( TRUE );
+		$listFolder .= $_POST['folder'];
+
+		// This function will generate an array of any file in the folder to be deleted.
+		$filelist = GenerateFileList( $listFolder, $listFolder, '' );
+
+		// if there are no items, this folder is empty.
+		if( !count( $filelist ) )
+		{
+			// Show the user an empty folder message.
+			echo '<p>'.EMPTY_FOLDER.'</p>';
+		}
+		else
+		{
+			// List files to be deleted.
+			echo ListFilesToDelete( $filelist, $listFolder );
 		}
 	}
 
@@ -503,7 +599,7 @@ function LYFHandleDeleteFilesPage()
 		unlink( ABSPATH . $folder . '/' . $file );
 
 		// The "updated fade" class is that cool faded text area.
-		echo '<div id="message" class="updated fade"><p>' . $file . ' from ' . $folder . ' has been deleted.</p></div>';
+		echo '<div id="message" class="updated fade"><p>' . $file . ' has been deleted.</p></div>';
 
 		// Regenerate the list of files now that one of them has been deleted.
 		$filelist = GenerateFileList( $folder, $folder, "" );
@@ -512,7 +608,7 @@ function LYFHandleDeleteFilesPage()
 		if( !count( $filelist ) )
 		{
 			// Show the empty message.
-			echo '<p>'.EMPTY_DIR.'</p>';
+			echo '<p>'.EMPTY_FOLDER.'</p>';
 		}
 		else
 		{
@@ -520,42 +616,6 @@ function LYFHandleDeleteFilesPage()
 			echo ListFilesToDelete( $filelist, $folder );
 		}
 	}
-}
-
-/*function ApplyFilter( $files )
-{
-	$filter = $shortcode[ 'filter' ];
-	if ( '' == $filter )
-		return;
-
-	for each( $file in $files )
-	{
-		$found = strstr( $file->extension, $filter );
-		if ( !$found )
-		{
-			$file->show = false;
-		}
-	}
-
-	return $files;
-}
-*/
-
-function SetOptions()
-{
-	if ( '' == $shortcode[ 'filter' ] )
-	{
-		$filterOption = true;
-	}
-
-	$options = $shortcode[ 'options' ];
-	$found = strstr( "icon", $options );
-	{
-		$iconOption = true;
-	}
-
-	// Repeat same for "time" and "size".  Although, "time" is only legit if "mp3" is a filter.
-	// Use a class to keep track of the options and the filter.
 }
 
 ?>
