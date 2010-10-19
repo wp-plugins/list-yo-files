@@ -33,7 +33,7 @@ add_shortcode( 'listyofiles', LYFShowAdminFiles );
 add_shortcode( 'showmyfiles', LYFShowUserFiles );
 add_shortcode( 'showmp3s', LYFShowMP3Files );
 
-add_action( 'admin_menu', AddSettingsPage );
+add_action( 'admin_menu', LYFAddSettingsPage );
 add_filter( 'plugin_row_meta', 'AddListYoFilesPluginLinks', 10, 2 ); // Expand the links on the plugins page
 
 // Inspired by NextGen Gallery by Alex Rabe
@@ -132,26 +132,26 @@ function LYFDisplayFiles( $params, $mode )
 	}
 
 	// The $filelist variable will hold a list of files.
-	$filelist = GenerateFileList( $folder, $link, $filter );
-	
+	$filelist = LYFGenerateFileList( $folder, $link, $filter );
+
 	print_r( $fileList );
 
 	// if there are no items, this folder is empty.
 	if( !count( $filelist ) )
 	{
 		// Show the user that there are no files.
-		return '<p>'.EMPTY_FOLDER.'</p>';
+		echo '<p><em>'.EMPTY_FOLDER.'</em></p>';
 	}
 	else
 	{
 		// Using the list of files, generate an HTML representation of the folder.
-		$output = ListFiles( $filelist, $sort, $options );
+		$output = LYFListFiles( $filelist, $sort, $options );
 		return $output;
 	}
 }
 
 //
-// GenerateFileList()
+// LYFGenerateFileList()
 //
 // @param $path - the folder to list, relative the the WordPress installation.
 // @param $linkTarget - currently unused and requested to be the exact same
@@ -161,7 +161,7 @@ function LYFDisplayFiles( $params, $mode )
 // @param $filter - Pass a filter ('*.txt', for example) to apply to the list
 //	of files to display.
 //
-function GenerateFileList( $path, $linkTarget, $filter )
+function LYFGenerateFileList( $path, $linkTarget, $filter )
 {
 	// array to build the list in
 	$filelist = array();
@@ -214,11 +214,11 @@ function GenerateFileList( $path, $linkTarget, $filter )
 }
 
 //
-// ListFiles()
+// LYFListFiles()
 //
 // This function takes a list of files and generates an HTML table to show them inside.
 //
-function ListFiles( $filelist, $sort, $options )
+function LYFListFiles( $filelist, $sort, $options )
 {
 	// Use this as a static variable
 	global $fileListCounter;
@@ -358,12 +358,12 @@ function ListFiles( $filelist, $sort, $options )
 }
 
 //
-// AddSettingsPage()
+// LYFAddSettingsPage()
 //
 // This function is called by WordPress to add settings menus to the Dashboard.  It adds two menus:
 // one for uploading files and one for deleting files.
 //
-function AddSettingsPage()
+function LYFAddSettingsPage()
 {
 	// The master menu text is dynamic.
 	$menuText = get_option( LYF_MENU_TEXT );
@@ -458,7 +458,7 @@ function LYFHandleAboutPage()
 	{
 		// Security check
 		check_admin_referer( 'filez-nonce' );
-		UploadFiles( $_POST['folder'] );
+		LYFUploadFiles( $_POST['folder'] );
 	}
 
 	// Include the settings page here.
@@ -485,19 +485,19 @@ function LYFHandleUploadFilesPage()
 		// Security check
 		check_admin_referer( 'filez-nonce' );
 
-		$uploadFolder = ABSPATH . $_POST['upload_folder'];	
-		UploadFiles( $uploadFolder );
+		$uploadFolder = ABSPATH . $_POST['upload_folder'];
+		LYFUploadFiles( $uploadFolder );
 	}
-	
+
 	// This is the handler for the users other than admins
 	if ( isset($_POST['upload_user_files'] ) )
 	{
 		// Security check
 		check_admin_referer( 'filez-nonce' );
-		
+
 		$uploadFolder = LYFGetUserUploadFolder( TRUE );
-		$uploadFolder .= $_POST['upload_folder'];	
-		UploadFiles( $uploadFolder );
+		$uploadFolder .= $_POST['upload_folder'];
+		LYFUploadFiles( $uploadFolder );
 	}
 
 	// If a folder is being created
@@ -546,44 +546,44 @@ function LYFHandleDeleteFilesPage()
 		check_admin_referer( 'filez-nonce' );
 
 		// This function will generate an array of any file in the folder to be deleted.
-		$filelist = GenerateFileList( $_POST['folder'], $_POST['folder'], '' );
+		$filelist = LYFGenerateFileList( $_POST['folder'], $_POST['folder'], '' );
 
 		// if there are no items, this folder is empty.
 		if( !count( $filelist ) )
 		{
 			// Show the user an empty folder message.
-			echo '<p>'.EMPTY_FOLDER.'</p>';
+			echo '<p><em>'.EMPTY_FOLDER.'</em></p>';
 		}
 		else
 		{
 			// List files to be deleted.
-			echo ListFilesToDelete( $filelist, $_POST['folder'] );
+			echo LYFListFilesToDelete( $filelist, $_POST['folder'] );
 		}
 	}
-	
+
 	// This if block handles non-admin deletes
 	if ( isset( $_POST['list_user_files'] ) )
 	{
 		// Security check
 		check_admin_referer( 'filez-nonce' );
-		
+
 		// Generate the folder to list
-		$listFolder = LYFGetUserUploadFolder( TRUE );
+		$listFolder = LYFGetUserUploadFolder( FALSE );
 		$listFolder .= $_POST['folder'];
 
 		// This function will generate an array of any file in the folder to be deleted.
-		$filelist = GenerateFileList( $listFolder, $listFolder, '' );
+		$filelist = LYFGenerateFileList( $listFolder, $listFolder, '' );
 
 		// if there are no items, this folder is empty.
 		if( !count( $filelist ) )
 		{
 			// Show the user an empty folder message.
-			echo '<p>'.EMPTY_FOLDER.'</p>';
+			echo '<p><em>'.EMPTY_FOLDER.'</em></p>';
 		}
 		else
 		{
 			// List files to be deleted.
-			echo ListFilesToDelete( $filelist, $listFolder );
+			echo LYFListFilesToDelete( $filelist, $listFolder );
 		}
 	}
 
@@ -602,20 +602,26 @@ function LYFHandleDeleteFilesPage()
 		echo '<div id="message" class="updated fade"><p>' . $file . ' has been deleted.</p></div>';
 
 		// Regenerate the list of files now that one of them has been deleted.
-		$filelist = GenerateFileList( $folder, $folder, "" );
+		$filelist = LYFGenerateFileList( $folder, $folder, "" );
 
 		// if there are no items, this folder is empty.
 		if( !count( $filelist ) )
 		{
 			// Show the empty message.
-			echo '<p>'.EMPTY_FOLDER.'</p>';
+			echo '<p><em>'.EMPTY_FOLDER.'</em></p>';
 		}
 		else
 		{
 			// Show the files to delete again.
-			echo ListFilesToDelete( $filelist, $folder );
+			echo LYFListFilesToDelete( $filelist, $folder );
 		}
 	}
+?>
+</div>
+</div>
+</div>
+</div>
+<?php
 }
 
 ?>

@@ -56,7 +56,7 @@ else
 if ( "on" == $enableUserFolders /*&& !current_user_can( 'add_users' ) */)
 {
 	// Generate the list of user folders
-	$userFolder = LYFGetUserUploadFolder();
+	$userFolder = LYFGetUserUploadFolder( TRUE );
 	$folders = LYFGenerateFolderList( $userFolder );
 ?>
 
@@ -116,7 +116,7 @@ else
 ?>
 </form>
 
-</div>
-</div>
-</div>
-</div>
+<?php
+// NOTE:	Four "</div>" statements used to be here.  They have been moved back into
+// 			the calling function in order to improve formatting.
+?>

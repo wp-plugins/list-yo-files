@@ -1,7 +1,7 @@
 <?php
 
 // Define error and success codes
-define( 'LYF_ERROR_CREATE_FOLDER_PERMISSIONS', -10 ); 
+define( 'LYF_ERROR_CREATE_FOLDER_PERMISSIONS', -10 );
 define( 'LYF_ERROR_CREATE_FOLDER_EXISTS', -11 );
 
 define( 'LYF_SUCCESS_CREATE_FOLDER', 10 );
@@ -70,7 +70,7 @@ function LYFCreateUserFolder( $folderName )
 	{
 		return LYF_ERROR_CREATE_FOLDER_EXISTS;
 	}
-	
+
 	// Arriving here means success
 	return LYF_SUCCESS_CREATE_FOLDER;
 }
@@ -134,14 +134,17 @@ function LYFConvertUploadError( $error )
 }
 
 //
-//	UploadFiles()
+//	LYFUploadFiles()
 //
 //	This function uploads a list of files into a folder.
 //
-function UploadFiles( $folder )
+function LYFUploadFiles( $folder )
 {
 	// Using the "updated fade" class to make the resulting message prominent.
 	echo '<div id="message" class="updated fade">';
+
+	// Count the number of legit files found (for error reporting)
+	$count = 0;
 
 	// Check if the folder exists
 	$res = opendir( $folder );
@@ -166,7 +169,10 @@ function UploadFiles( $folder )
 		// I don't know why there's an extra blank file in here.  Sorry about this hack.
 		if ( '' == $file['tmp_name'] )
 			continue;
-			
+
+		// At least one file was found
+		$count++;
+
 		if ( UPLOAD_ERR_OK != $file['error'] )
 		{
 			$errorString = LYFConvertUploadError( $file['error'] );
@@ -185,7 +191,18 @@ function UploadFiles( $folder )
 		{
 			echo '<p><strong>Successfully</strong> uploaded ' .$file['name']. '.</p>';
 		}
+		else
+		{
+			echo '<p><strong>Failed</strong> to copy over the file ' .$file['name']. '. Check your folder permissions.</p>';
+		}
 	}
+
+	// Show an error on an empty list of files
+	if ( 0 == $count )
+	{
+		echo '<p>There are no files to upload.  Browse for files to upload first.</p>';
+	}
+
 	echo '</div>';
 }
 
@@ -208,7 +225,7 @@ function LYFGenerateFolderList( $path )
 			// closedir() instead.  is_dir() works fine on OS X, but seems to behave
 			// incorrectly on Ubuntu with absolute paths.
 			$dir = opendir( $path . '/' . $item );
-			if ( FALSE != $dir ) 
+			if ( FALSE != $dir )
 			{
 				$folders[] = $item;
 				closedir( $dir );
@@ -218,13 +235,13 @@ function LYFGenerateFolderList( $path )
 	return $folders;
 }
 
-// ListFilesToDelete()
+// LYFListFilesToDelete()
 //
-// This function is very similar to the "ListFiles()" function.  The only difference is that this function
+// This function is very similar to the "LYFListFiles()" function.  The only difference is that this function
 // generates a list of files to be deleted in the Settings page.  So, the admin will only see the results
 // of this function, not your average site user.
 //
-function ListFilesToDelete( $filelist, $folder )
+function LYFListFilesToDelete( $filelist, $folder )
 {
 	// sort the items
 	uksort( $filelist, 'strnatcasecmp' );
@@ -234,7 +251,8 @@ function ListFilesToDelete( $filelist, $folder )
 	// Generate a table entry for each file, showing the file name, the folder, and a "Delete" link.
 	foreach( $filelist as $itemName => $item )
 	{
-		$files .= '<tr class="alternate"><td>' . $itemName . '</td><td><a href="admin.php?page=Delete&amp;tab=del&amp;id=' . $itemName . '&amp;folder=' . $folder . '" class="delete">Delete</a></td></tr>';
+		$fileSize = FormatFileSize( $item['size'] );
+		$files .= '<tr class="alternate"><td>' . $itemName . '</td><td>' . $fileSize . '</td><td><a href="admin.php?page=Delete&amp;tab=del&amp;id=' . $itemName . '&amp;folder=' . $folder . '" class="delete">Delete</a></td></tr>';
 	}
 
 	// Set the output
@@ -247,6 +265,7 @@ function ListFilesToDelete( $filelist, $folder )
 			<thead>
 			<tr>
 				<th scope="col">Name</th>
+				<th scope="col">Size</th>
 				<th scope="col">Delete</th>
 			</tr>
 			</thead>';

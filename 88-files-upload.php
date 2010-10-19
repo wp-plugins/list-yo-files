@@ -59,18 +59,18 @@ if ( "on" == $enableUserFolders /*&& !current_user_can( 'add_users' ) */)
 	if ( !is_dir( $userFolder ) )
 	{
 		$result = LYFCreateUserFolder( $userFolder );
-		
+
 		if ( $result < 0 )
 		{
 			global $current_user;
 			get_currentuserinfo();
-		
+
 			$message = '<div id="message" class="updated fade"><p>Problem creating your user folder! ';
 			$message .= LYFConvertError( $result, $current_user->user_login );
 			$message .= '</p></div>';
 			echo $message;
 		}
-	}	
+	}
 ?>
 
 <h4>Create a subfolder:</h4>
@@ -78,7 +78,7 @@ if ( "on" == $enableUserFolders /*&& !current_user_can( 'add_users' ) */)
 <p>Folder name: <input type="text" name="folder" size="35" /></p><div class="submit"><input type="submit" name="create_folder" value="Create Folder" /></div>
 
 <h4>Upload Files:</h4>
-<p>Pick a folder to upload to:  <select name="upload_folder">
+<p>Select a folder to upload files to:  <select name="upload_folder">
 
 <?php
 	$folders = LYFGenerateFolderList( $userFolder );
