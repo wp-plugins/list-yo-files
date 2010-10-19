@@ -30,7 +30,7 @@ define( 'EMPTY_FOLDER', 'No files found.' );
 
 // Various hooks and actions for this plug-in
 add_shortcode( 'listyofiles', LYFShowAdminFiles );
-add_shortcode( 'showmyfiles', LYFShowUserFiles );
+add_shortcode( 'showfiles', LYFShowUserFiles );
 add_shortcode( 'showmp3s', LYFShowMP3Files );
 
 add_action( 'admin_menu', LYFAddSettingsPage );
