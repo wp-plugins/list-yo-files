@@ -30,7 +30,7 @@ print '> Restrict uploads to the following file types (no periods, separated by 
 print '<p><input type=CHECKBOX name="on_enable_folders" ';
 if ( "0" === $enableUserFolders || empty( $enableUserFolders ) ){} else
 	print 'checked';
-print '> Enable Subscriber folders</p>';
+print '> Enable User folders</p>';
 ?>
 
 <fieldset style="margin-left: 20px;">

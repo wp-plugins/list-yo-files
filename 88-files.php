@@ -453,14 +453,6 @@ function LYFHandleAboutPage()
     	wp_die( __('You do not have sufficient permissions to access this page.') );
   	}
 
-  	// If the upload_files POST option is set, then files are being uploaded
-	if ( isset( $_POST['upload_files'] ) )
-	{
-		// Security check
-		check_admin_referer( 'filez-nonce' );
-		LYFUploadFiles( $_POST['folder'] );
-	}
-
 	// Include the settings page here.
 	include('88-files-about.php');
 }
@@ -504,7 +496,9 @@ function LYFHandleUploadFilesPage()
 	if ( isset( $_POST['create_folder'] ) )
 	{
 		check_admin_referer( 'filez-nonce' );
-		$result = LYFCreateUserFolder( $_POST['folder'] );
+		$createFolder = LYFGetUserUploadFolder( TRUE );
+		$createFolder .= $_POST['folder'];
+		$result = LYFCreateUserFolder( $createFolder );
 		$message = '<div id="message" class="updated fade">';
 		$message .= LYFConvertError( $result, $_POST['folder'] );
 		$message .= '</div>';

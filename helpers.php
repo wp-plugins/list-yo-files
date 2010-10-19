@@ -51,17 +51,13 @@ function LYFGetUserUploadFolder( $isAbsolute )
 //
 function LYFCreateUserFolder( $folderName )
 {
-	// Assemble the full path and ensure there is a trailing slash.
-	$createFolder = LYFGetUserUploadFolder();
-	$createFolder .= $folderName;
-
 	// Check if the folder exists
-	if ( !is_dir( $createFolder ) )
+	if ( !is_dir( $folderName ) )
 	{
 		// If not, create the folder.  Let the user know if something goes wrong.
 		// NOTE:  This will fail if you try to recursively create folders!  In
 		// other words, this isnt' allowed.
-		if ( !mkdir( $createFolder, 0777 ) )
+		if ( !mkdir( $folderName, 0777, TRUE ) )
 		{
 			return LYF_ERROR_CREATE_FOLDER_PERMISSIONS;
 		}
@@ -87,10 +83,10 @@ function LYFConvertError( $error, $userMessage )
 			$message = '<strong>Failed</strong> to create the subfolder "' . $userMessage . '".  Make sure your server file permissions are correct or contact support.';
 			break;
 		case LYF_ERROR_CREATE_FOLDER_EXISTS:
-			$message = 'strong>Failed</strong> to create the subfolder ' . $userMessage . ' because it already exists.  Choose a different folder name.';
+			$message = 'strong>Failed</strong> to create the subfolder "' . $userMessage . '" because it already exists.  Choose a different folder name.';
 			break;
 		case LYF_SUCCESS_CREATE_FOLDER:
-			$message = 'The subfolder ' . $userMessage . ' was successfully created.';
+			$message = 'The subfolder "' . $userMessage . '" was successfully created.';
 			break;
 		default:
 			break;
