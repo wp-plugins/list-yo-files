@@ -24,25 +24,25 @@ if ( "on" == $enableUserFolders /*&& !current_user_can( 'add_users' )*/ )
 	<h3 class="hndle"><span>Displaying File Lists:</span></h3>
 	<div class="inside">
 		<p>You have the following options for displaying your files:</p>
-		
+
 		<fieldset style="margin-left: 20px;">
-		<p>1) To display a list of files, add the special <em>showfiles</em> code 
-		to the page or post where you want to display the files.  Be sure to include 
+		<p>1) To display a list of files, add the special <em>showfiles</em> code
+		to the page or post where you want to display the files.  Be sure to include
 		the folder to display.  For example:
-		<small>[showfiles folder='<?php echo $current_user->user_login;?>/SUBFOLDER_NAME']</small>. 
+		<small>[showfiles folder='<?php echo $current_user->user_login;?>/SUBFOLDER_NAME']</small>.
 		You can customize your list with the following (none are required):</p>
 			<fieldset style="margin-left: 20px;">
 			1. <em>sort</em> - include one of the following:  "alphabetic", "reverse_alphabetic", "filesize",
 			"reverse_filesize", "date", or "reverse_date".  The <em>default</em> is "alphabetic" and
 			is used if "sort" isn't specified.  Example usage:
 			<small>[showfiles folder='<?php echo $current_user->user_login;?>/SUBFOLDER_NAME' sort='reverse_filesize']</small><br /><br />
-	
+
 			2. <em>filter</em> - include a list of extensions (no period) separated by commas to only display
 			matching files.  For example,
 			<small>[showfiles folder='<?php echo $current_user->user_login;?>/SUBFOLDER_NAME' filter = 'mp3,wav,aif']</small> will
 			only display audio files in your file list.  Not including this option will list all
 			files in the specified folder.<br /><br />
-	
+
 			3. <em>options</em> - A list of comma-separated options to further customize your file list.  An example: <small>[showfiles folder='<?php echo $current_user->user_login;?>/SUBFOLDER_NAME' options='table,filesize,icon']</small> Supported options:
 			<fieldset style="margin-left: 20px;">
 				<br>a. <em>table</em> - Renders your file list as a table (no border).</br>
@@ -59,20 +59,21 @@ if ( "on" == $enableUserFolders /*&& !current_user_can( 'add_users' )*/ )
 		</fieldset>
 
 		<fieldset style="margin-left: 20px;">
-		<p>2) To display a list of playable mp3s, add the special <em>showmp3s</em> code 
+		<p>2) To display a list of playable mp3s, add the special <em>showmp3s</em> code
 		to the page or post where you want to display the files. For example:
 		<small>[showmp3s folder='<?php echo $current_user->user_login;?>/SUBFOLDER_NAME']</small>.
 		<em>NOTE:</em> You do not need to supply 'options' when you use 'showmp3s'.
 		</p>
 		</fieldset>
-		
+
 		<p><em>NOTE:</em> Do not add opening or closing slashes ("/") to the "folder" path.</p>
+	</div>
 </div>
 
 <div class="postbox">
 	<h3 class="hndle"><span>Creating Folders and Uploading Files:</span></h3>
 	<div class="inside">
-		<p>Before you upload any files, you need to create at least one subfolder to upload your files to. 
+		<p>Before you upload any files, you need to create at least one subfolder to upload your files to.
 		Follow these steps:</p>
 		<fieldset style="margin-left: 20px;">
 			1. Type the name of a folder.  Choose a short name that's easy to recognize.  <em>Note</em>: The folder name is never displayed to users.<br />
