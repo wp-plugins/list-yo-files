@@ -19,6 +19,7 @@ define( 'LYF_USER_MUSIC', 3 );
 // Database options
 define( 'LYF_MENU_TEXT', 'lyf_menu_text' );
 define( 'LYF_ENABLE_USER_FOLDERS', 'lyf_user_folders' );
+define( 'LYF_ENABLE_SIMPLE_HELP', 'lyf_simple_help' );
 define( 'LYF_MINIMUM_ROLE', 'lyf_minimum_role' );
 define( 'LYF_ENABLE_ALLOWED_FILE_TYPES', 'lyf_enable_allowed_file_types' );
 define( 'LYF_ALLOWED_FILE_TYPES', 'lyf_allowed_file_types' );
@@ -390,6 +391,7 @@ function LYFHandleAdminPage()
 	$restrictTypes = get_option( LYF_ENABLE_ALLOWED_FILE_TYPES );
 	$allowedFileTypes = get_option( LYF_ALLOWED_FILE_TYPES );
 	$enableUserFolders = get_option( LYF_ENABLE_USER_FOLDERS );
+	$enableSimpleHelp = get_option( LYF_ENABLE_SIMPLE_HELP );
 	$minimumRole = get_option( LYF_MINIMUM_ROLE );
 	$subfolderCount = get_option( LYF_USER_SUBFOLDER_LIMIT );
 	$folderSize = get_option( LYF_USER_USER_FOLDER_SIZE );
@@ -425,6 +427,9 @@ function LYFHandleAdminPage()
 
 		if ( "on" == $enableUserFolders )
 		{
+			$enableSimpleHelp = $_POST['on_enable_simple_help'];
+			update_option( LYF_ENABLE_SIMPLE_HELP, $enableSimpleHelp );
+
 			$minimumRole = $_POST['minimum_role'];
 			update_option( LYF_MINIMUM_ROLE, $minimumRole );
 
@@ -496,12 +501,42 @@ function LYFHandleUploadFilesPage()
 	if ( isset( $_POST['create_folder'] ) )
 	{
 		check_admin_referer( 'filez-nonce' );
+
+		// Get these variables.  Needed to determine if there are restrictions
+		// on the number of subfolders
+		$userFoldersEnabled = get_option( LYF_ENABLE_USER_FOLDERS );
+		$folderLimit = get_option( LYF_USER_SUBFOLDER_LIMIT );
+
+		// Little hack
+		$allowUpload = TRUE;
+
+		// Get the user's folder
 		$createFolder = LYFGetUserUploadFolder( TRUE );
-		$createFolder .= $_POST['folder'];
-		$result = LYFCreateUserFolder( $createFolder );
-		$message = '<div id="message" class="updated fade">';
-		$message .= LYFConvertError( $result, $_POST['folder'] );
-		$message .= '</div>';
+
+		// Is the folder count restriction turned on and set?
+		if ( "on" === $userFoldersEnabled && !empty( $folderLimit ) )
+		{
+			// Count the number of subfolders
+			$userSubFolders = LYFGenerateFolderList( $createFolder );
+			$folderCount = count( $userSubFolders );
+
+			// If the folder count is equal or greater, don't allow any
+			// more folders to be created.
+			if ( $folderCount >= $folderLimit )
+			{
+				$message = '<div id="message" class="updated fade"><strong>Failed</strong> to create the subfolder.  You have already reached your subfolder limit.</div>';
+				$allowUpload = FALSE;
+			}
+		}
+
+		if ( $allowUpload )
+		{
+			$createFolder .= $_POST['folder'];
+			$result = LYFCreateUserFolder( $createFolder );
+			$message = '<div id="message" class="updated fade">';
+			$message .= LYFConvertError( $result, $_POST['folder'] );
+			$message .= '</div>';
+		}
 		echo $message;
 	}
 

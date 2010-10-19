@@ -55,8 +55,10 @@ function LYFCreateUserFolder( $folderName )
 	if ( !is_dir( $folderName ) )
 	{
 		// If not, create the folder.  Let the user know if something goes wrong.
-		// NOTE:  This will fail if you try to recursively create folders!  In
-		// other words, this isnt' allowed.
+		// NOTE:  The recursive creation argument exists because of the very first
+		// time these folders are created OR for when an admin is using the plugin.
+		// Suppression of creating multiple folders should be suppressed at a higher
+		// level.
 		if ( !mkdir( $folderName, 0777, TRUE ) )
 		{
 			return LYF_ERROR_CREATE_FOLDER_PERMISSIONS;
@@ -136,6 +138,11 @@ function LYFConvertUploadError( $error )
 //
 function LYFUploadFiles( $folder )
 {
+	// Get these variables.  Needed to determine if there are restrictions on
+	// extensions
+	$restrictTypes = get_option( LYF_ENABLE_ALLOWED_FILE_TYPES );
+	$allowedFileTypes = get_option( LYF_ALLOWED_FILE_TYPES );
+
 	// Using the "updated fade" class to make the resulting message prominent.
 	echo '<div id="message" class="updated fade">';
 
@@ -168,6 +175,16 @@ function LYFUploadFiles( $folder )
 
 		// At least one file was found
 		$count++;
+
+		if ( 'on' == $restrictTypes )
+		{
+			$ext = substr( strrchr( $file['name'], '.' ), 1 );
+			if ( FALSE === stristr( $allowedFileTypes, $ext ) )
+			{
+				echo '<p><strong>Failed</strong> to upload ' .$file['name']. ' because "' . $ext . '" files are not allowed.</p>';
+				continue;
+			}
+		}
 
 		if ( UPLOAD_ERR_OK != $file['error'] )
 		{

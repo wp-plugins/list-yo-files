@@ -19,7 +19,7 @@ include_once "information-box.php"
 
 <?php
 print '<p><input type=CHECKBOX name="on_restrict_types" ';
-if ( "0" === $restrictTypes || empty( $restrictTypes ) ){} else
+if ( "on" === $restrictTypes )
 	print 'checked';
 print '> Restrict uploads to the following file types (no periods, separated by commas): ';
 ?>
@@ -28,12 +28,19 @@ print '> Restrict uploads to the following file types (no periods, separated by 
 
 <?php
 print '<p><input type=CHECKBOX name="on_enable_folders" ';
-if ( "0" === $enableUserFolders || empty( $enableUserFolders ) ){} else
+if ( "on" === $enableUserFolders )
 	print 'checked';
-print '> Enable User folders</p>';
+print '> Enable user folders</p>';
 ?>
 
 <fieldset style="margin-left: 20px;">
+
+<?php
+print '<p><input type=CHECKBOX name="on_enable_simple_help" ';
+if ( "on" === $enableSimpleHelp )
+	print 'checked';
+print '> Show simple help for users <small>(shows non-admins only the most basic options)</small></p>';
+?>
 
 <p>Choose the minimum role that can manage files:  <select name="minimum_role">
 <?php

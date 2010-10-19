@@ -10,6 +10,9 @@ $pluginFolder = get_bloginfo('wpurl') . '/wp-content/plugins/' . dirname( plugin
 // Variable to see if subscriber folders is turned ON
 $enableUserFolders = get_option( LYF_ENABLE_USER_FOLDERS );
 
+// Show simplified help?
+$enableSimpleHelp = get_option( LYF_ENABLE_SIMPLE_HELP );
+
 // Get the user's info
 global $current_user;
 get_currentuserinfo();
