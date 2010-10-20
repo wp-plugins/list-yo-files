@@ -26,6 +26,148 @@ function FormatFileSize( $size )
 }
 
 //
+//	GetFolderSize
+//
+function GetFolderSize( $directory )
+{
+	$size = 0;
+	 
+	// if the path has a slash at the end, remove it here
+	if( substr( $directory,-1 ) == '/' )
+	{
+		$directory = substr($directory,0,-1);
+	}
+	 
+	// if the path is not valid or is not a directory ...
+	if( !file_exists( $directory ) || !is_dir( $directory ) || !is_readable( $directory ) )
+	{
+		// ...return -1 and exit the function
+		return -1;
+	}
+
+	// open the directory
+	if( $handle = opendir( $directory ) )
+	{
+		// and scan through the items inside
+		while ( ( $file = readdir( $handle ) ) !== false )
+		{
+			// build the new path
+			$path = $directory.'/'.$file;
+			 
+			// if the filepointer is not the current directory
+			// or the parent directory
+			if( $file != '.' && $file != '..' )
+			{
+				// if the new path is a file
+				if( is_file( $path ) )
+				{
+					// add the filesize to the total size
+					$size += filesize( $path );
+					 
+					// if the new path is a directory
+				}
+				elseif ( is_dir( $path ) )
+				{
+					// Call this function with the new path
+					$handlesize = GetFolderSize($path);
+		 
+					// if the function returns more than zero
+					if( $handlesize >= 0 )
+					{
+						// add the result to the total size
+						$size += $handlesize;
+				 
+					// else return -1 and exit the function
+					}
+					else
+					{
+						closedir( $handle );
+						return -1;
+					}
+				}
+			}
+		}
+		// close the directory
+		closedir( $handle );
+	}
+	return $size;
+}
+
+//
+//	LYFRemoveDirectory
+//
+//	Recursively deletes a folder.
+//
+function LYFRemoveDirectory( $directory )
+{
+	// if the path has a slash at the end we remove it here
+	if ( substr( $directory, -1 ) == '/' )
+	{
+		$directory = substr($directory,0,-1);
+	}
+	 
+	// if the path is not valid or is not a directory ...
+	if ( !file_exists( $directory ) || !is_dir( $directory ) )
+	{
+		// ... we return false and exit the function
+		return FALSE;
+		 
+	// ... if the path is not readable
+	}
+	elseif( !is_readable( $directory ) )
+	{
+		// ... we return false and exit the function
+		return FALSE;
+	 
+	// ... else if the path is readable
+	}
+	else
+	{
+		// we open the directory
+		$handle = opendir($directory);
+		 
+		// and scan through the items inside
+		while ( FALSE !== ( $item = readdir( $handle ) ) )
+		{
+			// if the filepointer is not the current directory
+			// or the parent directory
+			if( $item != '.' && $item != '..' )
+			{
+				// we build the new path to delete
+				$path = $directory.'/'.$item;
+				 
+				// if the new path is a directory
+				if( is_dir( $path ) ) 
+				{
+					// we call this function with the new path
+					recursive_remove_directory( $path );
+					 
+					// if the new path is a file
+				}
+				else
+				{
+					// we remove the file
+					unlink( $path );
+				}
+			}
+		}
+		// close the directory
+		closedir( $handle );
+	
+		// try to delete the now empty directory
+		if( !rmdir( $directory ) )
+		{
+			// return false if not possible
+			return FALSE;
+		}
+	
+		// return success
+		return TRUE;
+	}
+}
+
+
+//
 //	LYFGetUserUploadFolder
 //
 //	This function guarantees a terminating slash.
@@ -139,9 +281,10 @@ function LYFConvertUploadError( $error )
 function LYFUploadFiles( $folder )
 {
 	// Get these variables.  Needed to determine if there are restrictions on
-	// extensions
+	// extensions and if there is still room to upload.
 	$restrictTypes = get_option( LYF_ENABLE_ALLOWED_FILE_TYPES );
 	$allowedFileTypes = get_option( LYF_ALLOWED_FILE_TYPES );
+	$maxFolderSize = get_option( LYF_USER_USER_FOLDER_SIZE );
 
 	// Using the "updated fade" class to make the resulting message prominent.
 	echo '<div id="message" class="updated fade">';
@@ -158,6 +301,7 @@ function LYFUploadFiles( $folder )
 		{
 			echo '<p><strong>Failed</strong> to create the folder.  Make sure your server file permissions are correct.</p>';
 		}
+		
 		// Reset the upload data.  No upload will happen until a folder can be created.
 		$_FILES = array();
 	}
@@ -170,7 +314,7 @@ function LYFUploadFiles( $folder )
 	foreach ( $_FILES as $file )
 	{
 		// I don't know why there's an extra blank file in here.  Sorry about this hack.
-		if ( '' == $file['tmp_name'] )
+		if ( '' == $file['name'] )
 			continue;
 
 		// At least one file was found
@@ -186,7 +330,7 @@ function LYFUploadFiles( $folder )
 			}
 		}
 
-		if ( UPLOAD_ERR_OK != $file['error'] )
+		if ( 0 != $file['error'] )
 		{
 			$errorString = LYFConvertUploadError( $file['error'] );
 			echo '<p><strong>Failed</strong> to upload ' .$file['name']. ' because ' . $errorString . '.</p>';

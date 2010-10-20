@@ -33,6 +33,26 @@ if ( "on" == $enableUserFolders /*&& !current_user_can( 'add_users' )*/ )
 		to the page or post where you want to display the files.  Be sure to include
 		the folder to display.  For example:
 		<small>[showfiles folder='<?php echo $current_user->user_login;?>/SUBFOLDER_NAME']</small>.
+<?php
+if ( "on" === $enableSimpleHelp )
+{
+?>
+
+			You can customize your list with the following <em>options</em> (none are required).  For example: <small>[showfiles folder='<?php echo $current_user->user_login;?>/SUBFOLDER_NAME' options='table,filesize,icon']</small></p>
+			<fieldset style="margin-left: 20px;">
+				<br>a. <em>table</em> - Renders your file list as a table (no border).</br>
+				<br>b. <em>filesize</em> - Includes the file size in the list.</br>
+				<br>c. <em>date</em> - Includes the file modified date in the list.</br>
+				<br>e. <em>icon</em> - Works only with the <em>table</em> option.  This option displays a file
+				icon to the left of the filename.</br>
+			</fieldset>
+		</fieldset>
+
+<?php
+}
+else
+{
+?>
 		You can customize your list with the following (none are required):</p>
 			<fieldset style="margin-left: 20px;">
 			1. <em>sort</em> - include one of the following:  "alphabetic", "reverse_alphabetic", "filesize",
@@ -60,6 +80,10 @@ if ( "on" == $enableUserFolders /*&& !current_user_can( 'add_users' )*/ )
 			<p />
 			</fieldset>
 		</fieldset>
+
+<?php
+}
+?>
 
 		<fieldset style="margin-left: 20px;">
 		<p>2) To display a list of playable mp3s, add the special <em>showmp3s</em> code

@@ -491,10 +491,32 @@ function LYFHandleUploadFilesPage()
 	{
 		// Security check
 		check_admin_referer( 'filez-nonce' );
+		
+		// Little hack
+		$canUpload = TRUE;
 
-		$uploadFolder = LYFGetUserUploadFolder( TRUE );
-		$uploadFolder .= $_POST['upload_folder'];
-		LYFUploadFiles( $uploadFolder );
+		// Any folder size restrictions?
+		$maxFolderSize = get_option( LYF_USER_USER_FOLDER_SIZE );
+		if ( 0 !== strlen( $maxFolderSize ) )
+		{
+			$uploadFolder = LYFGetUserUploadFolder( TRUE );
+			$filesSize = GetFolderSize( $uploadFolder );
+		
+			$sizeInKB = $maxFolderSize * 1024 * 1024;	
+			
+			if ( $sizeInKB < $filesSize )
+			{
+				echo '<div id="message" class="updated fade"><strong>Failed</strong> to upload. You have already uploaded your size quota.</div>';
+				$canUpload = FALSE;
+			}
+		}
+
+		if ( $canUpload )
+		{
+			// Now, tack on the folder they want to upload to.
+			$uploadFolder .= $_POST['upload_folder'];
+			LYFUploadFiles( $uploadFolder );
+		}
 	}
 
 	// If a folder is being created
@@ -613,6 +635,28 @@ function LYFHandleDeleteFilesPage()
 		{
 			// List files to be deleted.
 			echo LYFListFilesToDelete( $filelist, $listFolder );
+		}
+	}
+	
+	// This if block let's non-admins delete their folders
+	if ( isset( $_POST['delete_folder'] ) )
+	{
+		// Security check
+		check_admin_referer( 'filez-nonce' );
+
+		// Generate the folder to list
+		$deleteFolder = LYFGetUserUploadFolder( TRUE );
+		$deleteFolder .= $_POST['folder_to_delete'];
+		
+		$deleteResult = LYFRemoveDirectory( $deleteFolder );
+		
+		if ( !$deleteResult )
+		{
+			echo '<div id="message" class="updated fade"><p><strong>Failed</strong> to delete the folder "' . $_POST['folder_to_delete'] . '".</p></div>';
+		}
+		else
+		{
+			echo '<div id="message" class="updated fade"><p>The folder "' . $_POST['folder_to_delete'] . '" has been deleted.</p></div>';
 		}
 	}
 

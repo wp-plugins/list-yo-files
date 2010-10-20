@@ -17,6 +17,9 @@ if ( empty( $subfolderCount ) )
 	$subfolderCount = "unlimited";
 }
 
+// What's the size quota?
+$maxFolderSize = get_option( LYF_USER_USER_FOLDER_SIZE );
+
 include_once "information-box.php"
 ?>
 
@@ -64,6 +67,22 @@ if ( "on" == $enableUserFolders /*&& !current_user_can( 'add_users' ) */)
 <p>Folder name: <input type="text" name="folder" size="35" /></p><div class="submit"><input type="submit" name="create_folder" value="Create Folder" /></div>
 
 <h4>Upload Files:</h4>
+<p>You are allowed to upload 
+<?php 
+if ( 0 == strlen( $maxFolderSize ) )
+	echo "as many files as you want.  "; 
+else
+	echo "up to $maxFolderSize MB in files.  ";
+?>
+You are currently using
+<?php
+$uploadFolder = LYFGetUserUploadFolder( TRUE );
+$filesSize = GetFolderSize( $uploadFolder );
+$sizeMessage = FormatFileSize( $filesSize );
+echo $sizeMessage;
+?> 
+.</p>
+
 <p>Select a folder to upload files to:  <select name="upload_folder">
 
 <?php
