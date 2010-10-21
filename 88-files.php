@@ -608,15 +608,15 @@ function LYFHandleDeleteFilesPage()
   	// This file will handle the deleting when "Delete" is pressed.
 	$action_url = $_SERVER['REQUEST_URI'];
 
-	// Here's the source file which displays the page.  This is shown first because delete options are
-	// shown at the bottom.
-	include( '88-files-delete.php' );
-
 	// If the "list_files" POST option is set, then the user has requested to see the files in a folder.
 	if ( isset( $_POST['list_files'] ) )
 	{
 		// Security check
 		check_admin_referer( 'filez-nonce' );
+
+		// Here's the source file which displays the page.  This is shown first because delete options are
+		// shown at the bottom.
+		include( '88-files-delete.php' );
 
 		// This function will generate an array of any file in the folder to be deleted.
 		$filelist = LYFGenerateFileList( $_POST['folder'], $_POST['folder'], '' );
@@ -633,12 +633,15 @@ function LYFHandleDeleteFilesPage()
 			echo LYFListFilesToDelete( $filelist, $_POST['folder'] );
 		}
 	}
-
 	// This if block handles non-admin deletes
-	if ( isset( $_POST['list_user_files'] ) )
+	else if ( isset( $_POST['list_user_files'] ) )
 	{
 		// Security check
 		check_admin_referer( 'filez-nonce' );
+
+		// Here's the source file which displays the page.  This is shown first because delete options are
+		// shown at the bottom.
+		include( '88-files-delete.php' );
 
 		// Generate the folder to list
 		$listFolder = LYFGetUserUploadFolder( FALSE );
@@ -659,9 +662,8 @@ function LYFHandleDeleteFilesPage()
 			echo LYFListFilesToDelete( $filelist, $listFolder );
 		}
 	}
-	
 	// This if block let's non-admins delete their folders
-	if ( isset( $_POST['delete_folder'] ) )
+	else if ( isset( $_POST['delete_folder'] ) )
 	{
 		// Security check
 		check_admin_referer( 'filez-nonce' );
@@ -680,11 +682,21 @@ function LYFHandleDeleteFilesPage()
 		{
 			echo '<div id="message" class="updated fade"><p>The folder "' . $_POST['folder_to_delete'] . '" has been deleted.</p></div>';
 		}
-	}
 
+		// Here's the source file which displays the page.  This is shown first because delete options are
+		// shown at the bottom.
+		include( '88-files-delete.php' );
+	}
 	// If a GET value was passed, then the user wants to delete a file.
-	if ( isset( $_GET['id'] ) )
+	else if ( isset( $_GET['id'] ) )
 	{
+		// Security check
+		check_admin_referer( 'filez-nonce' );
+
+		// Here's the source file which displays the page.  This is shown first because delete options are
+		// shown at the bottom.
+		include( '88-files-delete.php' );
+
 		// Both the file and folder were passed, so save these off.
 		$file = $_GET['id'];
 		$folder = $_GET['folder'];
@@ -710,6 +722,12 @@ function LYFHandleDeleteFilesPage()
 			// Show the files to delete again.
 			echo LYFListFilesToDelete( $filelist, $folder );
 		}
+	}
+	else	// This gets displayed when someone just visits the page.
+	{
+		// Here's the source file which displays the page.  This is shown first because delete options are
+		// shown at the bottom.
+		include( '88-files-delete.php' );
 	}
 ?>
 </div>

@@ -19,6 +19,26 @@ get_currentuserinfo();
 
 ?>
 
+<div class="postbox">
+	<h3 class="hndle"><span>Information:</span></h3>
+	<div class="inside">
+	 	<p>
+	 	<table border="0" cellpadding="10">
+	 	<td>
+    	<img src="<?php echo $pluginFolder;?>help.png"><a style="text-decoration:none;" href="http://www.wandererllc.com/company/plugins/listyofiles/"> Support and Help</a><br /><br />
+		<a style="text-decoration:none;" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TC7MECF2DJHHY&lc=US"><img src="<?php echo $pluginFolder;?>paypal.gif"></a>
+		</td>
+		<td>
+    	<a href="http://member.wishlistproducts.com/wlp.php?af=1080050"><img src="http://www.wishlistproducts.com/affiliatetools/images/WLM_120X60.gif" border="0"></a><br />
+    	</td>
+    	</table>
+    	<br />
+    	Contact <a href="http://www.wandererllc.com/company/contact/">Wanderer LLC</a> to sponsor a feature or write a plugin just for you.<br /><br />
+    	Leave a good rating or comments for <a href="http://wordpress.org/extend/plugins/list-yo-files/">List Yo' Files</a>.
+		</p>
+	</div>
+</div>
+
 <?php
 if ( "on" == $enableUserFolders && !current_user_can( 'delete_users' ) )
 {
@@ -177,6 +197,13 @@ else
 			<br>g. <em>wpaudiodownloadable</em> - <em>Requires the WPAudio plugin</em>.  This option only works if <em>wpaudio</em> is also specified.  It adds a download link for the song.</br>
 		</fieldset>
 		<p />
+		</fieldset>
+		
+		<p>There are some simplified codes as well:</p>
+		
+		<p>To display a list of playable mp3s, add the special <em>showmp3s</em> code
+		to the page or post where you want to display the files. For example:
+		<small>[showmp3s folder='wp-content/uploads/mymp3s']</small>.</p>		
 	</div>
 </div>
 
@@ -210,23 +237,29 @@ else
 	</div>
 </div>
 
+<div class="postbox">
+	<h3 class="hndle"><span>About User Folders:</span></h3>
+	<div class="inside">
+		<p>If you have a site where users regularly log on and post material, you can use List Yo' Files to allow them to upload files and display 
+		them as lists.  This feature is enabled when you check the "Enable user folders" checkbox.</p>
+		<p>When enabled, non-admin users will see the "Upload" and "Delete" menu items.  These pages are also simplified, requiring 
+		no typing other than naming folders.  Users are only allowed to upload files to subfolders under 
+		their user folder which is automatically created for them.  They are also allowed basic file and folder manage; they can create folders, 
+		upload files, delete files, and delete folders.</p>
+		<p>As admin, you have control over the following:</p>
+		<fieldset style="margin-left: 20px;">
+			1. Restricting the quantity of subfolders that the user can create.<br />
+			<br>2. Enforcing a global size quota (in megabytes) per user.</br><br />
+			<br>3. Selecting the minimum WordPress role that has access to the List Yo' Files software.</br><br />
+			<br>4. Showing simplified help, which is intended to not overwhelm users with too many options.</br>
+		</fieldset>
+		<p />
+	</div>
+</div>
+
 <?php
 }
 ?>
-
-<div class="postbox">
-	<h3 class="hndle"><span>Information:</span></h3>
-	<div class="inside">
-	 	<p>
-    	<img src="<?php echo $pluginFolder;?>help.png"><a style="text-decoration:none;" href="http://www.wandererllc.com/company/plugins/listyofiles/"> Support and Help</a><br /><br />
-		<a style="text-decoration:none;" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TC7MECF2DJHHY&lc=US"><img src="<?php echo $pluginFolder;?>paypal.gif"></a><br /><br />
-    	<a href="http://member.wishlistproducts.com/wlp.php?af=1080050"><img src="http://www.wishlistproducts.com/affiliatetools/images/WLM_120X60.gif" border="0"></a><br />
-    	Want to restrict your files to only registered users of your site? Try <a style="text-decoration:none;" href="http://member.wishlistproducts.com/wlp.php?af=1080050">Wishlist</a>!<br /><br />
-    	Contact <a href="http://www.wandererllc.com/company/contact/">Wanderer LLC</a> to sponsor a feature or write a plugin just for you.<br /><br />
-    	Leave a good rating or comments for <a href="http://wordpress.org/extend/plugins/list-yo-files/">List Yo' Files</a>.
-		</p>
-	</div>
-</div>
 
 </div>
 </div>
