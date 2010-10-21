@@ -36,10 +36,10 @@ function MultiSelector( list_target, max ){this.list_target = list_target;this.c
 
 <?php
 
-if ( "on" == $enableUserFolders /*&& !current_user_can( 'add_users' ) */)
+if ( "on" == $enableUserFolders && !current_user_can( 'delete_users' ) )
 {
 	//
-	//	START:  UI for admins
+	//	START:  UI for non-admins
 	//
 
 	// First, make sure their user folder exists.  If it doesn't then create it
@@ -77,8 +77,8 @@ else
 You are currently using
 <?php
 $uploadFolder = LYFGetUserUploadFolder( TRUE );
-$filesSize = GetFolderSize( $uploadFolder );
-$sizeMessage = FormatFileSize( $filesSize );
+$filesSize = LYFGetFolderSize( $uploadFolder );
+$sizeMessage = LYFFormatFileSize( $filesSize );
 echo $sizeMessage;
 ?> 
 .</p>

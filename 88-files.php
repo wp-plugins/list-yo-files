@@ -278,7 +278,7 @@ function LYFListFiles( $filelist, $sort, $options )
 		foreach( $filelist as $itemName => $item )
 		{
 			// Get file variables
-			$size = FormatFileSize( $item['size'] );
+			$size = LYFFormatFileSize( $item['size'] );
 			$date = date( "F j, Y", $item['date'] );
 			$link = $wpurl.'/'.$item['link'];
 
@@ -331,7 +331,7 @@ function LYFListFiles( $filelist, $sort, $options )
 		foreach( $filelist as $itemName => $item )
 		{
 			// Get file variables
-			$size = FormatFileSize( $item['size'] );
+			$size = LYFFormatFileSize( $item['size'] );
 			$date = date( "F j, Y", $item['date'] );
 			$link = $wpurl.'/'.$item['link'];
 			// Generate list elements
@@ -371,13 +371,22 @@ function LYFAddSettingsPage()
 	if ( 0 == strlen( $menuText ) )
 		$menuText = LYF_LIST_YO_FILES;
 
+	// Set the page title
 	$pageText = $menuText . ' Options';
+	
+	// Get the minimum role for uploading and deleting
+	$minimumRole = get_option( LYF_MINIMUM_ROLE );
+	if ( 0 == strlen( $minimumRole ) )
+		$minimumRole = 'Administrator';
+	
+	// Get the master list of roles and capabilities for comparing;
+	$roles = LYFGetRolesAndCapabilities();
 
-	add_menu_page( $pageText, $menuText, 'edit_published_posts', basename(__FILE__), LYFHandleAboutPage );
-    add_submenu_page( basename(__FILE__) , 'Usage', 'Usage', 'edit_published_posts', basename(__FILE__), LYFHandleAboutPage );
-	add_submenu_page( basename(__FILE__), 'Upload Files', 'Upload Files', 'edit_published_posts', 'Upload', LYFHandleUploadFilesPage );
-    add_submenu_page( basename(__FILE__), 'Delete Files', 'Delete Files', 'edit_published_posts', 'Delete', LYFHandleDeleteFilesPage );
-    add_submenu_page( basename(__FILE__), 'Administer List Yo\' Files', 'Administer', 'add_users', 'Administer', LYFHandleAdminPage );
+	add_menu_page( $pageText, $menuText, $roles[$minimumRole], basename(__FILE__), LYFHandleAboutPage );
+    add_submenu_page( basename(__FILE__) , 'Usage', 'Usage', $roles[$minimumRole], basename(__FILE__), LYFHandleAboutPage );
+	add_submenu_page( basename(__FILE__), 'Upload Files', 'Upload Files', $roles[$minimumRole], 'Upload', LYFHandleUploadFilesPage );
+    add_submenu_page( basename(__FILE__), 'Delete Files', 'Delete Files', $roles[$minimumRole], 'Delete', LYFHandleDeleteFilesPage );
+    add_submenu_page( basename(__FILE__), 'Administer List Yo\' Files', 'Administer', $roles['Administrator'] , 'Administer', LYFHandleAdminPage );
 }
 
 //
@@ -396,8 +405,9 @@ function LYFHandleAdminPage()
 	$subfolderCount = get_option( LYF_USER_SUBFOLDER_LIMIT );
 	$folderSize = get_option( LYF_USER_USER_FOLDER_SIZE );
 
-	// The user must be an admin to see this page
-	if ( !current_user_can( 'add_users' ) )
+	// The user must be an admin to see this page, no matter what is selected 
+	// in the admin page.
+	if ( !current_user_can( 'delete_users' ) )
 	{
     	wp_die( __('You do not have sufficient permissions to access this page.') );
   	}
@@ -452,8 +462,12 @@ function LYFHandleAdminPage()
 //
 function LYFHandleAboutPage()
 {
+	// Get variables for checking access
+	$minimumRole = get_option( LYF_MINIMUM_ROLE );
+	$roles = LYFGetRolesAndCapabilities();
+
 	// Stop the user if they don't have permission
-	if ( !current_user_can( 'edit_published_posts' ) )
+	if ( !current_user_can( $roles[$minimumRole] ) )
 	{
     	wp_die( __('You do not have sufficient permissions to access this page.') );
   	}
@@ -470,8 +484,12 @@ function LYFHandleAboutPage()
 //
 function LYFHandleUploadFilesPage()
 {
+	// Get variables for checking access
+	$minimumRole = get_option( LYF_MINIMUM_ROLE );
+	$roles = LYFGetRolesAndCapabilities();
+
 	// Stop the user if they don't have permission
-	if ( !current_user_can( 'edit_published_posts' ) )
+	if ( !current_user_can( $roles[$minimumRole] ) )
 	{
     	wp_die( __('You do not have sufficient permissions to access this page.') );
   	}
@@ -500,7 +518,7 @@ function LYFHandleUploadFilesPage()
 		if ( 0 !== strlen( $maxFolderSize ) )
 		{
 			$uploadFolder = LYFGetUserUploadFolder( TRUE );
-			$filesSize = GetFolderSize( $uploadFolder );
+			$filesSize = LYFGetFolderSize( $uploadFolder );
 		
 			$sizeInKB = $maxFolderSize * 1024 * 1024;	
 			
@@ -577,8 +595,12 @@ function LYFHandleUploadFilesPage()
 //
 function LYFHandleDeleteFilesPage()
 {
+	// Get variables for checking access
+	$minimumRole = get_option( LYF_MINIMUM_ROLE );
+	$roles = LYFGetRolesAndCapabilities();
+
 	// Stop the user if they don't have permission
-	if ( !current_user_can( 'delete_published_pages' ) )
+	if ( !current_user_can( $roles[$minimumRole] ) )
 	{
     	wp_die( __('You do not have sufficient permissions to access this page.') );
   	}

@@ -5,7 +5,7 @@
 		<li><a style="text-decoration:none;" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TC7MECF2DJHHY&lc=US"><img src="<?php echo $pluginFolder;?>paypal.gif"></a></li>
 
 <?php
-if ( "on" == $enableUserFolders /*&& !current_user_can( 'add_users' ) */)
+if ( "on" == $enableUserFolders && !current_user_can( 'delete_users' ) )
 {
 ?>
     	<li><table border="0">

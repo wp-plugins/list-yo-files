@@ -20,7 +20,7 @@ get_currentuserinfo();
 ?>
 
 <?php
-if ( "on" == $enableUserFolders /*&& !current_user_can( 'add_users' )*/ )
+if ( "on" == $enableUserFolders && !current_user_can( 'delete_users' ) )
 {
 ?>
 <div class="postbox">

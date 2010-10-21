@@ -44,9 +44,9 @@ print '> Show simple help for users <small>(shows non-admins only the most basic
 
 <p>Choose the minimum role that can manage files:  <select name="minimum_role">
 <?php
-	$roles = array( 'Subscriber', 'Contributor', 'Author', 'Editor', 'Administrator' );
+	$roles = LYFGetRolesAndCapabilities();
 	// Loop through each sub folder
-	foreach( $roles as $role )
+	foreach( $roles as $role => $capability )
 	{
 		$selText = ( $minimumRole == $role ) ? '<option selected>' : '<option>';
 		// print an option for each folder

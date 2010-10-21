@@ -17,7 +17,7 @@ include_once "information-box.php"
 ?>
 
 <?php
-if ( "on" == $enableUserFolders /*&& !current_user_can( 'add_users' ) */)
+if ( "on" == $enableUserFolders && !current_user_can( 'delete_users' ) )
 {
 	// Generate the list of user folders
 	$userFolder = LYFGetUserUploadFolder( TRUE );

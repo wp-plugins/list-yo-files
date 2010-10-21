@@ -6,7 +6,7 @@ define( 'LYF_ERROR_CREATE_FOLDER_EXISTS', -11 );
 
 define( 'LYF_SUCCESS_CREATE_FOLDER', 10 );
 
-function FormatFileSize( $size )
+function LYFFormatFileSize( $size )
 {
 	if ( strlen($size) <= 9 && strlen($size) >= 7 )
 	{
@@ -26,9 +26,9 @@ function FormatFileSize( $size )
 }
 
 //
-//	GetFolderSize
+//	LYFGetFolderSize
 //
-function GetFolderSize( $directory )
+function LYFGetFolderSize( $directory )
 {
 	$size = 0;
 	 
@@ -69,7 +69,7 @@ function GetFolderSize( $directory )
 				elseif ( is_dir( $path ) )
 				{
 					// Call this function with the new path
-					$handlesize = GetFolderSize($path);
+					$handlesize = LYFGetFolderSize($path);
 		 
 					// if the function returns more than zero
 					if( $handlesize >= 0 )
@@ -213,6 +213,22 @@ function LYFCreateUserFolder( $folderName )
 
 	// Arriving here means success
 	return LYF_SUCCESS_CREATE_FOLDER;
+}
+
+//
+//	LYFGetRolesAndCapabilities
+//
+//	All of the strings you see in this array are WordPress standards. 
+//	See http://codex.wordpress.org/Roles_and_Capabilities for more.
+//
+function LYFGetRolesAndCapabilities()
+{
+	$rolesArray = array('Administrator' => 'delete_users',
+						'Editor' => 'publish_pages',
+						'Author' => 'upload_files',
+						'Contributor' => 'edit_posts',
+						'Subscriber' => 'read' );
+	return $rolesArray;
 }
 
 //
@@ -408,7 +424,7 @@ function LYFListFilesToDelete( $filelist, $folder )
 	// Generate a table entry for each file, showing the file name, the folder, and a "Delete" link.
 	foreach( $filelist as $itemName => $item )
 	{
-		$fileSize = FormatFileSize( $item['size'] );
+		$fileSize = LYFFormatFileSize( $item['size'] );
 		$files .= '<tr class="alternate"><td>' . $itemName . '</td><td>' . $fileSize . '</td><td><a href="admin.php?page=Delete&amp;tab=del&amp;id=' . $itemName . '&amp;folder=' . $folder . '" class="delete">Delete</a></td></tr>';
 	}
 
