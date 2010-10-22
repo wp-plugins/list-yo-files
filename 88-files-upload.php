@@ -64,13 +64,17 @@ echo $sizeMessage;
 <p>Select a folder to upload files to:  <select name="upload_folder">
 
 <?php
-	$folders = LYFGenerateFolderList( $userFolder );
+	$folders = LYFGenerateFolderList( $uploadFolder );
 
 	// Loop through each sub folder
 	foreach( $folders as $folder )
 	{
+		// Automatically select the folder that the user may have previously
+		// uploaded to.
+		$selected = ( 0 === strcmp( $folder, $selectedUploadFolder ) ) ? ' selected>' : '>';
+
 		// print an option for each folder
-		print '<option>' . $folder . '</option>';
+		print '<option' . $selected . $folder . '</option>';
 	}
 ?>
 

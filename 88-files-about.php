@@ -17,29 +17,6 @@ $enableSimpleHelp = get_option( LYF_ENABLE_SIMPLE_HELP );
 global $current_user;
 get_currentuserinfo();
 
-?>
-
-<div class="postbox">
-	<h3 class="hndle"><span>Information:</span></h3>
-	<div class="inside">
-	 	<p>
-	 	<table border="0" cellpadding="10">
-	 	<td>
-    	<img src="<?php echo $pluginFolder;?>help.png"><a style="text-decoration:none;" href="http://www.wandererllc.com/company/plugins/listyofiles/"> Support and Help</a><br /><br />
-		<a style="text-decoration:none;" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TC7MECF2DJHHY&lc=US"><img src="<?php echo $pluginFolder;?>paypal.gif"></a>
-		</td>
-		<td>
-    	<a href="http://member.wishlistproducts.com/wlp.php?af=1080050"><img src="http://www.wishlistproducts.com/affiliatetools/images/WLM_120X60.gif" border="0"></a><br />
-    	</td>
-    	</table>
-    	<br />
-    	Contact <a href="http://www.wandererllc.com/company/contact/">Wanderer LLC</a> to sponsor a feature or write a plugin just for you.<br /><br />
-    	Leave a good rating or comments for <a href="http://wordpress.org/extend/plugins/list-yo-files/">List Yo' Files</a>.
-		</p>
-	</div>
-</div>
-
-<?php
 if ( "on" == $enableUserFolders && !current_user_can( 'delete_users' ) )
 {
 	//
@@ -68,9 +45,64 @@ if ( "on" == $enableUserFolders && !current_user_can( 'delete_users' ) )
 	// customized for them.
 	$folders = LYFGenerateFolderList( $userFolder );
 ?>
+
 <div class="postbox">
 	<h3 class="hndle"><span>Displaying File Lists:</span></h3>
 	<div class="inside">
+<?php
+if ( "on" === $enableSimpleHelp )
+{
+?>
+		<p>Here are the codes that you can use in your posts or pages to display your files.  Just copy one of the
+		lines of text in the right-hand column and paste it into your the post or page that you want it to appear.</p>
+
+		<?php
+		if ( 0 == count( $folders ) )
+		{
+		?>
+
+		<p><em>You have no folders that you can display.</em></p>
+
+		<?php
+		}
+		else
+		{
+		?>
+		<div id='filelist'>
+		<table class="widefat" style="width:680px">
+		<thead>
+		  <tr>
+		    <th scope="col">Folder name:</th>
+		    <th scope="col">Code to add to your page or post:</th>
+		  </tr>
+		  </thead>
+		  <?php
+		  	// Get info on the user (used for assembling the folder name)
+			global $current_user;
+			get_currentuserinfo();
+
+			// Loop through each sub folder
+			foreach( $folders as $folder )
+			{
+				$mp3sText = LYFGetMP3Code( $current_user->user_login, $folder );
+				$showFilesText = LYFShowFilesCode( $current_user->user_login, $folder );
+				$finalText = $mp3sText . '<br />' . $showFilesText;
+
+				// print an option for each folder
+				print '<tr class="alternate"><td>'.$folder.'</td><td>'.$finalText.'</td></tr>';
+			}
+		  ?>
+		</table>
+		</div>
+		<?php
+		}
+		?>
+		<p>You can try remove various <em>options</em> from the codes above to further customize your lists.</p>
+<?php
+}
+else
+{
+?>
 		<p>You have the following options for displaying your files:</p>
 
 		<fieldset style="margin-left: 20px;">
@@ -78,24 +110,7 @@ if ( "on" == $enableUserFolders && !current_user_can( 'delete_users' ) )
 		to the page or post where you want to display the files.  Be sure to include
 		the folder to display.  For example:
 		<small>[showfiles folder='<?php echo $current_user->user_login;?>/SUBFOLDER_NAME']</small>.
-<?php
-if ( "on" === $enableSimpleHelp )
-{
-?>
-			You can customize your list with the following <em>options</em> (none are required).  For example: <small>[showfiles folder='<?php echo $current_user->user_login;?>/SUBFOLDER_NAME' options='table,filesize,icon']</small></p>
-			<fieldset style="margin-left: 20px;">
-				<br>a. <em>table</em> - Renders your file list as a table (no border).</br>
-				<br>b. <em>filesize</em> - Includes the file size in the list.</br>
-				<br>c. <em>date</em> - Includes the file modified date in the list.</br>
-				<br>e. <em>icon</em> - Works only with the <em>table</em> option.  This option displays a file
-				icon to the left of the filename.</br>
-			</fieldset>
-		</fieldset>
-<?php
-}
-else
-{
-?>
+
 		You can customize your list with the following (none are required):</p>
 			<fieldset style="margin-left: 20px;">
 			1. <em>sort</em> - include one of the following:  "alphabetic", "reverse_alphabetic", "filesize",
@@ -124,10 +139,6 @@ else
 			</fieldset>
 		</fieldset>
 
-<?php
-}
-?>
-
 		<fieldset style="margin-left: 20px;">
 		<p>2) To display a list of playable mp3s, add the special <em>showmp3s</em> code
 		to the page or post where you want to display the files. For example:
@@ -138,29 +149,10 @@ else
 
 		<p><em>NOTE:</em> Do not add opening or closing slashes ("/") to the "folder" path.</p>
 
-		<p />
-		<div id='filelist'>
-		<table class="widefat" style="width:680px">
-		<thead>
-		  <tr>
-		    <th scope="col">Your folder:</th>
-		    <th scope="col">Code to add to your page or post:</th>
-		  </tr>
-		  </thead>
-		  <?php
-		  	// Get info on the user (used for assembling the folder name)
-			global $current_user;
-			get_currentuserinfo();
+<?php
+}
+?>
 
-			// Loop through each sub folder
-			foreach( $folders as $folder )
-			{
-				// print an option for each folder
-				print '<tr class="alternate"><td>'.$folder.'</td><td>[showmp3s folder="'.$current_user->user_login.'/'.$folder.'"]</td></tr>';
-			}
-		  ?>
-		</table>
-		</div>
 	</div>
 </div>
 
@@ -205,6 +197,26 @@ else
 else
 {
 ?>
+
+<div class="postbox">
+	<h3 class="hndle"><span>Information:</span></h3>
+	<div class="inside">
+	 	<p>
+	 	<table border="0" cellpadding="10">
+	 	<td>
+    	<img src="<?php echo $pluginFolder;?>help.png"><a style="text-decoration:none;" href="http://www.wandererllc.com/company/plugins/listyofiles/"> Support and Help</a><br /><br />
+		<a style="text-decoration:none;" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TC7MECF2DJHHY&lc=US"><img src="<?php echo $pluginFolder;?>paypal.gif"></a>
+		</td>
+		<td>
+    	<a href="http://member.wishlistproducts.com/wlp.php?af=1080050"><img src="http://www.wishlistproducts.com/affiliatetools/images/WLM_120X60.gif" border="0"></a><br />
+    	</td>
+    	</table>
+    	<br />
+    	Contact <a href="http://www.wandererllc.com/company/contact/">Wanderer LLC</a> to sponsor a feature or write a plugin just for you.<br /><br />
+    	Leave a good rating or comments for <a href="http://wordpress.org/extend/plugins/list-yo-files/">List Yo' Files</a>.
+		</p>
+	</div>
+</div>
 
 <div class="postbox">
 	<h3 class="hndle"><span>Displaying File Lists:</span></h3>

@@ -449,6 +449,15 @@ function LYFListFilesToDelete( $filelist, $folder )
 	return $retVal;
 }
 
+function LYFGetMP3Code( $userFolder, $folder )
+{
+	return '[showmp3s folder="'.$userFolder.'/'.$folder.'"]';
+}
+
+function LYFShowFilesCode( $userFolder, $folder )
+{
+	return '[showfiles folder="'.$userFolder.'/'.$folder.'" options="table,date,filesize,icon"]';
+}
 
 //
 // Sort functions for List Yo' Files associative arrays

@@ -373,12 +373,12 @@ function LYFAddSettingsPage()
 
 	// Set the page title
 	$pageText = $menuText . ' Options';
-	
+
 	// Get the minimum role for uploading and deleting
 	$minimumRole = get_option( LYF_MINIMUM_ROLE );
 	if ( 0 == strlen( $minimumRole ) )
 		$minimumRole = 'Administrator';
-	
+
 	// Get the master list of roles and capabilities for comparing;
 	$roles = LYFGetRolesAndCapabilities();
 
@@ -405,7 +405,7 @@ function LYFHandleAdminPage()
 	$subfolderCount = get_option( LYF_USER_SUBFOLDER_LIMIT );
 	$folderSize = get_option( LYF_USER_USER_FOLDER_SIZE );
 
-	// The user must be an admin to see this page, no matter what is selected 
+	// The user must be an admin to see this page, no matter what is selected
 	// in the admin page.
 	if ( !current_user_can( 'delete_users' ) )
 	{
@@ -509,7 +509,10 @@ function LYFHandleUploadFilesPage()
 	{
 		// Security check
 		check_admin_referer( 'filez-nonce' );
-		
+
+		// Save the selected folder
+		$selectedUploadFolder = $_POST['upload_folder'];
+
 		// Little hack
 		$canUpload = TRUE;
 
@@ -519,9 +522,9 @@ function LYFHandleUploadFilesPage()
 		{
 			$uploadFolder = LYFGetUserUploadFolder( TRUE );
 			$filesSize = LYFGetFolderSize( $uploadFolder );
-		
-			$sizeInKB = $maxFolderSize * 1024 * 1024;	
-			
+
+			$sizeInKB = $maxFolderSize * 1024 * 1024;
+
 			if ( $sizeInKB < $filesSize )
 			{
 				echo '<div id="message" class="updated fade"><strong>Failed</strong> to upload. You have already uploaded your size quota.</div>';
@@ -532,7 +535,7 @@ function LYFHandleUploadFilesPage()
 		if ( $canUpload )
 		{
 			// Now, tack on the folder they want to upload to.
-			$uploadFolder .= $_POST['upload_folder'];
+			$uploadFolder .= $selectedUploadFolder;
 			LYFUploadFiles( $uploadFolder );
 		}
 	}
@@ -639,13 +642,16 @@ function LYFHandleDeleteFilesPage()
 		// Security check
 		check_admin_referer( 'filez-nonce' );
 
+		// Save this folder (also used in the delete admin page)
+		$selectedListFolder = $_POST['folder'];
+
 		// Here's the source file which displays the page.  This is shown first because delete options are
 		// shown at the bottom.
 		include( '88-files-delete.php' );
 
 		// Generate the folder to list
 		$listFolder = LYFGetUserUploadFolder( FALSE );
-		$listFolder .= $_POST['folder'];
+		$listFolder .= $selectedListFolder;
 
 		// This function will generate an array of any file in the folder to be deleted.
 		$filelist = LYFGenerateFileList( $listFolder, $listFolder, '' );
@@ -668,19 +674,21 @@ function LYFHandleDeleteFilesPage()
 		// Security check
 		check_admin_referer( 'filez-nonce' );
 
+		$selectedListFolder = $_POST['folder'];
+
 		// Generate the folder to list
 		$deleteFolder = LYFGetUserUploadFolder( TRUE );
-		$deleteFolder .= $_POST['folder_to_delete'];
-		
+		$deleteFolder .= $selectedListFolder;
+
 		$deleteResult = LYFRemoveDirectory( $deleteFolder );
-		
+
 		if ( !$deleteResult )
 		{
-			echo '<div id="message" class="updated fade"><p><strong>Failed</strong> to delete the folder "' . $_POST['folder_to_delete'] . '".</p></div>';
+			echo '<div id="message" class="updated fade"><p><strong>Failed</strong> to delete the folder "' . $selectedListFolder . '".</p></div>';
 		}
 		else
 		{
-			echo '<div id="message" class="updated fade"><p>The folder "' . $_POST['folder_to_delete'] . '" has been deleted.</p></div>';
+			echo '<div id="message" class="updated fade"><p>The folder "' . $selectedListFolder . '" has been deleted.</p></div>';
 		}
 
 		// Here's the source file which displays the page.  This is shown first because delete options are

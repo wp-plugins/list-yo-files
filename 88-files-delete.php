@@ -50,8 +50,10 @@ if ( "on" == $enableUserFolders && !current_user_can( 'delete_users' ) )
 	// Loop through each sub folder
 	foreach( $folders as $folder )
 	{
+		$selected = ( 0 === strcmp( $folder, $selectedListFolder ) ) ? ' selected>' : '>';
+
 		// print an option for each folder
-		print '<option>' . $folder . '</option>';
+		print '<option' . $selected . $folder . '</option>';
 	}
 ?>
 </select>
