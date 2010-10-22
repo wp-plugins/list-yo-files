@@ -501,7 +501,7 @@ function LYFHandleUploadFilesPage()
 		check_admin_referer( 'filez-nonce' );
 
 		$uploadFolder = ABSPATH . $_POST['upload_folder'];
-		LYFUploadFiles( $uploadFolder );
+		LYFUploadFiles( $uploadFolder, TRUE );
 	}
 
 	// This is the handler for the users other than admins
@@ -536,7 +536,7 @@ function LYFHandleUploadFilesPage()
 		{
 			// Now, tack on the folder they want to upload to.
 			$uploadFolder .= $selectedUploadFolder;
-			LYFUploadFiles( $uploadFolder );
+			LYFUploadFiles( $uploadFolder, FALSE );
 		}
 	}
 

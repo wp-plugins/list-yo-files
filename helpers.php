@@ -294,7 +294,7 @@ function LYFConvertUploadError( $error )
 //
 //	This function uploads a list of files into a folder.
 //
-function LYFUploadFiles( $folder )
+function LYFUploadFiles( $folder, $allowCreateFolder )
 {
 	// Get these variables.  Needed to determine if there are restrictions on
 	// extensions and if there is still room to upload.
@@ -309,21 +309,25 @@ function LYFUploadFiles( $folder )
 	$count = 0;
 
 	// Check if the folder exists
-	$res = opendir( $folder );
+	$res = is_dir( $folder );
+	// If you use this, warnings will occur.  You must also close the directory. 
+	// But is_dir() sometimes behaves oddly with absolute paths.
+//	$res = opendir( $folder ); 
 	if ( FALSE === $res )
 	{
+		// Is the caller allowing folders to be created?
+		if ( FALSE == $allowCreateFolder )
+		{
+			echo '<p>The folder does not exist.  Create the folder first, then upload your files.</p></div>';
+			return;
+		}
+		
 		// If not, create the folder.  Let the user know if something goes wrong.
 		if ( !mkdir( $folder ) )
 		{
-			echo '<p><strong>Failed</strong> to create the folder.  Make sure your server file permissions are correct.</p>';
+			echo '<p><strong>Failed</strong> to create the folder.  Make sure your server file permissions are correct.</p></div>';
+			return;
 		}
-
-		// Reset the upload data.  No upload will happen until a folder can be created.
-		$_FILES = array();
-	}
-	else
-	{
-		closedir( $res );
 	}
 
 	// There are up to 10 files that can be uploaded yet.
