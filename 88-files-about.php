@@ -42,6 +42,31 @@ get_currentuserinfo();
 <?php
 if ( "on" == $enableUserFolders && !current_user_can( 'delete_users' ) )
 {
+	//
+	//	START:  UI for non-admins
+	//
+
+	// First, make sure their user folder exists.  If it doesn't then create it
+	$userFolder = LYFGetUserUploadFolder( TRUE );
+
+	if ( !is_dir( $userFolder ) )
+	{
+		$result = LYFCreateUserFolder( $userFolder );
+
+		if ( $result < 0 )
+		{
+			global $current_user;
+			get_currentuserinfo();
+
+			$message = '<div id="message" class="updated fade"><p>Problem creating your user folder! ';
+			$message .= LYFConvertError( $result, $current_user->user_login );
+			$message .= '</p></div>';
+			echo $message;
+		}
+	}
+	// Generate the list of user folders - conveniently show the user easy shortcode
+	// customized for them.
+	$folders = LYFGenerateFolderList( $userFolder );
 ?>
 <div class="postbox">
 	<h3 class="hndle"><span>Displaying File Lists:</span></h3>
@@ -57,7 +82,6 @@ if ( "on" == $enableUserFolders && !current_user_can( 'delete_users' ) )
 if ( "on" === $enableSimpleHelp )
 {
 ?>
-
 			You can customize your list with the following <em>options</em> (none are required).  For example: <small>[showfiles folder='<?php echo $current_user->user_login;?>/SUBFOLDER_NAME' options='table,filesize,icon']</small></p>
 			<fieldset style="margin-left: 20px;">
 				<br>a. <em>table</em> - Renders your file list as a table (no border).</br>
@@ -67,7 +91,6 @@ if ( "on" === $enableSimpleHelp )
 				icon to the left of the filename.</br>
 			</fieldset>
 		</fieldset>
-
 <?php
 }
 else
@@ -114,6 +137,30 @@ else
 		</fieldset>
 
 		<p><em>NOTE:</em> Do not add opening or closing slashes ("/") to the "folder" path.</p>
+
+		<p />
+		<div id='filelist'>
+		<table class="widefat" style="width:680px">
+		<thead>
+		  <tr>
+		    <th scope="col">Your folder:</th>
+		    <th scope="col">Code to add to your page or post:</th>
+		  </tr>
+		  </thead>
+		  <?php
+		  	// Get info on the user (used for assembling the folder name)
+			global $current_user;
+			get_currentuserinfo();
+
+			// Loop through each sub folder
+			foreach( $folders as $folder )
+			{
+				// print an option for each folder
+				print '<tr class="alternate"><td>'.$folder.'</td><td>[showmp3s folder="'.$current_user->user_login.'/'.$folder.'"]</td></tr>';
+			}
+		  ?>
+		</table>
+		</div>
 	</div>
 </div>
 
@@ -198,12 +245,12 @@ else
 		</fieldset>
 		<p />
 		</fieldset>
-		
+
 		<p>There are some simplified codes as well:</p>
-		
+
 		<p>To display a list of playable mp3s, add the special <em>showmp3s</em> code
 		to the page or post where you want to display the files. For example:
-		<small>[showmp3s folder='wp-content/uploads/mymp3s']</small>.</p>		
+		<small>[showmp3s folder='wp-content/uploads/mymp3s']</small>.</p>
 	</div>
 </div>
 
@@ -240,11 +287,11 @@ else
 <div class="postbox">
 	<h3 class="hndle"><span>About User Folders:</span></h3>
 	<div class="inside">
-		<p>If you have a site where users regularly log on and post material, you can use List Yo' Files to allow them to upload files and display 
+		<p>If you have a site where users regularly log on and post material, you can use List Yo' Files to allow them to upload files and display
 		them as lists.  This feature is enabled when you check the "Enable user folders" checkbox.</p>
-		<p>When enabled, non-admin users will see the "Upload" and "Delete" menu items.  These pages are also simplified, requiring 
-		no typing other than naming folders.  Users are only allowed to upload files to subfolders under 
-		their user folder which is automatically created for them.  They are also allowed basic file and folder manage; they can create folders, 
+		<p>When enabled, non-admin users will see the "Upload" and "Delete" menu items.  These pages are also simplified, requiring
+		no typing other than naming folders.  Users are only allowed to upload files to subfolders under
+		their user folder which is automatically created for them.  They are also allowed basic file and folder manage; they can create folders,
 		upload files, delete files, and delete folders.</p>
 		<p>As admin, you have control over the following:</p>
 		<fieldset style="margin-left: 20px;">

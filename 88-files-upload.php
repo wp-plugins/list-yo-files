@@ -38,28 +38,6 @@ function MultiSelector( list_target, max ){this.list_target = list_target;this.c
 
 if ( "on" == $enableUserFolders && !current_user_can( 'delete_users' ) )
 {
-	//
-	//	START:  UI for non-admins
-	//
-
-	// First, make sure their user folder exists.  If it doesn't then create it
-	$userFolder = LYFGetUserUploadFolder( TRUE );
-
-	if ( !is_dir( $userFolder ) )
-	{
-		$result = LYFCreateUserFolder( $userFolder );
-
-		if ( $result < 0 )
-		{
-			global $current_user;
-			get_currentuserinfo();
-
-			$message = '<div id="message" class="updated fade"><p>Problem creating your user folder! ';
-			$message .= LYFConvertError( $result, $current_user->user_login );
-			$message .= '</p></div>';
-			echo $message;
-		}
-	}
 ?>
 
 <h4>Create a subfolder:</h4>
@@ -67,10 +45,10 @@ if ( "on" == $enableUserFolders && !current_user_can( 'delete_users' ) )
 <p>Folder name: <input type="text" name="folder" size="35" /></p><div class="submit"><input type="submit" name="create_folder" value="Create Folder" /></div>
 
 <h4>Upload Files:</h4>
-<p>You are allowed to upload 
-<?php 
+<p>You are allowed to upload
+<?php
 if ( 0 == strlen( $maxFolderSize ) )
-	echo "as many files as you want.  "; 
+	echo "as many files as you want.  ";
 else
 	echo "up to $maxFolderSize MB in files.  ";
 ?>
@@ -80,7 +58,7 @@ $uploadFolder = LYFGetUserUploadFolder( TRUE );
 $filesSize = LYFGetFolderSize( $uploadFolder );
 $sizeMessage = LYFFormatFileSize( $filesSize );
 echo $sizeMessage;
-?> 
+?>
 .</p>
 
 <p>Select a folder to upload files to:  <select name="upload_folder">

@@ -31,13 +31,13 @@ function LYFFormatFileSize( $size )
 function LYFGetFolderSize( $directory )
 {
 	$size = 0;
-	 
+
 	// if the path has a slash at the end, remove it here
 	if( substr( $directory,-1 ) == '/' )
 	{
 		$directory = substr($directory,0,-1);
 	}
-	 
+
 	// if the path is not valid or is not a directory ...
 	if( !file_exists( $directory ) || !is_dir( $directory ) || !is_readable( $directory ) )
 	{
@@ -53,7 +53,7 @@ function LYFGetFolderSize( $directory )
 		{
 			// build the new path
 			$path = $directory.'/'.$file;
-			 
+
 			// if the filepointer is not the current directory
 			// or the parent directory
 			if( $file != '.' && $file != '..' )
@@ -63,20 +63,20 @@ function LYFGetFolderSize( $directory )
 				{
 					// add the filesize to the total size
 					$size += filesize( $path );
-					 
+
 					// if the new path is a directory
 				}
 				elseif ( is_dir( $path ) )
 				{
 					// Call this function with the new path
 					$handlesize = LYFGetFolderSize($path);
-		 
+
 					// if the function returns more than zero
 					if( $handlesize >= 0 )
 					{
 						// add the result to the total size
 						$size += $handlesize;
-				 
+
 					// else return -1 and exit the function
 					}
 					else
@@ -105,27 +105,27 @@ function LYFRemoveDirectory( $directory )
 	{
 		$directory = substr($directory,0,-1);
 	}
-	 
+
 	// if the path is not valid or is not a directory ...
 	if ( !file_exists( $directory ) || !is_dir( $directory ) )
 	{
 		// ... we return false and exit the function
 		return FALSE;
-		 
+
 	// ... if the path is not readable
 	}
 	elseif( !is_readable( $directory ) )
 	{
 		// ... we return false and exit the function
 		return FALSE;
-	 
+
 	// ... else if the path is readable
 	}
 	else
 	{
 		// we open the directory
 		$handle = opendir($directory);
-		 
+
 		// and scan through the items inside
 		while ( FALSE !== ( $item = readdir( $handle ) ) )
 		{
@@ -135,13 +135,13 @@ function LYFRemoveDirectory( $directory )
 			{
 				// we build the new path to delete
 				$path = $directory.'/'.$item;
-				 
+
 				// if the new path is a directory
-				if( is_dir( $path ) ) 
+				if( is_dir( $path ) )
 				{
 					// we call this function with the new path
 					recursive_remove_directory( $path );
-					 
+
 					// if the new path is a file
 				}
 				else
@@ -153,14 +153,14 @@ function LYFRemoveDirectory( $directory )
 		}
 		// close the directory
 		closedir( $handle );
-	
+
 		// try to delete the now empty directory
 		if( !rmdir( $directory ) )
 		{
 			// return false if not possible
 			return FALSE;
 		}
-	
+
 		// return success
 		return TRUE;
 	}
@@ -218,7 +218,7 @@ function LYFCreateUserFolder( $folderName )
 //
 //	LYFGetRolesAndCapabilities
 //
-//	All of the strings you see in this array are WordPress standards. 
+//	All of the strings you see in this array are WordPress standards.
 //	See http://codex.wordpress.org/Roles_and_Capabilities for more.
 //
 function LYFGetRolesAndCapabilities()
@@ -317,7 +317,7 @@ function LYFUploadFiles( $folder )
 		{
 			echo '<p><strong>Failed</strong> to create the folder.  Make sure your server file permissions are correct.</p>';
 		}
-		
+
 		// Reset the upload data.  No upload will happen until a folder can be created.
 		$_FILES = array();
 	}
