@@ -3,6 +3,8 @@
 // Define error and success codes
 define( 'LYF_ERROR_CREATE_FOLDER_PERMISSIONS', -10 );
 define( 'LYF_ERROR_CREATE_FOLDER_EXISTS', -11 );
+define( 'LYF_ERROR_ILLEGAL_CHARACTERS', -12 );
+define( 'LYF_ERROR_NO_FOLDER_NAME', -13 );
 
 define( 'LYF_SUCCESS_CREATE_FOLDER', 10 );
 
@@ -243,7 +245,13 @@ function LYFConvertError( $error, $userMessage )
 			$message = '<strong>Failed</strong> to create the subfolder "' . $userMessage . '".  Make sure your server file permissions are correct or contact support.';
 			break;
 		case LYF_ERROR_CREATE_FOLDER_EXISTS:
-			$message = 'strong>Failed</strong> to create the subfolder "' . $userMessage . '" because it already exists.  Choose a different folder name.';
+			$message = '<strong>Failed</strong> to create the subfolder "' . $userMessage . '" because it already exists.  Choose a different folder name.';
+			break;
+		case LYF_ERROR_ILLEGAL_CHARACTERS:
+			$message = '<strong>Failed</strong> to create the subfolder because it contains some illegal characters.';
+			break;
+		case LYF_ERROR_NO_FOLDER_NAME:
+			$message = '<strong>Failed</strong> to create the subfolder because it has no name.';
 			break;
 		case LYF_SUCCESS_CREATE_FOLDER:
 			$message = 'The subfolder "' . $userMessage . '" was successfully created.';
@@ -281,12 +289,27 @@ function LYFConvertUploadError( $error )
 			$message ='the file failed to write to disk';
 			break;
 		case 8:
-			$message ='the upload wsa prevented by an extension';
+			$message ='the upload was prevented by an extension';
 			break;
 		default:
 			break;
 	}
 	return $message;
+}
+
+//
+//	LYFIsValidFolderName()
+//
+//	This function just checks if some bad foldername characters exist.
+//
+function LYFIsValidFolderName( $folderName )
+{
+	if ( 0 === strlen( $folderName ) )
+		return LYF_ERROR_NO_FOLDER_NAME;
+	else if ( FALSE === stripos( $folderName, '/' ) )
+		return 1;
+	else
+		return LYF_ERROR_ILLEGAL_CHARACTERS;
 }
 
 //
@@ -310,9 +333,9 @@ function LYFUploadFiles( $folder, $allowCreateFolder )
 
 	// Check if the folder exists
 	$res = is_dir( $folder );
-	// If you use this, warnings will occur.  You must also close the directory. 
+	// If you use this, warnings will occur.  You must also close the directory.
 	// But is_dir() sometimes behaves oddly with absolute paths.
-//	$res = opendir( $folder ); 
+//	$res = opendir( $folder );
 	if ( FALSE === $res )
 	{
 		// Is the caller allowing folders to be created?
@@ -321,7 +344,7 @@ function LYFUploadFiles( $folder, $allowCreateFolder )
 			echo '<p>The folder does not exist.  Create the folder first, then upload your files.</p></div>';
 			return;
 		}
-		
+
 		// If not, create the folder.  Let the user know if something goes wrong.
 		if ( !mkdir( $folder ) )
 		{
@@ -429,7 +452,8 @@ function LYFListFilesToDelete( $filelist, $folder )
 	foreach( $filelist as $itemName => $item )
 	{
 		$fileSize = LYFFormatFileSize( $item['size'] );
-		$files .= '<tr class="alternate"><td>' . $itemName . '</td><td>' . $fileSize . '</td><td><a href="admin.php?page=Delete&amp;tab=del&amp;id=' . $itemName . '&amp;folder=' . $folder . '" class="delete">Delete</a></td></tr>';
+		$link = wp_nonce_url( "admin.php?page=Delete&amp;tab=del&amp;id=$itemName", 'filez-nonce' );
+		$files .= '<tr class="alternate"><td>' . $itemName . '</td><td>' . $fileSize . '</td><td><a href="' . $link . '&amp;folder=' . $folder . '" class="delete">Delete</a></td></tr>';
 	}
 
 	// Set the output

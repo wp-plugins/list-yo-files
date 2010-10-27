@@ -53,8 +53,10 @@ if ( "on" == $enableUserFolders && !current_user_can( 'delete_users' ) )
 if ( "on" === $enableSimpleHelp )
 {
 ?>
-		<p>Here are the codes that you can use in your posts or pages to display your files.  Just copy one of the
+		<p>Here are the codes that you can use in your posts or pages to display your files.  Just copy <strong>one</strong> of the
 		lines of text in the right-hand column and paste it into your the post or page that you want it to appear.</p>
+		<p>"showmp3s" is an easy way to display your mp3 files.  "showfiles" is a more general-purpose way of displaying
+		all types of files.</p>
 
 		<?php
 		if ( 0 == count( $folders ) )
@@ -73,7 +75,7 @@ if ( "on" === $enableSimpleHelp )
 		<thead>
 		  <tr>
 		    <th scope="col">Folder name:</th>
-		    <th scope="col">Code to add to your page or post:</th>
+		    <th scope="col">Code that you can add to your page or post (include the brackets "[]"):</th>
 		  </tr>
 		  </thead>
 		  <?php
@@ -97,7 +99,21 @@ if ( "on" === $enableSimpleHelp )
 		<?php
 		}
 		?>
-		<p>You can try remove various <em>options</em> from the codes above to further customize your lists.</p>
+		<p><strong>NOTE: </strong>You can add 'options="download"' to your "showmp3s" code to include a download link to the file.</p>
+		<p>You can try removing various <em>options</em> from the "showfiles" code above to further customize your lists.
+		You can also include the following (none are required):</p>
+			<fieldset style="margin-left: 20px;">
+			1. <em>sort</em> - include one of the following:  "alphabetic", "reverse_alphabetic", "filesize",
+			"reverse_filesize", "date", or "reverse_date".  The <em>default</em> is "alphabetic" and
+			is used if "sort" isn't specified.  Example usage:
+			<small>[showfiles folder='<?php echo $current_user->user_login;?>/<?php echo $folders[0]?>' sort='reverse_filesize']</small><br /><br />
+
+			2. <em>filter</em> - include a list of extensions (no period) separated by commas to only display
+			matching files.  For example,
+			<small>[showfiles folder='<?php echo $current_user->user_login;?>/<?php echo $folders[0]?>' filter='pdf,doc,txt']</small> will
+			only display audio files in your file list.  Not including this option will list all
+			files in the specified folder.<br /><br />
+			</fieldset>
 <?php
 }
 else
@@ -142,8 +158,10 @@ else
 		<fieldset style="margin-left: 20px;">
 		<p>2) To display a list of playable mp3s, add the special <em>showmp3s</em> code
 		to the page or post where you want to display the files. For example:
-		<small>[showmp3s folder='<?php echo $current_user->user_login;?>/SUBFOLDER_NAME']</small>.
-		<em>NOTE:</em> You do not need to supply 'options' when you use 'showmp3s'.
+		<small>[showmp3s folder="<?php echo $current_user->user_login;?>/SUBFOLDER_NAME"]</small>.
+		<em>NOTE:</em> You do not need to supply 'options' when you use 'showmp3s'.  However, if you
+		want the file to be downloadable, include this: 'options="download"'. For example:
+		<small>[showmp3s folder="<?php echo $current_user->user_login;?>/SUBFOLDER_NAME' options="download"]</small>
 		</p>
 		</fieldset>
 
@@ -253,16 +271,26 @@ else
 			example, if you want to provide an icon for mp3 files, you would need to upload a file called
 			"mp3.png" to the plugin's "icons" folder.</br>
 			<br>f. <em>wpaudio</em> - <em>Requires the WPAudio plugin</em>.  This option transforms the filename from a download link into an mp3 player.</br>
-			<br>g. <em>wpaudiodownloadable</em> - <em>Requires the WPAudio plugin</em>.  This option only works if <em>wpaudio</em> is also specified.  It adds a download link for the song.</br>
+			<br>g. <em>wpaudiodownloadable</em> - <em>Requires the WPAudio plugin</em>.  This option only works if <em>wpaudio</em> is also specified.  It adds a download link for the song.
+			You can also use the "download" option as well for the same result.</br>
 		</fieldset>
 		<p />
 		</fieldset>
 
 		<p>There are some simplified codes as well:</p>
 
-		<p>To display a list of playable mp3s, add the special <em>showmp3s</em> code
-		to the page or post where you want to display the files. For example:
-		<small>[showmp3s folder='wp-content/uploads/mymp3s']</small>.</p>
+		<fieldset style="margin-left: 20px;">
+			<p>To display a list of playable mp3s, add the special <em>showmp3s</em> code
+			to the page or post where you want to display the files. For example:
+			<small>[showmp3s folder='mruser/mymp3s']</small>. <em>Requires the WPAudio plugin</em></p>
+
+			<p>To simplify showing files, use the <em>showfiles</em> code
+			to the page or post where you want to display the files. For example:
+			<small>[showfiles folder='mruser/somepdfs']</small>.</p>
+		</fieldset>
+
+		<p><strong>NOTE:</strong> These special codes are only available for user folders.  In other words, only subfolders
+		underneath 'wp-content/list_yo_files_user_folders' will respond to these codes.</p>
 	</div>
 </div>
 

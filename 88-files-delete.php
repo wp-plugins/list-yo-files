@@ -7,7 +7,7 @@
 <form action="<?php echo $action_url ?>" method="post">
 
 <?php
-wp_nonce_field('filez-nonce');
+wp_nonce_field( 'filez-nonce' );
 $pluginFolder = get_bloginfo('wpurl') . '/wp-content/plugins/' . dirname( plugin_basename( __FILE__ ) ) . '/';
 
 // Variable to see if subscriber folders is turned ON
@@ -22,6 +22,9 @@ if ( "on" == $enableUserFolders && !current_user_can( 'delete_users' ) )
 	// Generate the list of user folders
 	$userFolder = LYFGetUserUploadFolder( TRUE );
 	$folders = LYFGenerateFolderList( $userFolder );
+
+	// This is used to determine if the buttons should be disabled
+	$folderCount = count( $folders );
 ?>
 
 <h4>Delete Folders</h4>
@@ -38,7 +41,7 @@ if ( "on" == $enableUserFolders && !current_user_can( 'delete_users' ) )
 	}
 ?>
 </select>
-<input type="submit" name="delete_folder" value="Delete Folder" /></div>
+<input type="submit" <?php if ( 0 === $folderCount ) echo 'disabled="disabled" ';?>name="delete_folder" value="Delete Folder" /></div>
 </p>
 
 <h4>Delete Files</h4>
@@ -57,7 +60,7 @@ if ( "on" == $enableUserFolders && !current_user_can( 'delete_users' ) )
 	}
 ?>
 </select>
-<input type="submit" name="list_user_files" value="List Files" /></div>
+<input type="submit" <?php if ( 0 === $folderCount ) echo 'disabled="disabled" ';?>name="list_user_files" value="List Files" /></div>
 </p>
 
 <?php
@@ -79,10 +82,6 @@ else
 
 <?php
 }
-?>
-</form>
-
-<?php
-// NOTE:	Four "</div>" statements used to be here.  They have been moved back into
-// 			the calling function in order to improve formatting.
+// NOTE:	One "</form> and four "</div>" statements used to be here.  They have
+// 			been moved back into the calling function in order to improve formatting.
 ?>

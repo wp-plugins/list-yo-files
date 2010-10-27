@@ -14,7 +14,7 @@ define( 'LYF_LIST_YO_FILES', 'List Yo\' Files' );
 define( 'LYF_USER_FOLDER', 'wp-content/list_yo_files_user_folders/' );
 define( 'LYF_ADMIN', 1 );
 define( 'LYF_USER', 2 );
-define( 'LYF_USER_MUSIC', 3 );
+define( 'LYF_USER_MP3S', 3 );
 
 // Database options
 define( 'LYF_MENU_TEXT', 'lyf_menu_text' );
@@ -72,7 +72,7 @@ function LYFShowUserFiles( $params )
 //
 function LYFShowMP3Files( $params )
 {
-	return LYFDisplayFiles( $params, LYF_USER_MUSIC );
+	return LYFDisplayFiles( $params, LYF_USER_MP3S );
 }
 
 //
@@ -109,15 +109,17 @@ function LYFDisplayFiles( $params, $mode )
 	}
 	$link = $values['link'];
 	$sort = $values['sort'];
-	$filter = $values['filter'];
 	// Special mode for mp3s
-	if ( LYF_USER_MUSIC === $mode )
+	if ( LYF_USER_MP3S === $mode )
 	{
 		$options = $values['options'];
-		$options .= 'table,wpaudio';
+		$options .= ',table,wpaudio';
+		$filter = $values['filter'];
+		$filter .= ',mp3';
 	}
 	else
 	{
+		$filter = $values['filter'];
 		$options = $values['options'];
 	}
 
@@ -266,7 +268,7 @@ function LYFListFiles( $filelist, $sort, $options )
 	$isDate = ( FALSE !== stripos( $options, 'date' ) );
 	$isIcon = ( FALSE !== stripos( $options, 'icon' ) );
 	$isWPAudio = ( FALSE !== stripos( $options, 'wpaudio' ) );
-	$isWPAudioDownloadable = ( FALSE !== stripos( $options, 'wpaudiodownloadable' ) );
+	$isWPAudioDownloadable = ( FALSE !== stripos( $options, 'wpaudiodownloadable' ) || FALSE !== stripos( $options, 'download' ) );
 
 	// Start generating the HTML
 	$retVal = "<div id='filelist$fileListCounter'>";
@@ -510,15 +512,23 @@ function LYFHandleUploadFilesPage()
 		// Security check
 		check_admin_referer( 'filez-nonce' );
 
-		// Save the selected folder
-		$selectedUploadFolder = $_POST['upload_folder'];
-
 		// Little hack
 		$canUpload = TRUE;
 
+		// Save the selected folder
+		$selectedUploadFolder = $_POST['upload_folder'];
+
+		// Check that the user is not trying to upload a file when there's no user
+		// folder.
+		if ( 0 === strlen( $selectedUploadFolder ) )
+		{
+			echo '<div id="message" class="updated fade"><strong>Failed</strong> to upload. You need to create and choose a subfolder to upload to.</div>';
+			$canUpload = FALSE;
+		}
+
 		// Any folder size restrictions?
 		$maxFolderSize = get_option( LYF_USER_USER_FOLDER_SIZE );
-		if ( 0 !== strlen( $maxFolderSize ) )
+		if ( 0 !== strlen( $maxFolderSize ) && $canUpload )
 		{
 			$uploadFolder = LYFGetUserUploadFolder( TRUE );
 			$filesSize = LYFGetFolderSize( $uploadFolder );
@@ -551,7 +561,7 @@ function LYFHandleUploadFilesPage()
 		$folderLimit = get_option( LYF_USER_SUBFOLDER_LIMIT );
 
 		// Little hack
-		$allowUpload = TRUE;
+		$allowCreate = TRUE;
 
 		// Get the user's folder
 		$createFolder = LYFGetUserUploadFolder( TRUE );
@@ -568,14 +578,22 @@ function LYFHandleUploadFilesPage()
 			if ( $folderCount >= $folderLimit )
 			{
 				$message = '<div id="message" class="updated fade"><strong>Failed</strong> to create the subfolder.  You have already reached your subfolder limit.</div>';
-				$allowUpload = FALSE;
+				$allowCreate = FALSE;
 			}
 		}
 
-		if ( $allowUpload )
+		if ( $allowCreate )
 		{
 			$createFolder .= $_POST['folder'];
-			$result = LYFCreateUserFolder( $createFolder );
+			// Check here to see if the user is trying to trick the system into
+			// creating folders in different locations.  Basically, check for a
+			// few illegal characters.
+			$result = LYFIsValidFolderName( $_POST['folder'] );
+			if ( $result > 0 )
+			{
+				// If the folder name is legit, then try to create the folder.
+				$result = LYFCreateUserFolder( $createFolder );
+			}
 			$message = '<div id="message" class="updated fade">';
 			$message .= LYFConvertError( $result, $_POST['folder'] );
 			$message .= '</div>';
@@ -695,6 +713,7 @@ function LYFHandleDeleteFilesPage()
 		// shown at the bottom.
 		include( '88-files-delete.php' );
 	}
+
 	// If a GET value was passed, then the user wants to delete a file.
 	else if ( isset( $_GET['id'] ) )
 	{
@@ -707,14 +726,18 @@ function LYFHandleDeleteFilesPage()
 
 		// Both the file and folder were passed, so save these off.
 		$file = $_GET['id'];
+		// Strip out C-style escaping to allow for filenames with words like "You've"
+		$file =stripcslashes( $file );
 		$folder = $_GET['folder'];
 
-		// This is the PHP DeleteFile() function...nice name, huh?  This function is assumed to work.
-		// Probably should add some error handling here.
-		unlink( ABSPATH . $folder . '/' . $file );
+		// This is the PHP DeleteFile() function...nice name, huh?
+		$result = unlink( ABSPATH . $folder . '/' . $file );
 
 		// The "updated fade" class is that cool faded text area.
-		echo '<div id="message" class="updated fade"><p>' . $file . ' has been deleted.</p></div>';
+		if ( $result )
+			echo '<div id="message" class="updated fade"><p>' . $file . ' has been deleted.</p></div>';
+		else
+			echo '<div id="message" class="updated fade"><p>' . $file . ' could not be deleted.</p></div>';
 
 		// Regenerate the list of files now that one of them has been deleted.
 		$filelist = LYFGenerateFileList( $folder, $folder, "" );
@@ -738,6 +761,7 @@ function LYFHandleDeleteFilesPage()
 		include( '88-files-delete.php' );
 	}
 ?>
+</form>
 </div>
 </div>
 </div>

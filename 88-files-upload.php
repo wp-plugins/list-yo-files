@@ -66,6 +66,9 @@ echo $sizeMessage;
 <?php
 	$folders = LYFGenerateFolderList( $uploadFolder );
 
+	// This is used to determine if the submit button should be disabled
+	$folderCount = count( $folders );
+
 	// Loop through each sub folder
 	foreach( $folders as $folder )
 	{
@@ -86,7 +89,7 @@ echo $sizeMessage;
 	<h3>Selected Files <small>(You can upload up to 10 files at once)</small>:</h3>
 </div>
 
-<div class="submit"><input type="submit" name="upload_user_files" value="Upload Files" /></div>
+<div class="submit"><input type="submit" <?php if ( 0 === $folderCount ) echo 'disabled="disabled" ';?>name="upload_user_files" value="Upload Files" /></div>
 
 </form>
 
