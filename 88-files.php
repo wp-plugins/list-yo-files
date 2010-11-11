@@ -264,6 +264,7 @@ function LYFListFiles( $filelist, $sort, $options )
 	// Get the various options
 	$isTable = ( FALSE !== stripos( $options, 'table' ) );
 	$isNewWindow = ( FALSE !== stripos( $options, 'new_window' ) );
+	$isHideExtension = ( FALSE !== stripos( $options, 'hide_extension' ) );
 	$isFilesize = ( FALSE !== stripos( $options, 'filesize' ) );
 	$isDate = ( FALSE !== stripos( $options, 'date' ) );
 	$isIcon = ( FALSE !== stripos( $options, 'icon' ) );
@@ -298,6 +299,13 @@ function LYFListFiles( $filelist, $sort, $options )
 				if ( FALSE === $theFile )
 					$extensionFile = $pluginFolder . "icons/generic.png";
 				$retVal .= '<td><img src="'.$extensionFile.'"></td>'.PHP_EOL;
+			}
+
+			// Strip extension if necessary
+			if ( $isHideExtension )
+			{
+				$ext = substr( strrchr( $itemName, '.' ), 0 );
+				$itemName = str_replace( $ext, '', $itemName );
 			}
 
 			// This part is required.  However, it can be altered by the "wpaudio" option
@@ -336,15 +344,26 @@ function LYFListFiles( $filelist, $sort, $options )
 			$size = LYFFormatFileSize( $item['size'] );
 			$date = date( "F j, Y", $item['date'] );
 			$link = $wpurl.'/'.$item['link'];
+
+			// Strip extension if necessary
+			if ( $isHideExtension )
+			{
+				$ext = substr( strrchr( $itemName, '.' ), 0 );
+				$itemName = str_replace( $ext, '', $itemName );
+			}
+
 			// Generate list elements
 			if ( $isNewWindow )
 				$files .= '<li><a href="'.$link.'" target="_blank">'.$itemName.'</a>';
 			else
 				$files .= '<li><a href="'.$link.'">'.$itemName.'</a>';
+
 			if ( $isFilesize )
 				$files .= ' Size: ' . $size . PHP_EOL;
+
 			if ( $isDate )
 				$files .= ' Date: ' . $date . PHP_EOL;
+
 			$files .='</li>'.PHP_EOL;
 		}
 
