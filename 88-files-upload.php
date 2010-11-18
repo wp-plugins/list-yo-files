@@ -40,7 +40,7 @@ if ( "on" == $enableUserFolders && !current_user_can( 'delete_users' ) )
 {
 ?>
 
-<div id="create_folders" class="postbox" style="width:450px;height:200px">
+<div id="create_folders" class="postbox" style="width:450px;height:165px">
 <h3 class='hndle'><span>Create a Subfolder</span></h3>
 <div class="inside">
 
@@ -125,14 +125,18 @@ else
 
 ?>
 
-	<p>Type in the name of the folder that you want to upload to.  The folder is a relative path located in your WordPress installation folder.  For example:  "wp-content/gallery/my-new-gallery".  <strong>NOTE:</strong>  Do not add opening or closing slashes ("/") to the path.</p>
-	<p>If the folder doesn't exist, then List Yo' Files will attempt to create it for you.</p>
-	<p>Folder name: <input type="text" name="upload_folder" size="55" /></p>
+<div id="upload_files" class="postbox" style="width:450px">
+<h3 class='hndle'><span>Upload Files</span></h3>
+<div class="inside">
 
-	<input id="my_file_element" type="file" name="file_1" />
-	<div id="files_list">
-		<h3>Selected Files <small>(You can upload up to 10 files at once)</small>:</h3>
-	</div>
+<p>Type in the name of the folder that you want to upload to.  The folder is a relative path located in your WordPress installation folder.  For example:  "wp-content/gallery/my-new-gallery".  <strong>NOTE:</strong>  Do not add opening or closing slashes ("/") to the path.</p>
+<p>If the folder doesn't exist, then List Yo' Files will attempt to create it for you.</p>
+<p>Folder name: <input type="text" name="upload_folder" size="55" /></p>
+
+<input id="my_file_element" type="file" name="file_1" />
+<div id="files_list">
+	<h3>Selected Files <small>(You can upload up to 10 files at once)</small>:</h3>
+</div>
 
 <div class="submit"><input type="submit" name="upload_files" value="Upload Files" /></div>
 
@@ -146,6 +150,10 @@ else
 </script>
 
 <p><strong>Note:</strong>  If you want to upload additional icon files for your file lists, you can do that here.  Just use input folder name: 'wp-content/plugins/list-yo-files/icons' and then upload 16x16 .png files.  See the main admin page for more details.</p>
+
+<div class="clear"></div>
+</div>
+</div>
 
 <?php
 }

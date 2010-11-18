@@ -27,7 +27,7 @@ if ( "on" == $enableUserFolders && !current_user_can( 'delete_users' ) )
 	$folderCount = count( $folders );
 ?>
 
-<div id="delete_folders" class="postbox" style="width:450px;height:200px">
+<div id="delete_folders" class="postbox" style="width:450px;height:150px">
 <h3 class='hndle'><span>Delete Folders</span></h3>
 <div class="inside">
 
@@ -81,7 +81,9 @@ else
 {
 ?>
 
-<h4>Usage</h4>
+<div id="delete_files" class="postbox" style="width:450px">
+<h3 class='hndle'><span>Delete Files</span></h3>
+<div class="inside">
 
 <p>Using this "Delete Files" settings panel will conveniently allow you to avoid using FTP to delete your files.  Follow these steps:</p>
 <br>1. Type in the name of the folder you want to browse, again using your WordPress installation as the root folder.  For example:  "wp-content/gallery/my-new-gallery" will list the files in the "my-new-gallery" subfolder.</br>
@@ -91,6 +93,10 @@ else
 <p>As always, <em>be careful</em> when deleting files!</p>
 
 <p><div>Folder to list: <input type="text" name="folder" size="55" /><input type="submit" name="list_files" value="List Files" /></div></p>
+
+<div class="clear"></div>
+</div>
+</div>
 
 <?php
 }

@@ -2,7 +2,7 @@
 /*
 Plugin Name: List Yo' Files
 Plugin URI: http://www.wandererllc.com/company/plugins/listyofiles/
-Description: Adds the ability to list files by file name for a given folder with hyperlinks to each file making it downloadable.  The plugin admin pages also allow you to conveniently upload and delete files.
+Description: Adds the ability to list files by file name for a given folder with hyperlinks to each file making it downloadable.  The plugin can also optimize listing mp3 files into an attractive player.  The plugin admin pages also allow you to conveniently upload and delete files.
 Version: 1.00
 Author: Wanderer LLC Dev Team
 */
