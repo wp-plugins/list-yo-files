@@ -63,7 +63,7 @@ if ( "on" === $enableSimpleHelp )
 		{
 		?>
 
-		<p><em>You have no folders that you can display.</em></p>
+		<p><em>You have no folders that you can display. Read 'Creating Folders and Uploading Files' first.</em></p>
 
 		<?php
 		}
@@ -142,14 +142,14 @@ else
 
 			3. <em>options</em> - A list of comma-separated options to further customize your file list.  An example: <small>[showfiles folder='<?php echo $current_user->user_login;?>/SUBFOLDER_NAME' options='table,filesize,icon']</small> Supported options:
 			<fieldset style="margin-left: 20px;">
-				<br>a. <em>table</em> - Renders your file list as a table (no border).</br>
+				<br>a. <em>table</em> - Renders your file list as a table (no border, though your CSS may override this).</br>
 				<br>b. <em>filesize</em> - Includes the file size in the list.</br>
 				<br>c. <em>date</em> - Includes the file modified date in the list.</br>
 				<br>d. <em>new_window</em> - Will open links in a new window.</br>
 				<br>e. <em>hide_extension</em> - Hides file extensions.</br>
 				<br>f. <em>icon</em> - Works only with the <em>table</em> option.  This option displays a file
 				icon to the left of the filename.</br>
-				<br>g. <em>wpaudio</em> - <em>Requires the WPAudio plugin</em>.  This option transforms the filename from a download link into an mp3 player.</br>
+				<br>g. <em>wpaudio</em> - <em>Requires the WPAudio plugin</em>.  This option transforms the filename from a download link into an mp3 player.  <strong>Note:</strong> Use a filter to restrict files to mp3s.</br>
 				<br>h. <em>wpaudiodownloadable</em> - <em>Requires the WPAudio plugin</em>.  This option only works if <em>wpaudio</em> is also specified.  It adds a download link for the song.</br>
 			</fieldset>
 			<p />
@@ -186,7 +186,7 @@ else
 		</fieldset>
 		<p>Once you have at least one folder, you can upload files.  Here are the steps:</p>
 		<fieldset style="margin-left: 20px;">
-			1. Choose a folder from the select box that you want to upload files to<br />
+			1. Choose a folder from the select box that you want to upload files to.<br />
 			<br>2. Use the "Browse" button to select files to upload.  You may upload up to ten at once.</br><br />
 			<br>3. Click on "Upload Files".</br>
 		</fieldset>
@@ -261,7 +261,7 @@ else
 
 		3. <em>options</em> - A list of comma-separated options to further customize your file list.  An example: <small>[listyofiles folder="wp-content/gallery/my-new-gallery" options="table,filesize,icon"]</small> Supported options:
 		<fieldset style="margin-left: 20px;">
-			<br>a. <em>table</em> - Renders your file list as a table (no border).</br>
+			<br>a. <em>table</em> - Renders your file list as a table (no border, though your CSS may override this).</br>
 			<br>b. <em>filesize</em> - Includes the file size in the list.</br>
 			<br>c. <em>date</em> - Includes the file modified date in the list.</br>
 			<br>d. <em>new_window</em> - Will open links in a new window.</br>
@@ -272,7 +272,7 @@ else
 			support.  The name of the file needs to match the extension that you want to display.  All letters should be lowercase.  For
 			example, if you want to provide an icon for mp3 files, you would need to upload a file called
 			"mp3.png" to the plugin's "icons" folder.</br>
-			<br>g. <em>wpaudio</em> - <em>Requires the WPAudio plugin</em>.  This option transforms the filename from a download link into an mp3 player.</br>
+			<br>g. <em>wpaudio</em> - <em>Requires the WPAudio plugin</em>.  This option transforms the filename from a download link into an mp3 player.  <strong>Note:</strong> Use a filter to restrict files to mp3s.</br>
 			<br>h. <em>wpaudiodownloadable</em> - <em>Requires the WPAudio plugin</em>.  This option only works if <em>wpaudio</em> is also specified.  It adds a download link for the song.
 			You can also use the "download" option as well for the same result.</br>
 		</fieldset>
@@ -291,7 +291,7 @@ else
 			<small>[showfiles folder='mruser/somepdfs']</small>.</p>
 		</fieldset>
 
-		<p><strong>NOTE:</strong> These special codes are only available for user folders.  In other words, only subfolders
+		<p><strong>NOTE:</strong> These simplified codes are only available for user folders.  In other words, only subfolders
 		underneath 'wp-content/list_yo_files_user_folders' will respond to these codes.</p>
 	</div>
 </div>
@@ -300,7 +300,7 @@ else
 	<h3 class="hndle"><span>Uploading Files:</span></h3>
 	<div class="inside">
 		<p>FTP is the usual method for uploading files to a specific folder on your website.  But, sometimes it can be inconvenient.
-		"List Yo' Files" provides a simple <strong>Upload Files</strong> UI that allows you to avoid using FTP to upload
+		List Yo' Files provides a simple <strong>Upload Files</strong> UI that allows you to avoid using FTP to upload
 		your files without having to leave WordPress.  Follow these steps:</p>
 		<fieldset style="margin-left: 20px;">
 			1. In the Upload Files UI, indicate which folder in your WordPress installation you want to upload to (you can also type in a new folder and the folder will be created for you).  <em>Recommendation</em>:  Place the folder <strong>underneath the "wp-content" folder</strong>.  Make sure the folder is <a href="http://codex.wordpress.org/Changing_File_Permissions">readable and writable</a>.<br />
@@ -315,7 +315,7 @@ else
 	<h3 class="hndle"><span>Deleting Files:</span></h3>
 	<div class="inside">
 		<p>FTP is also the usual method for deleting files in a specific folder on your website.
-		"List Yo' Files" also provides a <strong>Delete Files</strong> UI that allows you to delete files
+		List Yo' Files also provides a <strong>Delete Files</strong> UI that allows you to delete files
 		without leaving WordPress.  Follow these steps:</p>
 		<fieldset style="margin-left: 20px;">
 			1. Type in the name of the folder you want to browse, again using your WordPress installation as the root folder.  For example:  "wp-content/gallery/my-new-gallery" will list the files in the "my-new-gallery" subfolder.<br />
@@ -333,8 +333,8 @@ else
 		them as lists.  This feature is enabled when you check the "Enable user folders" checkbox.</p>
 		<p>When enabled, non-admin users will see the "Upload" and "Delete" menu items.  These pages are also simplified, requiring
 		no typing other than naming folders.  Users are only allowed to upload files to subfolders under
-		their user folder which is automatically created for them.  They are also allowed basic file and folder manage; they can create folders,
-		upload files, delete files, and delete folders.</p>
+		their user folder which is automatically created for them (underneath a special folder in 'wp-content').  They are also allowed basic file and folder management; they can create folders,
+		upload files, delete files, and delete folders - again, only within their personal user folder.</p>
 		<p>As admin, you have control over the following:</p>
 		<fieldset style="margin-left: 20px;">
 			1. Restricting the quantity of subfolders that the user can create.<br />

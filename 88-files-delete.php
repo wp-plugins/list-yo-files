@@ -27,7 +27,9 @@ if ( "on" == $enableUserFolders && !current_user_can( 'delete_users' ) )
 	$folderCount = count( $folders );
 ?>
 
-<h4>Delete Folders</h4>
+<div id="delete_folders" class="postbox" style="width:450px;height:200px">
+<h3 class='hndle'><span>Delete Folders</span></h3>
+<div class="inside">
 
 <p>Select a folder you want to delete.  Then, click on the "Delete Folder" button.  <em>Be careful!</em> This will delete all files in the folder.</p>
 
@@ -44,7 +46,13 @@ if ( "on" == $enableUserFolders && !current_user_can( 'delete_users' ) )
 <input type="submit" <?php if ( 0 === $folderCount ) echo 'disabled="disabled" ';?>name="delete_folder" value="Delete Folder" /></div>
 </p>
 
-<h4>Delete Files</h4>
+<div class="clear"></div>
+</div>
+</div>
+
+<div id="delete_files" class="postbox" style="width:450px">
+<h3 class='hndle'><span>Delete Files</span></h3>
+<div class="inside">
 
 <p>Select a folder whose files you want to display.  Then, click on the "List Files" button to show each file.  Each file will then be listed and you can selectively delete your files.</p>
 
@@ -62,6 +70,10 @@ if ( "on" == $enableUserFolders && !current_user_can( 'delete_users' ) )
 </select>
 <input type="submit" <?php if ( 0 === $folderCount ) echo 'disabled="disabled" ';?>name="list_user_files" value="List Files" /></div>
 </p>
+
+<div class="clear"></div>
+</div>
+</div>
 
 <?php
 }

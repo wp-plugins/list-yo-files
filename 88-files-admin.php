@@ -13,7 +13,9 @@ $pluginFolder = get_bloginfo('wpurl') . '/wp-content/plugins/' . dirname( plugin
 include_once "information-box.php"
 ?>
 
-<h4>List Yo' Files Administration:</h4>
+<div id="listyofiles_admin" class="postbox" style="width:450px">
+<h3 class='hndle'><span>List Yo' Files Administration:</span></h3>
+<div class="inside">
 
 <p>Rename the master menu to: <input type="text" name="menu_name" value="<?php echo $menuText;?>"size="25" /></p>
 
@@ -67,6 +69,11 @@ print '> Show simple help for users <small>(shows non-admins only the most basic
 </fieldset>
 
 <div class="primary_button"><input type="submit" name="save_admin_settings" value="Save Settings" /></div>
+
+<div class="clear"></div>
+</div>
+</div>
+
 </form>
 
 </div>

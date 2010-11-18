@@ -40,11 +40,21 @@ if ( "on" == $enableUserFolders && !current_user_can( 'delete_users' ) )
 {
 ?>
 
-<h4>Create a subfolder:</h4>
+<div id="create_folders" class="postbox" style="width:450px;height:200px">
+<h3 class='hndle'><span>Create a Subfolder</span></h3>
+<div class="inside">
+
 <p>You must create at least one subfolder to upload your files to.  You may create <?php echo $subfolderCount;?> folders.</p>
 <p>Folder name: <input type="text" name="folder" size="35" /></p><div class="submit"><input type="submit" name="create_folder" value="Create Folder" /></div>
 
-<h4>Upload Files:</h4>
+<div class="clear"></div>
+</div>
+</div>
+
+<div id="upload_files" class="postbox" style="width:450px">
+<h3 class='hndle'><span>Upload Files</span></h3>
+<div class="inside">
+
 <p>You are allowed to upload
 <?php
 if ( 0 == strlen( $maxFolderSize ) )
@@ -99,6 +109,10 @@ echo $sizeMessage;
 	<!-- Pass in the file element -->
 	multi_selector.addElement( document.getElementById( 'my_file_element' ) );
 </script>
+
+<div class="clear"></div>
+</div>
+</div>
 
 <?php
 }
