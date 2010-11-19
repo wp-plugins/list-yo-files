@@ -28,6 +28,7 @@ define( 'LYF_USER_USER_FOLDER_SIZE', 'lyf_user_folder_size' );
 
 // Empty directory message
 define( 'EMPTY_FOLDER', 'No files found.' );
+define( 'PERMISSIONS_MESAGE', 'You do not have sufficient permissions to access this page. Resave your administration options to be safe.' );
 
 // Various hooks and actions for this plug-in
 add_shortcode( 'listyofiles', LYFShowAdminFiles );
@@ -423,14 +424,17 @@ function LYFHandleAdminPage()
 	$enableUserFolders = get_option( LYF_ENABLE_USER_FOLDERS );
 	$enableSimpleHelp = get_option( LYF_ENABLE_SIMPLE_HELP );
 	$minimumRole = get_option( LYF_MINIMUM_ROLE );
+	if ( 0 == strlen( $minimumRole ) )
+		$minimumRole = 'Administrator';
 	$subfolderCount = get_option( LYF_USER_SUBFOLDER_LIMIT );
 	$folderSize = get_option( LYF_USER_USER_FOLDER_SIZE );
 
 	// The user must be an admin to see this page, no matter what is selected
 	// in the admin page.
-	if ( !current_user_can( 'delete_users' ) )
+	$roles = LYFGetRolesAndCapabilities();
+	if ( !current_user_can( $roles['Administrator'] ) )
 	{
-    	wp_die( __('You do not have sufficient permissions to access this page.') );
+    	wp_die( __( PERMISSIONS_MESAGE ) );
   	}
 
 	if ( isset( $_POST['save_admin_settings'] ) )
@@ -485,12 +489,14 @@ function LYFHandleAboutPage()
 {
 	// Get variables for checking access
 	$minimumRole = get_option( LYF_MINIMUM_ROLE );
+	if ( 0 == strlen( $minimumRole ) )
+		$minimumRole = 'Administrator';
 	$roles = LYFGetRolesAndCapabilities();
 
 	// Stop the user if they don't have permission
 	if ( !current_user_can( $roles[$minimumRole] ) )
 	{
-    	wp_die( __('You do not have sufficient permissions to access this page.') );
+    	wp_die( __( PERMISSIONS_MESAGE ) );
   	}
 
 	// Include the settings page here.
@@ -507,12 +513,14 @@ function LYFHandleUploadFilesPage()
 {
 	// Get variables for checking access
 	$minimumRole = get_option( LYF_MINIMUM_ROLE );
+	if ( 0 == strlen( $minimumRole ) )
+		$minimumRole = 'Administrator';
 	$roles = LYFGetRolesAndCapabilities();
 
 	// Stop the user if they don't have permission
 	if ( !current_user_can( $roles[$minimumRole] ) )
 	{
-    	wp_die( __('You do not have sufficient permissions to access this page.') );
+    	wp_die( __( PERMISSIONS_MESAGE ) );
   	}
 
   	// If the upload_files POST option is set, then files are being uploaded
@@ -637,12 +645,14 @@ function LYFHandleDeleteFilesPage()
 {
 	// Get variables for checking access
 	$minimumRole = get_option( LYF_MINIMUM_ROLE );
+	if ( 0 == strlen( $minimumRole ) )
+		$minimumRole = 'Administrator';
 	$roles = LYFGetRolesAndCapabilities();
 
 	// Stop the user if they don't have permission
 	if ( !current_user_can( $roles[$minimumRole] ) )
 	{
-    	wp_die( __('You do not have sufficient permissions to access this page.') );
+    	wp_die( __( PERMISSIONS_MESAGE ) );
   	}
 
   	// This file will handle the deleting when "Delete" is pressed.

@@ -92,7 +92,7 @@ else
 <p />
 <p>As always, <em>be careful</em> when deleting files!</p>
 
-<p><div>Folder to list: <input type="text" name="folder" size="55" /><input type="submit" name="list_files" value="List Files" /></div></p>
+<p><div>Folder to list: <input type="text" name="folder" size="35" /><input type="submit" name="list_files" value="List Files" /></div></p>
 
 <div class="clear"></div>
 </div>

@@ -131,7 +131,7 @@ else
 
 <p>Type in the name of the folder that you want to upload to.  The folder is a relative path located in your WordPress installation folder.  For example:  "wp-content/gallery/my-new-gallery".  <strong>NOTE:</strong>  Do not add opening or closing slashes ("/") to the path.</p>
 <p>If the folder doesn't exist, then List Yo' Files will attempt to create it for you.</p>
-<p>Folder name: <input type="text" name="upload_folder" size="55" /></p>
+<p>Folder name: <input type="text" name="upload_folder" size="45" /></p>
 
 <input id="my_file_element" type="file" name="file_1" />
 <div id="files_list">
