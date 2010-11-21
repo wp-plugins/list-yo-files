@@ -68,8 +68,9 @@ if ( "on" == $enableUserFolders && !current_user_can( 'delete_users' ) )
 	}
 ?>
 </select>
-<input type="submit" <?php if ( 0 === $folderCount ) echo 'disabled="disabled" ';?>name="list_user_files" value="List Files" /></div>
 </p>
+<input type="submit" <?php if ( 0 === $folderCount ) echo 'disabled="disabled" ';?>name="list_user_files" value="List Files" />
+</div>
 
 <div class="clear"></div>
 </div>
@@ -92,7 +93,7 @@ else
 <p />
 <p>As always, <em>be careful</em> when deleting files!</p>
 
-<p><div>Folder to list: <input type="text" name="folder" size="35" /><input type="submit" name="list_files" value="List Files" /></div></p>
+<p><div>Folder to list: <input type="text" name="folder" size="35" /><input type="submit" class="button-primary" name="list_files" value="List Files" /></div></p>
 
 <div class="clear"></div>
 </div>

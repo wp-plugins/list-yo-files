@@ -271,6 +271,7 @@ function LYFListFiles( $filelist, $sort, $options )
 	$isIcon = ( FALSE !== stripos( $options, 'icon' ) );
 	$isWPAudio = ( FALSE !== stripos( $options, 'wpaudio' ) );
 	$isWPAudioDownloadable = ( FALSE !== stripos( $options, 'wpaudiodownloadable' ) || FALSE !== stripos( $options, 'download' ) );
+	$isAudioPlayer = ( FALSE !== stripos( $options, 'audioplayer' ) );
 
 	// Start generating the HTML
 	$retVal = "<div id='filelist$fileListCounter'>";
@@ -314,7 +315,18 @@ function LYFListFiles( $filelist, $sort, $options )
 			{
 				$onOff = ($isWPAudioDownloadable) ? $link : "0";
 				$wpaudioProcessed = do_shortcode( '[' . "wpaudio url=\"$link\" text=\" $itemName\" dl=\"$onOff\"" . ']' );
-				$retVal .= '<td>'.$wpaudioProcessed.'</td>'.PHP_EOL;
+				$retVal .= '<td>' . $wpaudioProcessed . '</td>' . PHP_EOL;
+			}
+			elseif ( TRUE === $isAudioPlayer )
+			{
+				if ( class_exists('AudioPlayer') )
+				{
+					// Hey, thanks for insert_audio_player()!  I just don't want
+					// it to echo the results.
+					global $AudioPlayer;
+					$apProcessed =  $AudioPlayer->processContent( '[audio:' . $link . ']' );
+					$retVal .= '<td>' . $apProcessed . '</td>';
+				}
 			}
 			else // This is the primary element - the linked file.
 			{
@@ -337,6 +349,23 @@ function LYFListFiles( $filelist, $sort, $options )
 		}
 		$retVal .= '</table>'.PHP_EOL;
 	}
+	elseif ( TRUE === $isAudioPlayer )
+	{
+		if ( class_exists('AudioPlayer') )
+		{
+			global $AudioPlayer;
+			// First, just generate a list of comma-separated links
+			$links = "";
+			foreach( $filelist as $itemName => $item )
+			{
+				$link = $wpurl.'/'.$item['link'];
+				$links .= "$link,";
+			}
+			$links = rtrim( $links, ',' );
+			$apProcessed =  $AudioPlayer->processContent( '[audio:' . $links . ']' );
+			$retVal .= '<td>' . $apProcessed . '</td>';
+		}
+	}
 	else
 	{
 		foreach( $filelist as $itemName => $item )
@@ -353,7 +382,6 @@ function LYFListFiles( $filelist, $sort, $options )
 				$itemName = str_replace( $ext, '', $itemName );
 			}
 
-			// Generate list elements
 			if ( $isNewWindow )
 				$files .= '<li><a href="'.$link.'" target="_blank">'.$itemName.'</a>';
 			else

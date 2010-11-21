@@ -99,7 +99,7 @@ echo $sizeMessage;
 	<h3>Selected Files <small>(You can upload up to 10 files at once)</small>:</h3>
 </div>
 
-<div class="submit"><input type="submit" <?php if ( 0 === $folderCount ) echo 'disabled="disabled" ';?>name="upload_user_files" value="Upload Files" /></div>
+<div><input type="submit" <?php if ( 0 === $folderCount ) echo 'disabled="disabled" ';?>name="upload_user_files" value="Upload Files" /></div>
 
 </form>
 
@@ -137,8 +137,8 @@ else
 <div id="files_list">
 	<h3>Selected Files <small>(You can upload up to 10 files at once)</small>:</h3>
 </div>
-
-<div class="submit"><input type="submit" name="upload_files" value="Upload Files" /></div>
+<p />
+<p><input type="submit" class="button-primary" name="upload_files" value="Upload Files" /></p>
 
 </form>
 
