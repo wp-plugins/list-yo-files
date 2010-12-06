@@ -2,7 +2,7 @@
 /*
 Plugin Name: List Yo' Files
 Plugin URI: http://www.wandererllc.com/company/plugins/listyofiles/
-Description: Adds the ability to list files by file name for a given folder with hyperlinks to each file making it downloadable.  The plugin admin pages also allow you to conveniently upload and delete files.
+Description: Lets WordPress users display lists of files in their pages and posts in a myriad of interesting ways.
 Version: 1.00
 Author: Wanderer LLC Dev Team
 */
@@ -28,6 +28,7 @@ define( 'LYF_USER_USER_FOLDER_SIZE', 'lyf_user_folder_size' );
 
 // Empty directory message
 define( 'EMPTY_FOLDER', 'No files found.' );
+define( 'PERMISSIONS_MESAGE', 'You do not have sufficient permissions to access this page. Resave your administration options to be safe.' );
 
 // Various hooks and actions for this plug-in
 add_shortcode( 'listyofiles', LYFShowAdminFiles );
@@ -136,8 +137,6 @@ function LYFDisplayFiles( $params, $mode )
 
 	// The $filelist variable will hold a list of files.
 	$filelist = LYFGenerateFileList( $folder, $link, $filter );
-
-	print_r( $fileList );
 
 	// if there are no items, this folder is empty.
 	if( !count( $filelist ) )
@@ -270,6 +269,7 @@ function LYFListFiles( $filelist, $sort, $options )
 	$isIcon = ( FALSE !== stripos( $options, 'icon' ) );
 	$isWPAudio = ( FALSE !== stripos( $options, 'wpaudio' ) );
 	$isWPAudioDownloadable = ( FALSE !== stripos( $options, 'wpaudiodownloadable' ) || FALSE !== stripos( $options, 'download' ) );
+	$isAudioPlayer = ( FALSE !== stripos( $options, 'audioplayer' ) );
 
 	// Start generating the HTML
 	$retVal = "<div id='filelist$fileListCounter'>";
@@ -313,7 +313,18 @@ function LYFListFiles( $filelist, $sort, $options )
 			{
 				$onOff = ($isWPAudioDownloadable) ? $link : "0";
 				$wpaudioProcessed = do_shortcode( '[' . "wpaudio url=\"$link\" text=\" $itemName\" dl=\"$onOff\"" . ']' );
-				$retVal .= '<td>'.$wpaudioProcessed.'</td>'.PHP_EOL;
+				$retVal .= '<td>' . $wpaudioProcessed . '</td>' . PHP_EOL;
+			}
+			elseif ( TRUE === $isAudioPlayer )
+			{
+				if ( class_exists('AudioPlayer') )
+				{
+					// Hey, thanks for insert_audio_player()!  I just don't want
+					// it to echo the results.
+					global $AudioPlayer;
+					$apProcessed =  $AudioPlayer->processContent( '[audio:' . $link . ']' );
+					$retVal .= '<td>' . $apProcessed . '</td>';
+				}
 			}
 			else // This is the primary element - the linked file.
 			{
@@ -336,6 +347,23 @@ function LYFListFiles( $filelist, $sort, $options )
 		}
 		$retVal .= '</table>'.PHP_EOL;
 	}
+	elseif ( TRUE === $isAudioPlayer )
+	{
+		if ( class_exists('AudioPlayer') )
+		{
+			global $AudioPlayer;
+			// First, just generate a list of comma-separated links
+			$links = "";
+			foreach( $filelist as $itemName => $item )
+			{
+				$link = $wpurl.'/'.$item['link'];
+				$links .= "$link,";
+			}
+			$links = rtrim( $links, ',' );
+			$apProcessed =  $AudioPlayer->processContent( '[audio:' . $links . ']' );
+			$retVal .= '<td>' . $apProcessed . '</td>';
+		}
+	}
 	else
 	{
 		foreach( $filelist as $itemName => $item )
@@ -352,7 +380,6 @@ function LYFListFiles( $filelist, $sort, $options )
 				$itemName = str_replace( $ext, '', $itemName );
 			}
 
-			// Generate list elements
 			if ( $isNewWindow )
 				$files .= '<li><a href="'.$link.'" target="_blank">'.$itemName.'</a>';
 			else
@@ -423,14 +450,17 @@ function LYFHandleAdminPage()
 	$enableUserFolders = get_option( LYF_ENABLE_USER_FOLDERS );
 	$enableSimpleHelp = get_option( LYF_ENABLE_SIMPLE_HELP );
 	$minimumRole = get_option( LYF_MINIMUM_ROLE );
+	if ( 0 == strlen( $minimumRole ) )
+		$minimumRole = 'Administrator';
 	$subfolderCount = get_option( LYF_USER_SUBFOLDER_LIMIT );
 	$folderSize = get_option( LYF_USER_USER_FOLDER_SIZE );
 
 	// The user must be an admin to see this page, no matter what is selected
 	// in the admin page.
-	if ( !current_user_can( 'delete_users' ) )
+	$roles = LYFGetRolesAndCapabilities();
+	if ( !current_user_can( $roles['Administrator'] ) )
 	{
-    	wp_die( __('You do not have sufficient permissions to access this page.') );
+    	wp_die( __( PERMISSIONS_MESAGE ) );
   	}
 
 	if ( isset( $_POST['save_admin_settings'] ) )
@@ -485,12 +515,14 @@ function LYFHandleAboutPage()
 {
 	// Get variables for checking access
 	$minimumRole = get_option( LYF_MINIMUM_ROLE );
+	if ( 0 == strlen( $minimumRole ) )
+		$minimumRole = 'Administrator';
 	$roles = LYFGetRolesAndCapabilities();
 
 	// Stop the user if they don't have permission
 	if ( !current_user_can( $roles[$minimumRole] ) )
 	{
-    	wp_die( __('You do not have sufficient permissions to access this page.') );
+    	wp_die( __( PERMISSIONS_MESAGE ) );
   	}
 
 	// Include the settings page here.
@@ -507,12 +539,14 @@ function LYFHandleUploadFilesPage()
 {
 	// Get variables for checking access
 	$minimumRole = get_option( LYF_MINIMUM_ROLE );
+	if ( 0 == strlen( $minimumRole ) )
+		$minimumRole = 'Administrator';
 	$roles = LYFGetRolesAndCapabilities();
 
 	// Stop the user if they don't have permission
 	if ( !current_user_can( $roles[$minimumRole] ) )
 	{
-    	wp_die( __('You do not have sufficient permissions to access this page.') );
+    	wp_die( __( PERMISSIONS_MESAGE ) );
   	}
 
   	// If the upload_files POST option is set, then files are being uploaded
@@ -637,12 +671,14 @@ function LYFHandleDeleteFilesPage()
 {
 	// Get variables for checking access
 	$minimumRole = get_option( LYF_MINIMUM_ROLE );
+	if ( 0 == strlen( $minimumRole ) )
+		$minimumRole = 'Administrator';
 	$roles = LYFGetRolesAndCapabilities();
 
 	// Stop the user if they don't have permission
 	if ( !current_user_can( $roles[$minimumRole] ) )
 	{
-    	wp_die( __('You do not have sufficient permissions to access this page.') );
+    	wp_die( __( PERMISSIONS_MESAGE ) );
   	}
 
   	// This file will handle the deleting when "Delete" is pressed.

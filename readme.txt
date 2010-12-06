@@ -3,29 +3,36 @@ Plugin Name: List Yo' Files
 Contributors: Wanderer LLC
 Plugin URI: http://www.wandererllc.com/company/plugins/listyofiles/
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TC7MECF2DJHHY&lc=US
-Tags: admin, files, upload, download, FTP, display, list, show, ul, li, table
+Tags: admin, files, MP3, mp3 player, music, music player, Audio Player, WPAudio, Flash, audio, embed, upload, download, FTP, display, list, show, ul, li, table, users, sub folders, membership
 Requires at least: 2.8
 Tested up to: 3.0
-Stable tag: 0.83
+Stable tag: 1.00
 
 == Description ==
 
-Adds the ability to list files by file name for the given folder with hyperlinks to each file making it downloadable.  You can include file size, date, and even an icon as part of the file list.  You can sort by filename, size, or date (and reverse).  The plugin admin pages also allow you to conveniently upload and delete files.  This is a easy way for organizations, groups, and clubs to share files with members.  For example, Home Owner Associations have used this plugin to list their minutes.  Music websites use this plugin to show a list of downloadable sample files to visitors.  
+Allows WordPress users to easily display lists of files in their pages and posts.  Supply the folder and various options and you can generate a list of files with hyperlinks to each file making it downloadable.  Extensive options let you sort and filter files.  You can include file size, date, and even an icon as part of the file list.  You can even display lists of MP3s in popular audio players.  The plugin admin pages also allow you to conveniently upload and delete files.  This is a easy way for organizations, groups, and clubs to share files with members.  For example, Home Owner Associations have used this plugin to list their minutes.  Music websites use this plugin to allow their users to show off their own music.  
 
 == Screenshots ==
 
-1. The Upload Files UI provides a convenient place to upload files to a specified folder.
-2. The Delete Files UI provides you a basic way to delete files in a given folder.  For a more powerful solution, use any popular FTP client.   
+1. The admin Upload Files UI provides a convenient place to upload files to a specified folder.
+2. The admin Delete Files UI provides you a basic way to delete files in a given folder.  For a more powerful solution, use any popular FTP client.
+3. Admins can manage their settings on this small page.  Enabling "User Folders" allows non-admin users to create their own user folders, upload files to them, and display them.
+4. The non-admin Upload Files UI provides a simple way to create their own user folders and upload files to them.  Administrators can set restrictions on the number of folders, total size, and allowed file types.
+5. The non-admin Delete Files UI provides a quick and easy way to delete files and folders.   
 
 == Frequently Asked Questions ==
 
 = What's the secret code for displaying a list of files in my pages or posts? =
 
-To use, add the List Yo' Files shortcode ("listyofiles") enclosed in brackets to the text of your page or post and specify the folder name with the "folder" directive.  For example:  [listyofiles folder="wp-content/gallery/my-new-gallery"]  The plugin will then generate a list of files with a link to each so that every file is downloadable.  See the plugin About page for more instructions.
+To use, add the List Yo' Files shortcode ("listyofiles") enclosed in brackets to the text of your page or post and specify the folder name with the "folder" directive.  For example:  [listyofiles folder="wp-content/gallery/my-new-gallery"]  The plugin will then generate a list of files with a link to each so that every file is downloadable.  If you've enabled User Folders, non-admin users will have access to express shortcodes that allow them to display files with just a little typing.  See the plugin Usage page for extensive instructions.
+
+= Is it possible to sort files, or restrict certain files from being displayed? =
+
+It sure is.  To sort files, use the "sort" option.  To only display certain file types, use the "filter" option.  See the plugin Usage page for extensive instructions.
 
 = The file icon that I want to display isn't available.  What can I do? =
 
-You can upload a 16x16 png file for the file type that you'd like to support.  The name of the file needs to match the extension that you want to display.  All letters should be lowercase.  For example, if you want to provide an icon for mp3 files, you would need to upload a file called "mp3.png" to the plugin's "icons" folder.
+You can upload a 16x16 png file for the file type that you'd like to support.  The name of the file needs to match the extension that you want to display.  All letters should be lowercase.  For example, if you want to provide an icon for mp3 files, you would need to upload a file called "mp3.png" to the List Yo' Files plugin's "icons" folder.
 
 If you want to share a single icon across many different file types, then, for now, you need to duplicate each png file for each extension that you want to support.
 
@@ -34,6 +41,12 @@ If you want to share a single icon across many different file types, then, for n
 Just go to <http://www.wandererllc.com/company/plugins/listyofiles/> and follow the instructions.
 
 == Changelog ==
+
+= 1.0 =
+
+* Added the concept of "User Folders", which is useful for sites that have members who want to manage their own set of files.  This is an extensive feature which enables new, simplified UI for non-admin users.
+* Added support for displaying lists of mp3s in popular audio players.
+* Improved the UI.
 
 = 0.83 =
 
@@ -61,6 +74,10 @@ Just go to <http://www.wandererllc.com/company/plugins/listyofiles/> and follow 
 
 == Upgrade Notice ==
 
+= 1.0 =
+
+Recommended for all users.  Greatly expands the plugin's feature set.
+
 = 0.83 =
 
 Recommended for users of 0.82.  Fixes non-critical bugs.
@@ -76,6 +93,12 @@ Recommended for all users.  Fixed the Uploads page so that 10 files can be uploa
 = 0.8 =
 
 Recommended for all users.  Several feature updates plus fixed this issue of displaying WordPress's root files if no "folder" argument is specified.
+
+== Acknowledgements ==
+
+There are many people who have suggested features for List Yo' Files.  Special consideration needs to be made to the following people who had an active role in contributing by providing a detailed design, monetary sponsorship, or offering to test and provide useful feedback:
+
+1) [Underground Music Nation](http://www.undergroundmusicnation.com/) for supporting the User Folders and MP3 Player Integration features.
 
 == License ==
 
