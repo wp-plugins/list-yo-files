@@ -2,7 +2,7 @@
 /*
 Plugin Name: List Yo' Files
 Plugin URI: http://www.wandererllc.com/company/plugins/listyofiles/
-Description: Adds the ability to list files by file name for a given folder with hyperlinks to each file making it downloadable.  The plugin can also optimize listing mp3 files into an attractive player.  The plugin admin pages also allow you to conveniently upload and delete files.
+Description: Lets WordPress users display lists of files in their pages and posts in a myriad of interesting ways.
 Version: 1.00
 Author: Wanderer LLC Dev Team
 */
@@ -137,8 +137,6 @@ function LYFDisplayFiles( $params, $mode )
 
 	// The $filelist variable will hold a list of files.
 	$filelist = LYFGenerateFileList( $folder, $link, $filter );
-
-	print_r( $fileList );
 
 	// if there are no items, this folder is empty.
 	if( !count( $filelist ) )

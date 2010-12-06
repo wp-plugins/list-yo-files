@@ -82,7 +82,7 @@ else
 {
 ?>
 
-<div id="delete_files" class="postbox" style="width:450px">
+<div id="delete_files" class="postbox" style="width:450px;height:200px">
 <h3 class='hndle'><span>Delete Files</span></h3>
 <div class="inside">
 
