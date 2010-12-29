@@ -6,11 +6,11 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: admin, files, MP3, mp3 player, music, music player, Audio Player, WPAudio, Flash, audio, embed, upload, download, FTP, display, list, show, ul, li, table, users, sub folders, membership
 Requires at least: 2.8
 Tested up to: 3.0
-Stable tag: 1.00
+Stable tag: 1.01
 
 == Description ==
 
-Allows WordPress users to easily display lists of files in their pages and posts.  Supply the folder and various options and you can generate a list of files with hyperlinks to each file making it downloadable.  Extensive options let you sort and filter files.  You can include file size, date, and even an icon as part of the file list.  You can even display lists of MP3s in popular audio players.  The plugin admin pages also allow you to conveniently upload and delete files.  This is a easy way for organizations, groups, and clubs to share files with members.  For example, Home Owner Associations have used this plugin to list their minutes.  Music websites use this plugin to allow their users to show off their own music.  
+Allows users to easily display lists of files in their pages and posts.  Supply the folder and various options and you can generate a list of files with hyperlinks to each file making it downloadable.  Extensive options let you sort and filter files.  You can include file size, date, and even an icon as part of the file list.  You can even display lists of MP3s in popular audio players.  The plugin admin pages also allow you to conveniently upload and delete files.  This is a easy way for organizations, groups, and clubs to share files with members.  For example, Home Owner Associations have used this plugin to list their minutes.  Music websites use this plugin to allow their users to show off their music.  
 
 == Screenshots ==
 
@@ -42,7 +42,12 @@ Just go to <http://www.wandererllc.com/company/plugins/listyofiles/> and follow 
 
 == Changelog ==
 
-= 1.0 =
+= 1.01 =
+
+* Bug fix for user folders when no folder size restrictions were in place.
+* Some minor cleanup.
+
+= 1.00 =
 
 * Added the concept of "User Folders", which is useful for sites that have members who want to manage their own set of files.  This is an extensive feature which enables new, simplified UI for non-admin users.
 * Added support for displaying lists of mp3s in popular audio players.
@@ -74,7 +79,11 @@ Just go to <http://www.wandererllc.com/company/plugins/listyofiles/> and follow 
 
 == Upgrade Notice ==
 
-= 1.0 =
+= 1.01 =
+
+Recommended for users who use the "user folders" feature.
+
+= 1.00 =
 
 Recommended for all users.  Greatly expands the plugin's feature set.
 

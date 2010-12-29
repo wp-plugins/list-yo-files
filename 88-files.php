@@ -3,7 +3,7 @@
 Plugin Name: List Yo' Files
 Plugin URI: http://www.wandererllc.com/company/plugins/listyofiles/
 Description: Lets WordPress users display lists of files in their pages and posts in a myriad of interesting ways.
-Version: 1.00
+Version: 1.01
 Author: Wanderer LLC Dev Team
 */
 
@@ -26,7 +26,8 @@ define( 'LYF_ALLOWED_FILE_TYPES', 'lyf_allowed_file_types' );
 define( 'LYF_USER_SUBFOLDER_LIMIT', 'lyf_subfolder_limit' );
 define( 'LYF_USER_USER_FOLDER_SIZE', 'lyf_user_folder_size' );
 
-// Empty directory message
+// Other strings and messages
+define( 'ADMINISTRATOR', 'Administrator' );
 define( 'EMPTY_FOLDER', 'No files found.' );
 define( 'PERMISSIONS_MESAGE', 'You do not have sufficient permissions to access this page. Resave your administration options to be safe.' );
 
@@ -425,7 +426,7 @@ function LYFAddSettingsPage()
 	// Get the minimum role for uploading and deleting
 	$minimumRole = get_option( LYF_MINIMUM_ROLE );
 	if ( 0 == strlen( $minimumRole ) )
-		$minimumRole = 'Administrator';
+		$minimumRole = ADMINISTRATOR;
 
 	// Get the master list of roles and capabilities for comparing;
 	$roles = LYFGetRolesAndCapabilities();
@@ -434,7 +435,7 @@ function LYFAddSettingsPage()
     add_submenu_page( basename(__FILE__) , 'Usage', 'Usage', $roles[$minimumRole], basename(__FILE__), LYFHandleAboutPage );
 	add_submenu_page( basename(__FILE__), 'Upload Files', 'Upload Files', $roles[$minimumRole], 'Upload', LYFHandleUploadFilesPage );
     add_submenu_page( basename(__FILE__), 'Delete Files', 'Delete Files', $roles[$minimumRole], 'Delete', LYFHandleDeleteFilesPage );
-    add_submenu_page( basename(__FILE__), 'Administer List Yo\' Files', 'Administer', $roles['Administrator'] , 'Administer', LYFHandleAdminPage );
+    add_submenu_page( basename(__FILE__), 'Administer List Yo\' Files', 'Administer', $roles[ADMINISTRATOR] , 'Administer', LYFHandleAdminPage );
 }
 
 //
@@ -451,14 +452,14 @@ function LYFHandleAdminPage()
 	$enableSimpleHelp = get_option( LYF_ENABLE_SIMPLE_HELP );
 	$minimumRole = get_option( LYF_MINIMUM_ROLE );
 	if ( 0 == strlen( $minimumRole ) )
-		$minimumRole = 'Administrator';
+		$minimumRole = ADMINISTRATOR;
 	$subfolderCount = get_option( LYF_USER_SUBFOLDER_LIMIT );
 	$folderSize = get_option( LYF_USER_USER_FOLDER_SIZE );
 
 	// The user must be an admin to see this page, no matter what is selected
 	// in the admin page.
 	$roles = LYFGetRolesAndCapabilities();
-	if ( !current_user_can( $roles['Administrator'] ) )
+	if ( !current_user_can( $roles[ADMINISTRATOR] ) )
 	{
     	wp_die( __( PERMISSIONS_MESAGE ) );
   	}
@@ -500,6 +501,8 @@ function LYFHandleAdminPage()
 			$folderSize = $_POST['folder_size'];
 			update_option( LYF_USER_USER_FOLDER_SIZE, $folderSize );
 		}
+
+		echo '<div id="message" class="updated fade">Successfully saved your settings.</div>';
 	}
 
 	// Include the settings page here.
@@ -516,7 +519,7 @@ function LYFHandleAboutPage()
 	// Get variables for checking access
 	$minimumRole = get_option( LYF_MINIMUM_ROLE );
 	if ( 0 == strlen( $minimumRole ) )
-		$minimumRole = 'Administrator';
+		$minimumRole = ADMINISTRATOR;
 	$roles = LYFGetRolesAndCapabilities();
 
 	// Stop the user if they don't have permission
@@ -540,7 +543,7 @@ function LYFHandleUploadFilesPage()
 	// Get variables for checking access
 	$minimumRole = get_option( LYF_MINIMUM_ROLE );
 	if ( 0 == strlen( $minimumRole ) )
-		$minimumRole = 'Administrator';
+		$minimumRole = ADMINISTRATOR;
 	$roles = LYFGetRolesAndCapabilities();
 
 	// Stop the user if they don't have permission
@@ -556,7 +559,7 @@ function LYFHandleUploadFilesPage()
 		check_admin_referer( 'filez-nonce' );
 
 		$uploadFolder = ABSPATH . $_POST['upload_folder'];
-		LYFUploadFiles( $uploadFolder, TRUE );
+		LYFUploadFiles( $uploadFolder );
 	}
 
 	// This is the handler for the users other than admins
@@ -570,6 +573,8 @@ function LYFHandleUploadFilesPage()
 
 		// Save the selected folder
 		$selectedUploadFolder = $_POST['upload_folder'];
+		// Get the users's base upload folder
+		$uploadFolder = LYFGetUserUploadFolder( TRUE );
 
 		// Check that the user is not trying to upload a file when there's no user
 		// folder.
@@ -583,9 +588,7 @@ function LYFHandleUploadFilesPage()
 		$maxFolderSize = get_option( LYF_USER_USER_FOLDER_SIZE );
 		if ( 0 !== strlen( $maxFolderSize ) && $canUpload )
 		{
-			$uploadFolder = LYFGetUserUploadFolder( TRUE );
 			$filesSize = LYFGetFolderSize( $uploadFolder );
-
 			$sizeInKB = $maxFolderSize * 1024 * 1024;
 
 			if ( $sizeInKB < $filesSize )
@@ -599,7 +602,7 @@ function LYFHandleUploadFilesPage()
 		{
 			// Now, tack on the folder they want to upload to.
 			$uploadFolder .= $selectedUploadFolder;
-			LYFUploadFiles( $uploadFolder, FALSE );
+			LYFUploadFiles( $uploadFolder );
 		}
 	}
 
@@ -672,7 +675,7 @@ function LYFHandleDeleteFilesPage()
 	// Get variables for checking access
 	$minimumRole = get_option( LYF_MINIMUM_ROLE );
 	if ( 0 == strlen( $minimumRole ) )
-		$minimumRole = 'Administrator';
+		$minimumRole = ADMINISTRATOR;
 	$roles = LYFGetRolesAndCapabilities();
 
 	// Stop the user if they don't have permission
