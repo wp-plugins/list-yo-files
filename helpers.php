@@ -225,7 +225,7 @@ function LYFCreateUserFolder( $folderName )
 //
 function LYFGetRolesAndCapabilities()
 {
-	$rolesArray = array('Administrator' => 'delete_users',
+	$rolesArray = array(ADMINISTRATOR => 'delete_users',
 						'Editor' => 'publish_pages',
 						'Author' => 'upload_files',
 						'Contributor' => 'edit_posts',
@@ -317,7 +317,7 @@ function LYFIsValidFolderName( $folderName )
 //
 //	This function uploads a list of files into a folder.
 //
-function LYFUploadFiles( $folder, $allowCreateFolder )
+function LYFUploadFiles( $folder )
 {
 	// Get these variables.  Needed to determine if there are restrictions on
 	// extensions and if there is still room to upload.
@@ -338,10 +338,10 @@ function LYFUploadFiles( $folder, $allowCreateFolder )
 //	$res = opendir( $folder );
 	if ( FALSE === $res )
 	{
-		// Is the caller allowing folders to be created?
-		if ( FALSE == $allowCreateFolder )
+		$roles = LYFGetRolesAndCapabilities();
+		if ( !current_user_can( $roles[ADMINISTRATOR] ) )
 		{
-			echo '<p>The folder does not exist.  Create the folder first, then upload your files.</p></div>';
+			echo '<p>There was a problem accessing the folder: \''.$folder.'\'.</p></div>';
 			return;
 		}
 
