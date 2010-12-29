@@ -68,7 +68,7 @@ print '> Show simple help for users <small>(shows non-admins only the most basic
 </p>
 </fieldset>
 
-<div class="primary_button"><input type="submit" name="save_admin_settings" value="Save Settings" /></div>
+<div><input type="submit" class="button-primary" name="save_admin_settings" value="Save Settings" /></div>
 
 <div class="clear"></div>
 </div>

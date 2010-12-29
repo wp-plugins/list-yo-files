@@ -149,8 +149,9 @@ else
 				<br>e. <em>hide_extension</em> - Hides file extensions.</br>
 				<br>f. <em>icon</em> - Works only with the <em>table</em> option.  This option displays a file
 				icon to the left of the filename.</br>
-				<br>g. <em>wpaudio</em> - <em>Requires the WPAudio plugin</em>.  This option transforms the filename from a download link into an mp3 player.  <strong>Note:</strong> Use a filter to restrict files to mp3s.</br>
-				<br>h. <em>wpaudiodownloadable</em> - <em>Requires the WPAudio plugin</em>.  This option only works if <em>wpaudio</em> is also specified.  It adds a download link for the song.</br>
+				<br>g. <em>wpaudio</em> - <em>Requires the <a href="http://wordpress.org/extend/plugins/wpaudio-mp3-player/" target="_blank">WPAudio plugin</a></em>.  This option transforms the filename from a download link into the WPAudio mp3 player.  <strong>Note:</strong> Use a filter to restrict files to mp3s.</br>
+				<br>h. <em>wpaudiodownloadable</em> - <em>Requires the <a href="http://wordpress.org/extend/plugins/wpaudio-mp3-player/" target="_blank">WPAudio plugin</a></em>.  This option only works if <em>wpaudio</em> is also specified.  It adds a download link for the song.</br>
+				<br>i. <em>audioplayer</em> - <em>Requires the <a href="http://wordpress.org/extend/plugins/audio-player/" target="_blank">Audio Player plugin</a></em>. This option transforms the filename from a download link into the WPAudio mp3 player.  <strong>Note:</strong> Use a filter to restrict files to mp3s. If you specify <em>table</em>, then each song will display in an individual player.  Otherwise, the songs will appear as a group in a single player.</br>
 			</fieldset>
 			<p />
 			</fieldset>
@@ -223,16 +224,15 @@ else
 	 	<p>
 	 	<table border="0" cellpadding="10">
 	 	<td>
-    	<img src="<?php echo $pluginFolder;?>help.png"><a style="text-decoration:none;" href="http://www.wandererllc.com/company/plugins/listyofiles/"> Support and Help</a><br /><br />
-		<a style="text-decoration:none;" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TC7MECF2DJHHY&lc=US"><img src="<?php echo $pluginFolder;?>paypal.gif"></a>
+    		<img src="<?php echo $pluginFolder;?>help.png"><a style="text-decoration:none;" href="http://www.wandererllc.com/company/plugins/listyofiles/" target="_blank"> Support and Help</a><br /><br />
+			<a style="text-decoration:none;" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TC7MECF2DJHHY&lc=US" target="_blank"><img src="<?php echo $pluginFolder;?>paypal.gif"></a>
 		</td>
-		<td>
-    	<a href="http://member.wishlistproducts.com/wlp.php?af=1080050"><img src="http://www.wishlistproducts.com/affiliatetools/images/WLM_120X60.gif" border="0"></a><br />
-    	</td>
+		<td><a href="http://member.wishlistproducts.com/wlp.php?af=1080050" target="_blank"><img src="http://www.wishlistproducts.com/affiliatetools/images/WLM_120X60.gif" border="0"></a><br /></td>
+    	<td><a href="http://www.woothemes.com/amember/go.php?r=39127&i=b18" target="_blank"><img src="http://woothemes.com/ads/120x90c.jpg" border=0 alt="WooThemes - WordPress themes for everyone" width=120 height=90></a></td>
     	</table>
     	<br />
-    	Contact <a href="http://www.wandererllc.com/company/contact/">Wanderer LLC</a> to sponsor a feature or write a plugin just for you.<br /><br />
-    	Leave a good rating or comments for <a href="http://wordpress.org/extend/plugins/list-yo-files/">List Yo' Files</a>.
+    	Contact <a href="http://www.wandererllc.com/company/contact/" target="_blank">Wanderer LLC</a> to sponsor a feature or write a plugin just for you.<br /><br />
+    	Leave a good rating or comments for <a href="http://wordpress.org/extend/plugins/list-yo-files/" target="_blank">this plugin</a>.
 		</p>
 	</div>
 </div>
@@ -272,9 +272,10 @@ else
 			support.  The name of the file needs to match the extension that you want to display.  All letters should be lowercase.  For
 			example, if you want to provide an icon for mp3 files, you would need to upload a file called
 			"mp3.png" to the plugin's "icons" folder.</br>
-			<br>g. <em>wpaudio</em> - <em>Requires the WPAudio plugin</em>.  This option transforms the filename from a download link into an mp3 player.  <strong>Note:</strong> Use a filter to restrict files to mp3s.</br>
-			<br>h. <em>wpaudiodownloadable</em> - <em>Requires the WPAudio plugin</em>.  This option only works if <em>wpaudio</em> is also specified.  It adds a download link for the song.
+			<br>g. <em>wpaudio</em> - <em>Requires the <a href="http://wordpress.org/extend/plugins/wpaudio-mp3-player/" target="_blank">WPAudio plugin</a></em>.  This option transforms the filename from a download link into an mp3 player.  <strong>Note:</strong> Use a filter to restrict files to mp3s.</br>
+			<br>h. <em>wpaudiodownloadable</em> - <em>Requires the <a href="http://wordpress.org/extend/plugins/wpaudio-mp3-player/" target="_blank">WPAudio plugin</a></em>.  This option only works if <em>wpaudio</em> is also specified.  It adds a download link for the song.
 			You can also use the "download" option as well for the same result.</br>
+			<br>i. <em>audioplayer</em> - <em>Requires the <a href="http://wordpress.org/extend/plugins/audio-player/" target="_blank">Audio Player plugin</a></em>. This option transforms the filename from a download link into the WPAudio mp3 player.  <strong>Note:</strong> Use a filter to restrict files to mp3s. If you specify <em>table</em>, then each song will display in an individual player.  Otherwise, the songs will appear as a group in a single player.</br>
 		</fieldset>
 		<p />
 		</fieldset>
