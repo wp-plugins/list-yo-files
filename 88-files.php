@@ -3,7 +3,7 @@
 Plugin Name: List Yo' Files
 Plugin URI: http://www.wandererllc.com/company/plugins/listyofiles/
 Description: Lets WordPress users display lists of files in their pages and posts in a myriad of interesting ways.
-Version: 1.01
+Version: 1.02
 Author: Wanderer LLC Dev Team
 */
 
@@ -750,7 +750,7 @@ function LYFHandleDeleteFilesPage()
 		// Security check
 		check_admin_referer( 'filez-nonce' );
 
-		$selectedListFolder = $_POST['folder'];
+		$selectedListFolder = $_POST['folder_to_delete'];
 
 		// Generate the folder to list
 		$deleteFolder = LYFGetUserUploadFolder( TRUE );

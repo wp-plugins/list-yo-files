@@ -6,7 +6,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: admin, files, MP3, mp3 player, music, music player, Audio Player, WPAudio, Flash, audio, embed, upload, download, FTP, display, list, show, ul, li, table, users, sub folders, membership
 Requires at least: 2.8
 Tested up to: 3.0
-Stable tag: 1.01
+Stable tag: 1.02
 
 == Description ==
 
@@ -41,6 +41,10 @@ If you want to share a single icon across many different file types, then, for n
 Just go to <http://www.wandererllc.com/company/plugins/listyofiles/> and follow the instructions.
 
 == Changelog ==
+
+= 1.02 =
+
+* Delete folder (user folders feature) bug fixed.
 
 = 1.01 =
 
@@ -79,6 +83,10 @@ Just go to <http://www.wandererllc.com/company/plugins/listyofiles/> and follow 
 
 == Upgrade Notice ==
 
+= 1.02 =
+
+Recommended for users who use the "user folders" feature.
+
 = 1.01 =
 
 Recommended for users who use the "user folders" feature.
@@ -108,6 +116,7 @@ Recommended for all users.  Several feature updates plus fixed this issue of dis
 There are many people who have suggested features for List Yo' Files.  Special consideration needs to be made to the following people who had an active role in contributing by providing a detailed design, monetary sponsorship, or offering to test and provide useful feedback:
 
 1) [Underground Music Nation](http://www.undergroundmusicnation.com/) for supporting the User Folders and MP3 Player Integration features.
+2) [MKKH Marketing](http://mkkhmarketing.com/) and Matthew Hart for excellent testing on the User Folders upload and delete features.
 
 == License ==
 
