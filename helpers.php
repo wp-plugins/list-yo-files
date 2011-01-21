@@ -415,21 +415,14 @@ function LYFGenerateFolderList( $path )
 	$folders = array();
 
 	// Scan the folder
-	$contents = scandir( $path );
-	foreach ( $contents as $item )
+//	$contents = scandir( $path );
+//	foreach ( $contents as $item )
+	foreach ( glob( $path . '*', GLOB_ONLYDIR ) as $item )
 	{
 		// Ignore all files starting with a .
 		if ( substr( $item, 0, 1 ) != '.' )
 		{
-			// Only add folders - is_dir() is problematic for me, using opendir() and
-			// closedir() instead.  is_dir() works fine on OS X, but seems to behave
-			// incorrectly on Ubuntu with absolute paths.
-			$dir = opendir( $path . '/' . $item );
-			if ( FALSE != $dir )
-			{
-				$folders[] = $item;
-				closedir( $dir );
-			}
+				$folders[] = basename( $item );
 		}
 	}
 	return $folders;

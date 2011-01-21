@@ -3,7 +3,7 @@
 Plugin Name: List Yo' Files
 Plugin URI: http://www.wandererllc.com/company/plugins/listyofiles/
 Description: Lets WordPress users display lists of files in their pages and posts in a myriad of interesting ways.
-Version: 1.02
+Version: 1.10
 Author: Wanderer LLC Dev Team
 */
 
@@ -299,7 +299,7 @@ function LYFListFiles( $filelist, $sort, $options )
 				// If a file for this extension doesn't exist, then load the generic icon
 				if ( FALSE === $theFile )
 					$extensionFile = $pluginFolder . "icons/generic.png";
-				$retVal .= '<td><img src="'.$extensionFile.'"></td>'.PHP_EOL;
+				$retVal .= '<td width="16"><img src="'.$extensionFile.'"></td>'.PHP_EOL;
 			}
 
 			// Strip extension if necessary
@@ -430,8 +430,9 @@ function LYFAddSettingsPage()
 
 	// Get the master list of roles and capabilities for comparing;
 	$roles = LYFGetRolesAndCapabilities();
-
-	add_menu_page( $pageText, $menuText, $roles[$minimumRole], basename(__FILE__), LYFHandleAboutPage );
+	
+	$pluginFolder = get_bloginfo('wpurl') . '/wp-content/plugins/' . dirname( plugin_basename( __FILE__ ) ) . '/';
+	add_menu_page( $pageText, $menuText, $roles[$minimumRole], basename(__FILE__), LYFHandleAboutPage, $pluginFolder . 'dn-up-2.png' );
     add_submenu_page( basename(__FILE__) , 'Usage', 'Usage', $roles[$minimumRole], basename(__FILE__), LYFHandleAboutPage );
 	add_submenu_page( basename(__FILE__), 'Upload Files', 'Upload Files', $roles[$minimumRole], 'Upload', LYFHandleUploadFilesPage );
     add_submenu_page( basename(__FILE__), 'Delete Files', 'Delete Files', $roles[$minimumRole], 'Delete', LYFHandleDeleteFilesPage );
