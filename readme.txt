@@ -6,7 +6,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: admin, files, MP3, mp3 player, music, music player, Audio Player, WPAudio, Flash, audio, embed, upload, download, FTP, display, list, show, ul, li, table, users, sub folders, membership
 Requires at least: 2.8
 Tested up to: 3.0
-Stable tag: 1.02
+Stable tag: 1.10
 
 == Description ==
 
@@ -45,6 +45,7 @@ Just go to <http://www.wandererllc.com/company/plugins/listyofiles/> and follow 
 = 1.10 =
 
 * Using a different method for folder iteration to remove potential warnings when folder permissions aren't maxed out at 777.
+* Added width alignment on icon column for table lists.
 * Added a menu icon.
 
 = 1.02 =
