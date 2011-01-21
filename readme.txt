@@ -42,6 +42,11 @@ Just go to <http://www.wandererllc.com/company/plugins/listyofiles/> and follow 
 
 == Changelog ==
 
+= 1.10 =
+
+* Using a different method for folder iteration to remove potential warnings when folder permissions aren't maxed out at 777.
+* Added a menu icon.
+
 = 1.02 =
 
 * Delete folder (user folders feature) bug fixed.
@@ -83,6 +88,10 @@ Just go to <http://www.wandererllc.com/company/plugins/listyofiles/> and follow 
 
 == Upgrade Notice ==
 
+= 1.10 =
+
+Minor upgrade which eliminates potential warnings when folder permissions aren't optimal.
+
 = 1.02 =
 
 Recommended for users who use the "user folders" feature.
@@ -117,6 +126,7 @@ There are many people who have suggested features for List Yo' Files.  Special c
 
 1) [Underground Music Nation](http://www.undergroundmusicnation.com/) for supporting the User Folders and MP3 Player Integration features.
 2) [MKKH Marketing](http://mkkhmarketing.com/) and Matthew Hart for excellent testing on the User Folders upload and delete features.
+3) [Christ Church of Conroe](http://christchurchconroe.org/) and Ron Frasier for good testing on the upload feature. 
 
 == License ==
 
