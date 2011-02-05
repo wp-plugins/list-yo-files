@@ -173,7 +173,7 @@ function LYFGenerateFileList( $path, $linkTarget, $filter )
 	$path = ABSPATH . $path;
 
 	// Attempt to open the folder
-	if ( ( $p = openDir( $path ) ) !== FALSE )
+	if ( ( $p = opendir( $path ) ) !== FALSE )
 	{
 		// Read the directory for items inside it.
 		while ( ( $item = readDir( $p ) ) !== false )
@@ -283,7 +283,8 @@ function LYFListFiles( $filelist, $sort, $options )
 		{
 			// Get file variables
 			$size = LYFFormatFileSize( $item['size'] );
-			$date = date( "F j, Y", $item['date'] );
+			//$date = date( "F j, Y", $item['date'] );
+			$date = date( "n/j/Y g:i a", $item['date'] ); // <-suggested by user ("ListYoFiles v 1.02" Jan 2011 email)
 			$link = $wpurl.'/'.$item['link'];
 
 			// Generate list elements
@@ -430,7 +431,7 @@ function LYFAddSettingsPage()
 
 	// Get the master list of roles and capabilities for comparing;
 	$roles = LYFGetRolesAndCapabilities();
-	
+
 	$pluginFolder = get_bloginfo('wpurl') . '/wp-content/plugins/' . dirname( plugin_basename( __FILE__ ) ) . '/';
 	add_menu_page( $pageText, $menuText, $roles[$minimumRole], basename(__FILE__), LYFHandleAboutPage, $pluginFolder . 'dn-up-2.png' );
     add_submenu_page( basename(__FILE__) , 'Usage', 'Usage', $roles[$minimumRole], basename(__FILE__), LYFHandleAboutPage );
