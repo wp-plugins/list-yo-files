@@ -173,7 +173,7 @@ function LYFGenerateFileList( $path, $linkTarget, $filter )
 	$path = ABSPATH . $path;
 
 	// Attempt to open the folder
-	if ( ( $p = openDir( $path ) ) !== FALSE )
+	if ( ( $p = opendir( $path ) ) !== FALSE )
 	{
 		// Read the directory for items inside it.
 		while ( ( $item = readDir( $p ) ) !== false )
