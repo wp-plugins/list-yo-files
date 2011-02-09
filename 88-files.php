@@ -8,10 +8,12 @@ Author: Wanderer LLC Dev Team
 */
 
 require_once "helpers.php";
+require_once "upload_ui.php";
 
 // Important ID names
 define( 'LYF_LIST_YO_FILES', 'List Yo\' Files' );
 define( 'LYF_USER_FOLDER', 'wp-content/list_yo_files_user_folders/' );
+define( 'LYF_DOMAIN', 'list-yo-files' );
 define( 'LYF_ADMIN', 1 );
 define( 'LYF_USER', 2 );
 define( 'LYF_USER_MP3S', 3 );
@@ -28,6 +30,8 @@ define( 'LYF_USER_USER_FOLDER_SIZE', 'lyf_user_folder_size' );
 
 // Other strings and messages
 define( 'ADMINISTRATOR', 'Administrator' );
+
+// Localized
 define( 'EMPTY_FOLDER', 'No files found.' );
 define( 'PERMISSIONS_MESAGE', 'You do not have sufficient permissions to access this page. Resave your administration options to be safe.' );
 
@@ -35,19 +39,33 @@ define( 'PERMISSIONS_MESAGE', 'You do not have sufficient permissions to access 
 add_shortcode( 'listyofiles', LYFShowAdminFiles );
 add_shortcode( 'showfiles', LYFShowUserFiles );
 add_shortcode( 'showmp3s', LYFShowMP3Files );
+add_shortcode( 'listyofiles_uploadform', LYFUploadForm );
 
 add_action( 'admin_menu', LYFAddSettingsPage );
 add_filter( 'plugin_row_meta', 'AddListYoFilesPluginLinks', 10, 2 ); // Expand the links on the plugins page
 
-// Inspired by NextGen Gallery by Alex Rabe
+// Add extra links to the plugin summary on the WordPress plugins menu
 function AddListYoFilesPluginLinks($links, $file)
 {
 	if ( $file == plugin_basename(__FILE__) )
 	{
-		$links[] = '<a href="http://wordpress.org/extend/plugins/list-yo-files/">' . __('Overview', 'list-yo-files') . '</a>';
-		$links[] = '<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TC7MECF2DJHHY&lc=US">' . __('Donate', 'list-yo-files') . '</a>';
+		$links[] = '<a href="http://wordpress.org/extend/plugins/list-yo-files/">' . __('Overview') . '</a>';
+		$links[] = '<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TC7MECF2DJHHY&lc=US">' . __('Donate') . '</a>';
 	}
 	return $links;
+}
+
+// Localization support
+function LoadDomain()
+{
+	// Get the current language
+	$locale = get_locale();
+	
+	// Locate the translation file		
+	$mofile = WP_PLUGIN_DIR.'/'.plugin_basename( dirname(__FILE__) ) . '/lang/' . LYF_DOMAIN . '-' . $locale . '.mo';		
+	
+	// Load the translation
+	load_textdomain( LYF_DOMAIN, $mofile ); 	
 }
 
 // Global counter for distinguishing multiple lists
@@ -75,6 +93,17 @@ function LYFShowUserFiles( $params )
 function LYFShowMP3Files( $params )
 {
 	return LYFDisplayFiles( $params, LYF_USER_MP3S );
+}
+
+//
+//	LYFUploadForm
+//
+function LYFUploadForm( $params )
+{
+	// Store the various options values in an array.
+	$values = shortcode_atts( array( 'options' => '' ), $params );
+	$options = $values['options'];
+	return LYFGetUploadFormCode( $options );
 }
 
 //
@@ -127,7 +156,9 @@ function LYFDisplayFiles( $params, $mode )
 
 	// Warn the user if there is no "folder" argument
 	if ( empty( $folder ) )
-		return "<p><em>Warning:  There is no 'folder' specified.</em></p>";
+	{
+		return '<p><em>' . __('Warning: There is no "folder" shortcode specified.') . '</em></p>';
+	}
 
 	// "link" isn't currently exposed, so this is most likely just blank.  So, set
 	// it to $folder.
@@ -143,7 +174,7 @@ function LYFDisplayFiles( $params, $mode )
 	if( !count( $filelist ) )
 	{
 		// Show the user that there are no files.
-		echo '<p><em>'.EMPTY_FOLDER.'</em></p>';
+		echo '<p><em>'. __(EMPTY_FOLDER) .'</em></p>';
 	}
 	else
 	{
@@ -372,7 +403,8 @@ function LYFListFiles( $filelist, $sort, $options )
 		{
 			// Get file variables
 			$size = LYFFormatFileSize( $item['size'] );
-			$date = date( "F j, Y", $item['date'] );
+			//$date = date( "F j, Y", $item['date'] );
+			$date = date( "n/j/Y g:i a", $item['date'] );
 			$link = $wpurl.'/'.$item['link'];
 
 			// Strip extension if necessary
@@ -388,10 +420,10 @@ function LYFListFiles( $filelist, $sort, $options )
 				$files .= '<li><a href="'.$link.'">'.$itemName.'</a>';
 
 			if ( $isFilesize )
-				$files .= ' Size: ' . $size . PHP_EOL;
+				$files .= __('Size: ') . $size . PHP_EOL;
 
 			if ( $isDate )
-				$files .= ' Date: ' . $date . PHP_EOL;
+				$files .= __('Date: ') . $date . PHP_EOL;
 
 			$files .='</li>'.PHP_EOL;
 		}
@@ -434,10 +466,10 @@ function LYFAddSettingsPage()
 
 	$pluginFolder = get_bloginfo('wpurl') . '/wp-content/plugins/' . dirname( plugin_basename( __FILE__ ) ) . '/';
 	add_menu_page( $pageText, $menuText, $roles[$minimumRole], basename(__FILE__), LYFHandleAboutPage, $pluginFolder . 'dn-up-2.png' );
-    add_submenu_page( basename(__FILE__) , 'Usage', 'Usage', $roles[$minimumRole], basename(__FILE__), LYFHandleAboutPage );
-	add_submenu_page( basename(__FILE__), 'Upload Files', 'Upload Files', $roles[$minimumRole], 'Upload', LYFHandleUploadFilesPage );
-    add_submenu_page( basename(__FILE__), 'Delete Files', 'Delete Files', $roles[$minimumRole], 'Delete', LYFHandleDeleteFilesPage );
-    add_submenu_page( basename(__FILE__), 'Administer List Yo\' Files', 'Administer', $roles[ADMINISTRATOR] , 'Administer', LYFHandleAdminPage );
+    add_submenu_page( basename(__FILE__), __('Usage'), __('Usage'), $roles[$minimumRole], basename(__FILE__), LYFHandleAboutPage );
+	add_submenu_page( basename(__FILE__), __('Upload Files'), __('Upload Files'), $roles[$minimumRole], __('Upload'), LYFHandleUploadFilesPage );
+    add_submenu_page( basename(__FILE__), __('Delete Files'), __('Delete Files'), $roles[$minimumRole], __('Delete'), LYFHandleDeleteFilesPage );
+    add_submenu_page( basename(__FILE__), __('Administer') . ' List Yo\' Files', __('Administer'), $roles[ADMINISTRATOR] , __('Administer'), LYFHandleAdminPage );
 }
 
 //
@@ -504,7 +536,7 @@ function LYFHandleAdminPage()
 			update_option( LYF_USER_USER_FOLDER_SIZE, $folderSize );
 		}
 
-		echo '<div id="message" class="updated fade">Successfully saved your settings.</div>';
+		echo '<div id="message" class="updated fade">' . __('Successfully saved your settings.') . '</div>';
 	}
 
 	// Include the settings page here.
@@ -582,7 +614,7 @@ function LYFHandleUploadFilesPage()
 		// folder.
 		if ( 0 === strlen( $selectedUploadFolder ) )
 		{
-			echo '<div id="message" class="updated fade"><strong>Failed</strong> to upload. You need to create and choose a subfolder to upload to.</div>';
+			echo '<div id="message" class="updated fade">' . __('<strong>Failed</strong> to upload. You need to create and choose a subfolder to upload to.') . '</div>';
 			$canUpload = FALSE;
 		}
 
@@ -595,7 +627,7 @@ function LYFHandleUploadFilesPage()
 
 			if ( $sizeInKB < $filesSize )
 			{
-				echo '<div id="message" class="updated fade"><strong>Failed</strong> to upload. You have already uploaded your size quota.</div>';
+				echo '<div id="message" class="updated fade">' . __('<strong>Failed</strong> to upload. You have already uploaded your size quota.') . '</div>';
 				$canUpload = FALSE;
 			}
 		}
@@ -635,7 +667,7 @@ function LYFHandleUploadFilesPage()
 			// more folders to be created.
 			if ( $folderCount >= $folderLimit )
 			{
-				$message = '<div id="message" class="updated fade"><strong>Failed</strong> to create the subfolder.  You have already reached your subfolder limit.</div>';
+				$message = '<div id="message" class="updated fade">' . __('<strong>Failed</strong> to create the subfolder.  You have already reached your subfolder limit.') . '</div>';
 				$allowCreate = FALSE;
 			}
 		}
@@ -706,7 +738,7 @@ function LYFHandleDeleteFilesPage()
 		if( !count( $filelist ) )
 		{
 			// Show the user an empty folder message.
-			echo '<p><em>'.EMPTY_FOLDER.'</em></p>';
+			echo '<p><em>' . __(EMPTY_FOLDER) . '</em></p>';
 		}
 		else
 		{
@@ -738,7 +770,7 @@ function LYFHandleDeleteFilesPage()
 		if( !count( $filelist ) )
 		{
 			// Show the user an empty folder message.
-			echo '<p><em>'.EMPTY_FOLDER.'</em></p>';
+			echo '<p><em>' . __(EMPTY_FOLDER) . '</em></p>';
 		}
 		else
 		{
@@ -762,11 +794,13 @@ function LYFHandleDeleteFilesPage()
 
 		if ( !$deleteResult )
 		{
-			echo '<div id="message" class="updated fade"><p><strong>Failed</strong> to delete the folder "' . $selectedListFolder . '".</p></div>';
+			$failedMessage = sprintf( __("<strong>Failed</strong> to delete the folder %s"), $selectedListFolder );
+			echo '<div id="message" class="updated fade"><p>' . $failedMessage . '</p></div>';
 		}
 		else
 		{
-			echo '<div id="message" class="updated fade"><p>The folder "' . $selectedListFolder . '" has been deleted.</p></div>';
+			$deletedMessage = sprintf( __("The folder %s has been deleted."), $selectedListFolder );
+			echo '<div id="message" class="updated fade"><p>' . $deletedMessage . '</p></div>';
 		}
 
 		// Here's the source file which displays the page.  This is shown first because delete options are
@@ -806,7 +840,7 @@ function LYFHandleDeleteFilesPage()
 		if( !count( $filelist ) )
 		{
 			// Show the empty message.
-			echo '<p><em>'.EMPTY_FOLDER.'</em></p>';
+			echo '<p><em>' . __(EMPTY_FOLDER) . '</em></p>';
 		}
 		else
 		{

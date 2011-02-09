@@ -35,7 +35,7 @@ if ( "on" == $enableUserFolders && !current_user_can( 'delete_users' ) )
 			global $current_user;
 			get_currentuserinfo();
 
-			$message = '<div id="message" class="updated fade"><p>Problem creating your user folder! ';
+			$message = '<div id="message" class="updated fade"><p>' . __('Problem creating your user folder! ');
 			$message .= LYFConvertError( $result, $current_user->user_login );
 			$message .= '</p></div>';
 			echo $message;
