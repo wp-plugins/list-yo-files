@@ -315,7 +315,9 @@ function LYFIsValidFolderName( $folderName )
 //
 //	LYFUploadFiles()
 //
-//	This function uploads a list of files into a folder.
+//	This function uploads a list of files into a folder.  It returns a string
+//	that the calling function can use to show to the user, on both success
+//	and failure.
 //
 function LYFUploadFiles( $folder )
 {
@@ -326,7 +328,7 @@ function LYFUploadFiles( $folder )
 	$maxFolderSize = get_option( LYF_USER_USER_FOLDER_SIZE );
 
 	// Using the "updated fade" class to make the resulting message prominent.
-	echo '<div id="message" class="updated fade">';
+	$output = '<div id="message" class="updated fade">';
 
 	// Count the number of legit files found (for error reporting)
 	$count = 0;
@@ -342,15 +344,15 @@ function LYFUploadFiles( $folder )
 		if ( !current_user_can( $roles[ADMINISTRATOR] ) )
 		{
 			$accessMessage = sprintf( __('There was a problem accessing the folder: "%s".'), $folder );
-			echo '<p>' . $accessMessage . '</p></div>';
-			return;
+			$output .= '<p>' . $accessMessage . '</p></div>';
+			return $output;
 		}
 
 		// If not, create the folder.  Let the user know if something goes wrong.
 		if ( !mkdir( $folder ) )
 		{
-			echo '<p>' . __('<strong>Failed</strong> to create the folder.  Make sure your server file permissions are correct.') . '</p></div>';
-			return;
+			$output .= '<p>' . __('<strong>Failed</strong> to create the folder.  Make sure your server file permissions are correct.') . '</p></div>';
+			return $output;
 		}
 	}
 
@@ -370,7 +372,7 @@ function LYFUploadFiles( $folder )
 			if ( FALSE === stristr( $allowedFileTypes, $ext ) )
 			{
 				$failedMessage = sprintf( __("<strong>Failed</strong> to upload %1$s because '%2$s' files are not allowed."), $file['name'], $ext );
-				echo '<p>' . $failedMessage . '</p>';
+				$output .= '<p>' . $failedMessage . '</p>';
 				continue;
 			}
 		}
@@ -379,7 +381,7 @@ function LYFUploadFiles( $folder )
 		{
 			$errorString = LYFConvertUploadError( $file['error'] );
 			$failedMessage = sprintf( __("<strong>Failed</strong> to upload %1$s because %2$s."), $file['name'], $errorString );
-			echo '<p>' . $failedMessage . '</p>';
+			$output .= '<p>' . $failedMessage . '</p>';
 			continue;
 		}
 
@@ -393,22 +395,23 @@ function LYFUploadFiles( $folder )
 		if ( $success )
 		{
 			$successMessage = sprintf( __("<strong>Successfully</strong> uploaded %s."), $file['name'] );
-			echo "<p>$successMessage</p>";
+			$output .= "<p>$successMessage</p>";
 		}
 		else
 		{
 			$failedMessage = sprintf( __("<strong>Failed</strong> to copy over the file %s. Check your folder permissions."), $file['name'] );
-			echo "<p>$failedMessage</p>";
+			$output .= "<p>$failedMessage</p>";
 		}
 	}
 
 	// Show an error on an empty list of files
 	if ( 0 == $count )
 	{
-		echo '<p>' . __('There are no files to upload.  Browse for files to upload first.') . '</p>';
+		$output .= '<p>' . __('There are no files to upload.  Browse for files to upload first.') . '</p>';
 	}
 
-	echo '</div>';
+	$output .= '</div>';
+	return $output;
 }
 
 //

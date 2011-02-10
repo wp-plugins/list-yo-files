@@ -60,12 +60,12 @@ function LoadDomain()
 {
 	// Get the current language
 	$locale = get_locale();
-	
-	// Locate the translation file		
-	$mofile = WP_PLUGIN_DIR.'/'.plugin_basename( dirname(__FILE__) ) . '/lang/' . LYF_DOMAIN . '-' . $locale . '.mo';		
-	
+
+	// Locate the translation file
+	$mofile = WP_PLUGIN_DIR.'/'.plugin_basename( dirname(__FILE__) ) . '/lang/' . LYF_DOMAIN . '-' . $locale . '.mo';
+
 	// Load the translation
-	load_textdomain( LYF_DOMAIN, $mofile ); 	
+	load_textdomain( LYF_DOMAIN, $mofile );
 }
 
 // Global counter for distinguishing multiple lists
@@ -489,6 +489,7 @@ function LYFHandleAdminPage()
 		$minimumRole = ADMINISTRATOR;
 	$subfolderCount = get_option( LYF_USER_SUBFOLDER_LIMIT );
 	$folderSize = get_option( LYF_USER_USER_FOLDER_SIZE );
+	$notificationEmails = 'thepaul@pwwffsss.com';
 
 	// The user must be an admin to see this page, no matter what is selected
 	// in the admin page.
@@ -593,7 +594,8 @@ function LYFHandleUploadFilesPage()
 		check_admin_referer( 'filez-nonce' );
 
 		$uploadFolder = ABSPATH . $_POST['upload_folder'];
-		LYFUploadFiles( $uploadFolder );
+		$output = LYFUploadFiles( $uploadFolder );
+		echo $output;
 	}
 
 	// This is the handler for the users other than admins
@@ -636,7 +638,8 @@ function LYFHandleUploadFilesPage()
 		{
 			// Now, tack on the folder they want to upload to.
 			$uploadFolder .= $selectedUploadFolder;
-			LYFUploadFiles( $uploadFolder );
+			$output = LYFUploadFiles( $uploadFolder );
+			echo $output;
 		}
 	}
 

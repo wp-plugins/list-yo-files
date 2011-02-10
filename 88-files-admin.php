@@ -26,7 +26,7 @@ if ( "on" === $restrictTypes )
 print '> Restrict uploads to the following file types (no periods, separated by commas): ';
 ?>
 
-<input type="text" name="file_types" value="<?php echo $allowedFileTypes;?>"size="25" /> <small>For example: 'mp3,wav,aif,mov'. Leave blank for any file type.</small></p>
+<input type="text" name="file_types" value="<?php echo $allowedFileTypes;?>"size="25" /> <small>For example: 'mp3,wav,aif,mov'.</small></p>
 
 <?php
 print '<p><input type=CHECKBOX name="on_enable_folders" ';
@@ -36,13 +36,6 @@ print '> Enable user folders</p>';
 ?>
 
 <fieldset style="margin-left: 20px;">
-
-<?php
-print '<p><input type=CHECKBOX name="on_enable_simple_help" ';
-if ( "on" === $enableSimpleHelp )
-	print 'checked';
-print '> Show simple help for users <small>(shows non-admins only the most basic options)</small></p>';
-?>
 
 <p>Choose the minimum role that can manage files:  <select name="minimum_role">
 <?php
@@ -66,7 +59,19 @@ print '> Show simple help for users <small>(shows non-admins only the most basic
 <p>Upload space per user (in MB): <input type="text" name="folder_size" value="<?php echo $folderSize;?>"size="10" />
 <small>Leave empty for unlimited</small>
 </p>
+
+<?php
+print '<p><input type=CHECKBOX name="on_enable_simple_help" ';
+if ( "on" === $enableSimpleHelp )
+	print 'checked';
+print '> Show simple help for users <small>(shows non-admins only the most basic options)</small></p>';
+?>
+
 </fieldset>
+
+<p>If you'd like anyone to be notified by email when a file is uploaded, enter the addresses here (separated by commas):</p>
+<input type="text" name="notification_emails" value="<?php echo $notificationEmails;?>"size="50" />
+<p><small>Leave this blank if you wish no emails to be sent.</small></p>
 
 <div><input type="submit" class="button-primary" name="save_admin_settings" value="Save Settings" /></div>
 
