@@ -319,11 +319,16 @@ function LYFIsValidFolderName( $folderName )
 //	that the calling function can use to show to the user, on both success
 //	and failure.
 //
+//	This function also sends out an email if the user wants email notifications.
+//	Even though the division of responsibility isn't good, that's the way it
+//	has to be for now.  Hopefully, there will be an improvement later.
+//
 function LYFUploadFiles( $folder )
 {
 	// Get these variables.  Needed to determine if there are restrictions on
 	// extensions and if there is still room to upload.
 	$restrictTypes = get_option( LYF_ENABLE_ALLOWED_FILE_TYPES );
+	$emailNotifications = get_option( LYF_ENABLE_EMAIL_NOTIFICATIONS );
 	$allowedFileTypes = get_option( LYF_ALLOWED_FILE_TYPES );
 	$maxFolderSize = get_option( LYF_USER_USER_FOLDER_SIZE );
 
@@ -355,6 +360,9 @@ function LYFUploadFiles( $folder )
 			return $output;
 		}
 	}
+	
+	// Create a list of uploaded files
+	$uploadedFiles = array();
 
 	// There are up to 10 files that can be uploaded yet.
 	foreach ( $_FILES as $file )
@@ -371,7 +379,7 @@ function LYFUploadFiles( $folder )
 			$ext = substr( strrchr( $file['name'], '.' ), 1 );
 			if ( FALSE === stristr( $allowedFileTypes, $ext ) )
 			{
-				$failedMessage = sprintf( __("<strong>Failed</strong> to upload %1$s because '%2$s' files are not allowed."), $file['name'], $ext );
+				$failedMessage = sprintf( __("<strong>Failed</strong> to upload '%s' because '%s' files are not allowed."), $file['name'], $ext );
 				$output .= '<p>' . $failedMessage . '</p>';
 				continue;
 			}
@@ -380,7 +388,7 @@ function LYFUploadFiles( $folder )
 		if ( 0 != $file['error'] )
 		{
 			$errorString = LYFConvertUploadError( $file['error'] );
-			$failedMessage = sprintf( __("<strong>Failed</strong> to upload %1$s because %2$s."), $file['name'], $errorString );
+			$failedMessage = sprintf( __("<strong>Failed</strong> to upload '%s' because %s."), $file['name'], $errorString );
 			$output .= '<p>' . $failedMessage . '</p>';
 			continue;
 		}
@@ -396,6 +404,8 @@ function LYFUploadFiles( $folder )
 		{
 			$successMessage = sprintf( __("<strong>Successfully</strong> uploaded %s."), $file['name'] );
 			$output .= "<p>$successMessage</p>";
+			$uploadedFiles [] = $file['name'];
+			$uploadedCount++;
 		}
 		else
 		{
@@ -411,6 +421,37 @@ function LYFUploadFiles( $folder )
 	}
 
 	$output .= '</div>';
+	
+	// Send out an email
+	if ( !empty( $uploadedFiles ) && "on" === $emailNotifications )
+	{
+		$user = wp_get_current_user();
+		$blogName = get_bloginfo( 'name' );
+		$uploadedMessage = '';
+		foreach ( $uploadedFiles as $file )
+		{
+			$uploadedMessage .= '"' . $file . '", ';
+		}
+		$uploadedMessage = trim( $uploadedMessage, ', ' );
+		
+		// Format the email text
+		$body  = __('User') . ' "' . $user->user_login . '" ';
+		$body .= sprintf( _n( __("uploaded %d file:"), __("uploaded %d files:"), $uploadedCount ), $uploadedCount );
+		$body .= '  ' . $uploadedMessage;
+		
+		// Format the subject
+		$subject = sprintf( __("Uploaded files notification for %2"), $blogName );
+		
+		// Send the email to the addresses that the admin saved in the List Yo' Files settings
+		$addresses = get_option( LYF_NOTIFICATION_EMAILS );
+		
+		// This is required; use the admin's address as the reply-to address.
+		$headers = 'From: ' . get_bloginfo( 'admin_email' ) . "\r\n" . 'Reply-To: webmaster@example.com' . "\r\n" . 'X-Mailer: PHP/' . phpversion();
+		
+		// Send the mail
+		mail( $addresses, $subject, $body, $headers );
+	}
+	
 	return $output;
 }
 

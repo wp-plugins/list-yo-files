@@ -27,6 +27,8 @@ define( 'LYF_ENABLE_ALLOWED_FILE_TYPES', 'lyf_enable_allowed_file_types' );
 define( 'LYF_ALLOWED_FILE_TYPES', 'lyf_allowed_file_types' );
 define( 'LYF_USER_SUBFOLDER_LIMIT', 'lyf_subfolder_limit' );
 define( 'LYF_USER_USER_FOLDER_SIZE', 'lyf_user_folder_size' );
+define( 'LYF_ENABLE_EMAIL_NOTIFICATIONS', 'lyf_email_notifications' );
+define( 'LYF_NOTIFICATION_EMAILS', 'lyf_notification_emails' );
 
 // Other strings and messages
 define( 'ADMINISTRATOR', 'Administrator' );
@@ -489,7 +491,8 @@ function LYFHandleAdminPage()
 		$minimumRole = ADMINISTRATOR;
 	$subfolderCount = get_option( LYF_USER_SUBFOLDER_LIMIT );
 	$folderSize = get_option( LYF_USER_USER_FOLDER_SIZE );
-	$notificationEmails = 'thepaul@pwwffsss.com';
+	$notificationEmails = get_option( LYF_NOTIFICATION_EMAILS );
+	$emailNotifications = get_option( LYF_ENABLE_EMAIL_NOTIFICATIONS );
 
 	// The user must be an admin to see this page, no matter what is selected
 	// in the admin page.
@@ -512,17 +515,14 @@ function LYFHandleAdminPage()
 		$restrictTypes = $_POST['on_restrict_types'];
 		update_option( LYF_ENABLE_ALLOWED_FILE_TYPES, $restrictTypes );
 
-		if ( "on" == $restrictTypes )
-		{
-			$allowedFileTypes = $_POST['file_types'];
-			update_option( LYF_ALLOWED_FILE_TYPES, $allowedFileTypes );
-		}
+		$allowedFileTypes = $_POST['file_types'];
+		update_option( LYF_ALLOWED_FILE_TYPES, $allowedFileTypes );
 
 		// Save various user folder options
 		$enableUserFolders = $_POST['on_enable_folders'];
 		update_option( LYF_ENABLE_USER_FOLDERS, $enableUserFolders );
 
-		if ( "on" == $enableUserFolders )
+		if ( "on" === $enableUserFolders )
 		{
 			$enableSimpleHelp = $_POST['on_enable_simple_help'];
 			update_option( LYF_ENABLE_SIMPLE_HELP, $enableSimpleHelp );
@@ -536,6 +536,13 @@ function LYFHandleAdminPage()
 			$folderSize = $_POST['folder_size'];
 			update_option( LYF_USER_USER_FOLDER_SIZE, $folderSize );
 		}
+		
+		// Email notifications
+		$emailNotifications = $_POST['email_notifications'];
+		update_option( LYF_ENABLE_EMAIL_NOTIFICATIONS, $emailNotifications );
+
+		$notificationEmails = $_POST['notification_emails'];
+		update_option( LYF_NOTIFICATION_EMAILS, $notificationEmails );
 
 		echo '<div id="message" class="updated fade">' . __('Successfully saved your settings.') . '</div>';
 	}

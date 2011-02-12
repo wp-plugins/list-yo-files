@@ -40,6 +40,18 @@ function LYFGetUploadFormCode( $options )
 	// Variable to return
 	$output = '';
 
+	//
+	// See if the user is logged in.  If not, get out.
+	//
+	  
+	$user = wp_get_current_user();
+	if ( 0 === $user->ID ) 
+	{
+		$message = __('You must first log in before uploading files.');
+		$output = '<p>$message</p>';
+		return $output;
+    }
+    
 	// This is the handler for the users other than admins
 	if ( isset($_POST['upload_user_files'] ) )
 	{
@@ -52,32 +64,64 @@ function LYFGetUploadFormCode( $options )
 		// Get the users's base upload folder
 		$uploadFolder = LYFGetUserUploadFolder( TRUE );
 
-		// Check that the user is not trying to upload a file when there's no user
-		// folder.
-		if ( 0 === strlen( $uploadFolder ) )
+		//
+		// Next, see if "User Folders" is enabled
+		//
+
+		// Variable to see if user folders is turned ON
+		$enableUserFolders = get_option( LYF_ENABLE_USER_FOLDERS );
+		
+		if ( "on" !== $enableUserFolders )
 		{
-			$output .= '<div id="message" class="updated fade">' . __('<strong>Failed</strong> to upload. You need to create and choose a subfolder to upload to.') . '</div>';
-			$canUpload = FALSE;
+			$output .= '<div id="message" class="updated fade">' . __('<strong>Failed</strong> to upload. Contact your admin about enabling your user folder.') . '</div>';
 		}
-
-		// Any folder size restrictions?
-		$maxFolderSize = get_option( LYF_USER_USER_FOLDER_SIZE );
-		if ( 0 !== strlen( $maxFolderSize ) && $canUpload )
+		else
 		{
-			$filesSize = LYFGetFolderSize( $uploadFolder );
-			$sizeInKB = $maxFolderSize * 1024 * 1024;
 
-			if ( $sizeInKB < $filesSize )
+			//    
+		    // Next, get the user's upload folder.  Create it if it doesn't exist yet.
+		    //
+		
+			$userFolder = LYFGetUserUploadFolder( TRUE );
+		
+			// If the folder doesn't exist and user folders has been enabled in the
+			// admin panel, then create the user folder.
+			if ( !is_dir( $userFolder ) )
 			{
-				$output .= '<div id="message" class="updated fade">' . __('<strong>Failed</strong> to upload. You have already uploaded your size quota.') . '</div>';
+				$result = LYFCreateUserFolder( $userFolder );
+			}
+			
+			//
+			//	Do the regular work now
+			//
+	
+			// Check that the user is not trying to upload a file when there's no user
+			// folder.
+			if ( 0 === strlen( $uploadFolder ) )
+			{
+				$output .= '<div id="message" class="updated fade">' . __('<strong>Failed</strong> to upload. You need to create and choose a subfolder to upload to.') . '</div>';
 				$canUpload = FALSE;
 			}
-		}
-
-		if ( $canUpload )
-		{
-			// Now, tack on the folder they want to upload to.
-			$output .= LYFUploadFiles( $uploadFolder );
+	
+			// Any folder size restrictions?
+			$maxFolderSize = get_option( LYF_USER_USER_FOLDER_SIZE );
+			if ( 0 !== strlen( $maxFolderSize ) && $canUpload )
+			{
+				$filesSize = LYFGetFolderSize( $uploadFolder );
+				$sizeInKB = $maxFolderSize * 1024 * 1024;
+	
+				if ( $sizeInKB < $filesSize )
+				{
+					$output .= '<div id="message" class="updated fade">' . __('<strong>Failed</strong> to upload. You have already uploaded your size quota.') . '</div>';
+					$canUpload = FALSE;
+				}
+			}
+	
+			if ( $canUpload )
+			{
+				// Now, tack on the folder they want to upload to.
+				$output .= LYFUploadFiles( $uploadFolder );
+			}
 		}
 	}
 
@@ -101,26 +145,32 @@ function LYFGetUploadFormCode( $options )
 		$uploadFolder = LYFGetUserUploadFolder( TRUE );
 		$filesSize = LYFGetFolderSize( $uploadFolder );
 		$sizeMessage = LYFFormatFileSize( $filesSize );
-		$output .= '<p>You are allowed to upload ';
-
+		
+		$allowedMessage = '';
 		if ( 0 == strlen( $maxFolderSize ) )
-			$output .= 'as many files as you want.  ';
+			$allowedMessage = 'You are allowed to upload as many files as you want.';
 		else
-			$output .= "up to $maxFolderSize MB in files.  ";
+			$allowedMessage = sprintf( __("You are allowed to upload up to %s MB in files."), $maxFolderSize );
+		
+		$usingMessage = sprintf( __("You are currently using %s."), $sizeMessage );
 
-		$output .= 'You are currently using ' . $sizeMessage . '.</p>';
+		$output .= '<p>' . $allowedMessage . '  ' . $usingMessage . '</p>';
 	}
 
 	$output .= '<input id="my_file_element" type="file" name="file_1" />
 	<div id="files_list">
-		<p>Selected Files <small>(You can upload up to 10 files at once)</small>:</p>
+		<p>';
+	$output .= __('Selected Files <small>(You can upload up to 10 files at once)</small>:');
+	$output .='</p>
 	</div>
 	<div><input type="submit"';
 
 	if ( 0 === $folderCount )
 		$output .= 'disabled="disabled" ';
 
-	$output .= 'name="upload_user_files" value="Upload Files" /></div>
+	$output .= 'name="upload_user_files" value="';
+	$output .= __('Upload Files');
+	$output .= '" /></div>
 	</form>
 	<script>
 		<!-- Create an instance of the multiSelector class, pass it the output target and the max number of files -->

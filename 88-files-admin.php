@@ -14,30 +14,32 @@ include_once "information-box.php"
 ?>
 
 <div id="listyofiles_admin" class="postbox" style="width:450px">
-<h3 class='hndle'><span>List Yo' Files Administration:</span></h3>
+<h3 class='hndle'><span>List Yo' Files <?php _e('Administration:'); ?></span></h3>
 <div class="inside">
 
-<p>Rename the master menu to: <input type="text" name="menu_name" value="<?php echo $menuText;?>"size="25" /></p>
+<p><?php _e('Rename the master menu to:'); ?> <input type="text" name="menu_name" value="<?php echo $menuText;?>"size="25" /></p>
 
+<p><input type=CHECKBOX name="on_restrict_types"
 <?php
-print '<p><input type=CHECKBOX name="on_restrict_types" ';
 if ( "on" === $restrictTypes )
 	print 'checked';
-print '> Restrict uploads to the following file types (no periods, separated by commas): ';
 ?>
+> <?php _e( 'Restrict uploads to the following file types (no periods, separated by commas):'); ?> 
 
-<input type="text" name="file_types" value="<?php echo $allowedFileTypes;?>"size="25" /> <small>For example: 'mp3,wav,aif,mov'.</small></p>
+<input type="text" name="file_types" value="<?php echo $allowedFileTypes;?>"size="25" /> <small><?php _e('For example: "mp3,wav,aif,mov".'); ?></small></p>
 
 <?php
 print '<p><input type=CHECKBOX name="on_enable_folders" ';
 if ( "on" === $enableUserFolders )
 	print 'checked';
-print '> Enable user folders</p>';
+print '> ';
+_e('Enable user folders'); 
+print '</p>';
 ?>
 
 <fieldset style="margin-left: 20px;">
 
-<p>Choose the minimum role that can manage files:  <select name="minimum_role">
+<p><?php _e('Choose the minimum <a href="http://codex.wordpress.org/Roles_and_Capabilities" target="_blank">role</a> that can manage files:'); ?>  <select name="minimum_role">
 <?php
 	$roles = LYFGetRolesAndCapabilities();
 	// Loop through each sub folder
@@ -49,31 +51,37 @@ print '> Enable user folders</p>';
 	}
 ?>
 </select>
-<br><small>The least powerful role is 'Subscriber', the most powerful is 'Administrator'.</small></br>
+<br><small><?php _e('The least powerful role is "Subscriber", the most powerful is "Administrator".'); ?></small></br>
 </p>
 
-<p>Limit the number of user folders to: <input type="text" name="num_folders" value="<?php echo $subfolderCount;?>"size="10" />
-<small>Leave empty for unlimited</small>
+<p><?php _e('Limit the number of user folders to:'); ?> <input type="text" name="num_folders" value="<?php echo $subfolderCount;?>"size="10" />
+<small><?php _e('Leave empty for unlimited'); ?></small>
 </p>
 
-<p>Upload space per user (in MB): <input type="text" name="folder_size" value="<?php echo $folderSize;?>"size="10" />
-<small>Leave empty for unlimited</small>
+<p><?php _e('Upload space per user (in MB):'); ?> <input type="text" name="folder_size" value="<?php echo $folderSize;?>"size="10" />
+<small><?php _e('Leave empty for unlimited'); ?></small>
 </p>
 
 <?php
 print '<p><input type=CHECKBOX name="on_enable_simple_help" ';
 if ( "on" === $enableSimpleHelp )
 	print 'checked';
-print '> Show simple help for users <small>(shows non-admins only the most basic options)</small></p>';
+print '> ';
+_e('Show simple help for users <small>(shows non-admins only the most basic options)');
+print '</small></p>';
 ?>
 
 </fieldset>
 
-<p>If you'd like anyone to be notified by email when a file is uploaded, enter the addresses here (separated by commas):</p>
-<input type="text" name="notification_emails" value="<?php echo $notificationEmails;?>"size="50" />
-<p><small>Leave this blank if you wish no emails to be sent.</small></p>
+<p><input type=CHECKBOX name="email_notifications" 
+<?php
+if ( "on" === $emailNotifications )
+	print 'checked';
+?>
+> <?php _e('Enable notification by email when a file is uploaded. Enter the notification email addresses here (separated by commas):'); ?></p>
+<input type="text" name="notification_emails" value="<?php echo $notificationEmails;?>"size="65" />
 
-<div><input type="submit" class="button-primary" name="save_admin_settings" value="Save Settings" /></div>
+<div><input type="submit" class="button-primary" name="save_admin_settings" value="<?php _e('Save Settings'); ?>" /></div>
 
 <div class="clear"></div>
 </div>

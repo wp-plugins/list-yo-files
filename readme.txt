@@ -36,6 +36,10 @@ You can upload a 16x16 png file for the file type that you'd like to support.  T
 
 If you want to share a single icon across many different file types, then, for now, you need to duplicate each png file for each extension that you want to support.
 
+= Why are my users getting the message "Failed to upload. Contact your admin about enabling your user folder." when uploading on the front end? =
+
+Log in as admin to your WordPress site and ensure that the "Enable User Folders" checkbox is checked.  Without this option set, List Yo' Files doesn't know where to put the user's files.
+
 = How do I make suggestions or report bugs for this plugin? =
 
 Just go to <http://www.wandererllc.com/company/plugins/listyofiles/> and follow the instructions.

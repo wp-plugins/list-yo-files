@@ -14,7 +14,7 @@ $enableUserFolders = get_option( LYF_ENABLE_USER_FOLDERS );
 $subfolderCount = get_option( LYF_USER_SUBFOLDER_LIMIT );
 if ( empty( $subfolderCount ) )
 {
-	$subfolderCount = "unlimited";
+	$subfolderCount = __("unlimited");
 }
 
 // What's the size quota?
