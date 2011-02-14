@@ -105,7 +105,10 @@ function LYFUploadForm( $params )
 	// Store the various options values in an array.
 	$values = shortcode_atts( array( 'options' => '' ), $params );
 	$options = $values['options'];
-	return LYFGetUploadFormCode( $options );
+	$output =  LYFStartForm();
+	$output .= LYFGetUploadFormCode( $options );
+	$ouptut .= LYFEndForm();
+	return $output;
 }
 
 //

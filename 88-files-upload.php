@@ -41,35 +41,35 @@ if ( "on" == $enableUserFolders && !current_user_can( 'delete_users' ) )
 ?>
 
 <div id="create_folders" class="postbox" style="width:450px;height:165px">
-<h3 class='hndle'><span>Create a Subfolder</span></h3>
+<h3 class='hndle'><span><?php _e('Create a Subfolder'); ?></span></h3>
 <div class="inside">
 
-<p>You must create at least one subfolder to upload your files to.  You may create <?php echo $subfolderCount;?> folders.</p>
-<p>Folder name: <input type="text" name="folder" size="35" /></p><div class="submit"><input type="submit" name="create_folder" value="Create Folder" /></div>
+<p><?php _e('You must create at least one subfolder to upload your files to.'); ?>  <?php printf( _e('You may create %i folders.'), $subfolderCount ); ?></p>
+<p>Folder name: <input type="text" name="folder" size="35" /></p><div class="submit"><input type="submit" name="create_folder" value="<?php _e('Create Folder'); ?>" /></div>
 
 <div class="clear"></div>
 </div>
 </div>
 
 <div id="upload_files" class="postbox" style="width:450px">
-<h3 class='hndle'><span>Upload Files</span></h3>
+<h3 class='hndle'><span><?php _e('Upload Files'); ?></span></h3>
 <div class="inside">
 
-<p>You are allowed to upload
 <?php
-if ( 0 == strlen( $maxFolderSize ) )
-	echo "as many files as you want.  ";
-else
-	echo "up to $maxFolderSize MB in files.  ";
+	$uploadFolder = LYFGetUserUploadFolder( TRUE );
+	$filesSize = LYFGetFolderSize( $uploadFolder );
+	$sizeMessage = LYFFormatFileSize( $filesSize );
+	$allowedMessage = '';
+
+	if ( 0 == strlen( $maxFolderSize ) )
+		$allowedMessage = 'You are allowed to upload as many files as you want.';
+	else
+		$allowedMessage = sprintf( __("You are allowed to upload up to %s MB in files."), $maxFolderSize );
+	
+	$usingMessage = sprintf( __("You are currently using %s."), $sizeMessage );
+
+	echo '<p>' . $allowedMessage . '  ' . $usingMessage . '</p>';
 ?>
-You are currently using
-<?php
-$uploadFolder = LYFGetUserUploadFolder( TRUE );
-$filesSize = LYFGetFolderSize( $uploadFolder );
-$sizeMessage = LYFFormatFileSize( $filesSize );
-echo $sizeMessage;
-?>
-.</p>
 
 <p>Select a folder to upload files to:  <select name="upload_folder">
 
@@ -96,10 +96,10 @@ echo $sizeMessage;
 
 <input id="my_file_element" type="file" name="file_1" />
 <div id="files_list">
-	<h3>Selected Files <small>(You can upload up to 10 files at once)</small>:</h3>
+	<h3><?php _e('Selected Files <small>(You can upload up to 10 files at once)</small>:'); ?></h3>
 </div>
 
-<div><input type="submit" <?php if ( 0 === $folderCount ) echo 'disabled="disabled" ';?>name="upload_user_files" value="Upload Files" /></div>
+<div><input type="submit" <?php if ( 0 === $folderCount ) echo 'disabled="disabled" ';?>name="upload_user_files" value="<?php _e('Upload Files'); ?>" /></div>
 
 </form>
 
@@ -126,19 +126,19 @@ else
 ?>
 
 <div id="upload_files" class="postbox" style="width:450px">
-<h3 class='hndle'><span>Upload Files</span></h3>
+<h3 class='hndle'><span><?php _e('Upload Files'); ?></span></h3>
 <div class="inside">
 
-<p>Type in the name of the folder that you want to upload to.  The folder is a relative path located in your WordPress installation folder.  For example:  "wp-content/gallery/my-new-gallery".  <strong>NOTE:</strong>  Do not add opening or closing slashes ("/") to the path.</p>
-<p>If the folder doesn't exist, then List Yo' Files will attempt to create it for you.</p>
-<p>Folder name: <input type="text" name="upload_folder" size="45" /></p>
+<p><?php _e('Type in the name of the folder that you want to upload to.  The folder is a relative path located in your WordPress installation folder.  For example:  "wp-content/gallery/my-new-gallery".  <strong>NOTE:</strong>  Do not add opening or closing slashes ("/") to the path.'); ?></p>
+<p><?php _e('If the folder does not exist, then List Yo\' Files will attempt to create it for you.'); ?></p>
+<p><?php _e('Folder name:'); ?> <input type="text" name="upload_folder" size="45" /></p>
 
 <input id="my_file_element" type="file" name="file_1" />
 <div id="files_list">
-	<h3>Selected Files <small>(You can upload up to 10 files at once)</small>:</h3>
+	<h3><?php _e('Selected Files <small>(You can upload up to 10 files at once)</small>:'); ?></h3>
 </div>
 <p />
-<p><input type="submit" class="button-primary" name="upload_files" value="Upload Files" /></p>
+<p><input type="submit" class="button-primary" name="upload_files" value="<?php _e('Upload Files'); ?>" /></p>
 
 </form>
 
@@ -149,7 +149,7 @@ else
 	multi_selector.addElement( document.getElementById( 'my_file_element' ) );
 </script>
 
-<p><strong>Note:</strong>  If you want to upload additional icon files for your file lists, you can do that here.  Just use input folder name: 'wp-content/plugins/list-yo-files/icons' and then upload 16x16 .png files.  See the main admin page for more details.</p>
+<p><?php _e('<strong>Note:</strong>  If you want to upload additional icon files for your file lists, you can do that here.  Just use input folder name: "wp-content/plugins/list-yo-files/icons" and then upload 16x16 .png files.  See the help for more details.'); ?></p>
 
 <div class="clear"></div>
 </div>
