@@ -36,6 +36,10 @@ You can upload a 16x16 png file for the file type that you'd like to support.  T
 
 If you want to share a single icon across many different file types, then, for now, you need to duplicate each png file for each extension that you want to support.
 
+= How can I fix this error:  Warning: strpos() [function.strpos]: Empty delimiter. in /home/....../wp-includes/compat.php on line 55
+
+You are likely running version 4.x of PHP.  Contact your hosting company to upgrade you to 5.x.  For more information, go here <http://wordpress.org/support/topic/strpos-functionstrpos-empty-delimiter-in-compatphp>
+
 = Why are my users getting the message "Failed to upload. Contact your admin about enabling your user folder." when uploading on the front end? =
 
 Log in as admin to your WordPress site and ensure that the "Enable User Folders" checkbox is checked.  Without this option set, List Yo' Files doesn't know where to put the user's files.
