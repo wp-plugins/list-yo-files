@@ -35,6 +35,7 @@ define( 'ADMINISTRATOR', 'Administrator' );
 
 // Localized
 define( 'EMPTY_FOLDER', 'No files found.' );
+define( 'SHORTCODE_ERROR', 'Incorrect shortcode.  Check what you typed between the "[]".' ) ;
 define( 'PERMISSIONS_MESAGE', 'You do not have sufficient permissions to access this page. Resave your administration options to be safe.' );
 
 // Various hooks and actions for this plug-in
@@ -138,11 +139,33 @@ function LYFDisplayFiles( $params, $mode )
 		// Read the folder as if it's constructed off the site's route.
 		$folder = $values['folder'];
 	}
-	else
+	elseif ( LYF_USER === $mode )
+	{
+	    // First, get the full path to user's upload folder.  Create it if it doesn't exist yet.
+		$folder = LYFGetUserUploadFolder( TRUE );
+	
+		// If the folder doesn't exist and user folders has been enabled in the
+		// admin panel, then create the user folder.
+		if ( !is_dir( $folder ) && 'on' === get_option( LYF_ENABLE_USER_FOLDERS ) )
+		{
+			$result = LYFCreateUserFolder( $folder );
+		}
+
+		// No "folder" argument needed for this one, just get the user's folder. 
+		// Relative path this time.
+		$folder = LYFGetUserUploadFolder( FALSE );
+	}
+	elseif ( LYF_USER_MP3S === $mode )
 	{
 		// Allow the user to pass only the name of the subfolder they want to list.
-		$folder = LYF_USER_FOLDER . $values['folder'];
+//		$folder = LYF_USER_FOLDER . $values['folder'];
+		$folder = LYFGetUserUploadFolder( FALSE ) . $values['folder'];
 	}
+	else
+	{
+		return '<p><em>'. __(SHORTCODE_ERROR) .'</em></p>';
+	}
+
 	$link = $values['link'];
 	$sort = $values['sort'];
 	// Special mode for mp3s
@@ -179,7 +202,7 @@ function LYFDisplayFiles( $params, $mode )
 	if( !count( $filelist ) )
 	{
 		// Show the user that there are no files.
-		echo '<p><em>'. __(EMPTY_FOLDER) .'</em></p>';
+		return '<p><em>'. __(EMPTY_FOLDER) .'</em></p>';
 	}
 	else
 	{
@@ -209,7 +232,7 @@ function LYFGenerateFileList( $path, $linkTarget, $filter )
 	$path = ABSPATH . $path;
 
 	// Attempt to open the folder
-	if ( ( $p = opendir( $path ) ) !== FALSE )
+	if ( ( $p = @opendir( $path ) ) !== FALSE )
 	{
 		// Read the directory for items inside it.
 		while ( ( $item = readDir( $p ) ) !== false )
@@ -229,8 +252,23 @@ function LYFGenerateFileList( $path, $linkTarget, $filter )
 			if ( $item[0] != '.' && $canView )
 			{
 				// Set up the relative path to the item.
-				$newPath = $path.'/'.$item;
-				$newTarget = $linkTarget.'/'.$item;
+				// START:
+				// Code suggested by Peter Liu on 7/1/2011 for encoding UTF-8 files.  
+				// I changed it slightly to use rawurlencode() instead of urlencode()
+				// since this code fetches from the filesystem, not a URL.  See
+				// php.net/rawurlencode for more on spaces and "+" symbols.
+				$newPath = $path . '/' . $item;
+				$temparr = explode( '/' , $linkTarget );
+				
+				// Have to assemble the path this way because we can't encode the "/" character!
+				$assembledPath = "";
+				for( $i = 0; $i<count($temparr); ++$i )
+				{
+					// Use rawurlencode() to properly encode spaces for the file system.
+				   $assembledPath .= rawurlencode( $temparr[$i] ) . '/';
+				}
+				$newTarget = $assembledPath . rawurlencode( $item );
+				// END:  Code suggested by Peter Liu.
 
 				// If current item is a file, do more stuff.  Otherwise, just skip it.
 				if ( is_file( $newPath ) )
@@ -331,14 +369,17 @@ function LYFListFiles( $filelist, $sort, $options )
 				$ext = substr( strrchr( $item['link'], '.' ), 1 );
 				$ext = strtolower( $ext );
 				$pluginFolder = $wpurl . '/wp-content/plugins/' . dirname( plugin_basename( __FILE__ ) ) . '/';
-				$extensionFile = $pluginFolder . "icons/$ext.png";
-				$theFile = @file( $extensionFile );
-				// If a file for this extension doesn't exist, then load the generic icon
-				if ( FALSE === $theFile )
+				if ( file_exists( dirname ( __FILE__ ) . '/' . "icons/$ext.png" ) ) 
+				{
+					$extensionFile = $pluginFolder . "icons/$ext.png";
+				}
+				else
+				{
 					$extensionFile = $pluginFolder . "icons/generic.png";
+				}
 				$retVal .= '<td width="16"><img src="'.$extensionFile.'"></td>'.PHP_EOL;
 			}
-
+			
 			// Strip extension if necessary
 			if ( $isHideExtension )
 			{
@@ -425,17 +466,17 @@ function LYFListFiles( $filelist, $sort, $options )
 				$files .= '<li><a href="'.$link.'">'.$itemName.'</a>';
 
 			if ( $isFilesize )
-				$files .= __('Size: ') . $size . PHP_EOL;
+				$files .= '<span class="size">' . __('Size: ') . $size . '</span>' . PHP_EOL;
 
 			if ( $isDate )
-				$files .= __('Date: ') . $date . PHP_EOL;
+				$files .= '<span class="modified">' . __('Date: ') . $date . '</span>' . PHP_EOL;
 
 			$files .='</li>'.PHP_EOL;
 		}
 
 		// Encase the ouput in class and ID
 		$fileListCounter++;
-		$retVal .= '<ul>'.PHP_EOL.$files.'</ul>'.PHP_EOL;
+		$retVal .= '<ul id="listyofiles">'.PHP_EOL.$files.'</ul>'.PHP_EOL;
 	}
 
 	// Close out the div

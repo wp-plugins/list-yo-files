@@ -3,10 +3,10 @@ Plugin Name: List Yo' Files
 Contributors: Wanderer LLC
 Plugin URI: http://www.wandererllc.com/company/plugins/listyofiles/
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TC7MECF2DJHHY&lc=US
-Tags: admin, files, MP3, mp3 player, music, music player, Audio Player, WPAudio, Flash, audio, embed, upload, download, FTP, display, list, show, ul, li, table, users, sub folders, membership
+Tags: admin, files, MP3, mp3 player, music, music player, Audio Player, WPAudio, Flash, audio, embed, upload, download, FTP, display, list, show, ul, li, table, users, sub folders, membership, sermon, quotes, foreign, language
 Requires at least: 2.8
 Tested up to: 3.0
-Stable tag: 1.10
+Stable tag: 1.11
 
 == Description ==
 
@@ -49,6 +49,11 @@ Log in as admin to your WordPress site and ensure that the "Enable User Folders"
 Just go to <http://www.wandererllc.com/company/plugins/listyofiles/> and follow the instructions.
 
 == Changelog ==
+
+= 1.11 =
+
+* Updated URL generation to handle UTF-8 paths.
+* Bug fix for checking for existence of file icons.
 
 = 1.10 =
 
@@ -97,6 +102,10 @@ Just go to <http://www.wandererllc.com/company/plugins/listyofiles/> and follow 
 
 == Upgrade Notice ==
 
+= 1.11 =
+
+This update is recommended for everyone.  Please update.
+
 = 1.10 =
 
 Minor upgrade which eliminates potential warnings when folder permissions aren't optimal.
@@ -135,7 +144,9 @@ There are many people who have suggested features for List Yo' Files.  Special c
 
 1) [Underground Music Nation](http://www.undergroundmusicnation.com/) for supporting the User Folders and MP3 Player Integration features.
 2) [MKKH Marketing](http://mkkhmarketing.com/) and Matthew Hart for excellent testing on the User Folders upload and delete features.
-3) [Christ Church of Conroe](http://christchurchconroe.org/) and Ron Frasier for good testing on the upload feature. 
+3) [Christ Church of Conroe](http://christchurchconroe.org/) and Ron Frasier for good testing on the upload feature.
+4) [Peter Liu](http://liuhui998.com) for UTF-8 encoding suggestions. 
+5) Eli Webster for suggestions on detecting icon files.
 
 == License ==
 
