@@ -57,7 +57,7 @@ Just go to <http://www.wandererllc.com/company/plugins/listyofiles/> and follow 
 * Added a Q&A to the FAQ, and fixed a mistake in the usage guide.
 * Added a shortcode error message
 * Suppressing warnings on opendir()
-* Added some CSS placeholders for files in <ul> list
+* Added some CSS placeholders for files in unordered list tags
 * Prep for localization
 
 = 1.10 =
