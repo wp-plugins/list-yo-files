@@ -54,6 +54,11 @@ Just go to <http://www.wandererllc.com/company/plugins/listyofiles/> and follow 
 
 * Updated URL generation to handle UTF-8 paths.
 * Bug fix for checking for existence of file icons.
+* Added a Q&A to the FAQ, and fixed a mistake in the usage guide.
+* Added a shortcode error message
+* Suppressing warnings on opendir()
+* Added some CSS placeholders for files in <ul> list
+* Prep for localization
 
 = 1.10 =
 
@@ -104,7 +109,7 @@ Just go to <http://www.wandererllc.com/company/plugins/listyofiles/> and follow 
 
 = 1.11 =
 
-This update is recommended for everyone.  Please update.
+This is a minor update, but is recommended for everyone.
 
 = 1.10 =
 
