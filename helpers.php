@@ -48,7 +48,7 @@ function LYFGetFolderSize( $directory )
 	}
 
 	// open the directory
-	if( $handle = opendir( $directory ) )
+	if( $handle = @opendir( $directory ) )
 	{
 		// and scan through the items inside
 		while ( ( $file = readdir( $handle ) ) !== false )
@@ -126,7 +126,7 @@ function LYFRemoveDirectory( $directory )
 	else
 	{
 		// we open the directory
-		$handle = opendir($directory);
+		$handle = @opendir($directory);
 
 		// and scan through the items inside
 		while ( FALSE !== ( $item = readdir( $handle ) ) )
@@ -342,7 +342,7 @@ function LYFUploadFiles( $folder )
 	$res = is_dir( $folder );
 	// If you use this, warnings will occur.  You must also close the directory.
 	// But is_dir() sometimes behaves oddly with absolute paths.
-//	$res = opendir( $folder );
+//	$res = @opendir( $folder );
 	if ( FALSE === $res )
 	{
 		$roles = LYFGetRolesAndCapabilities();
