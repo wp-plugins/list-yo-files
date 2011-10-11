@@ -1,5 +1,5 @@
 <div class="wrap" style="max-width:950px !important;">
-<h2>Usage Guide</h2>
+<h2><?php _e('Usage Guide', LYF_DOMAIN); ?></h2>
 <div id="poststuff" style="margin-top:10px;">
 <div id="mainblock" style="width:710px">
 <div class="dbx-content">
@@ -35,7 +35,7 @@ if ( "on" == $enableUserFolders && !current_user_can( 'delete_users' ) )
 			global $current_user;
 			get_currentuserinfo();
 
-			$message = '<div id="message" class="updated fade"><p>' . __('Problem creating your user folder! ');
+			$message = '<div id="message" class="updated fade"><p>' . __('Problem creating your user folder! ', LYF_DOMAIN );
 			$message .= LYFConvertError( $result, $current_user->user_login );
 			$message .= '</p></div>';
 			echo $message;
@@ -219,21 +219,22 @@ else
 ?>
 
 <div class="postbox">
-	<h3 class="hndle"><span><?php _e('Information'); ?>:</span></h3>
+	<h3 class="hndle"><span><?php _e( 'Information', LYF_DOMAIN ); ?>:</span></h3>
 	<div class="inside">
 	 	<p>
 	 	<table border="0" cellpadding="10">
 	 	<td>
-    		<img src="<?php echo $pluginFolder;?>help.png"><a style="text-decoration:none;" href="http://www.wandererllc.com/company/plugins/listyofiles/" target="_blank"> <?php _e('Support and Help'); ?> </a><br /><br />
+    		<img src="<?php echo $pluginFolder;?>help.png"><a style="text-decoration:none;" href="http://www.wandererllc.com/company/plugins/listyofiles/" target="_blank"> <?php _e( 'Support and Help', LYF_DOMAIN ); ?> </a><br /><br />
 			<a style="text-decoration:none;" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TC7MECF2DJHHY&lc=US" target="_blank"><img src="<?php echo $pluginFolder;?>paypal.gif"></a>
 		</td>
 		<td><a href="http://member.wishlistproducts.com/wlp.php?af=1080050" target="_blank"><img src="http://www.wishlistproducts.com/affiliatetools/images/WLM_120X60.gif" border="0"></a><br /></td>
     	<td><a href="http://www.woothemes.com/amember/go.php?r=39127&i=b18" target="_blank"><img src="http://woothemes.com/ads/120x90c.jpg" border=0 alt="WooThemes - WordPress themes for everyone" width=120 height=90></a></td>
     	</table>
     	<br />
-    	<p><?php printf( __('Contact %s to sponsor a feature or write a plugin just for you.'), '<a href="http://www.wandererllc.com/company/contact/" target="_blank">Wanderer LLC</a>'); ?></p>
-    	<p><?php printf( __('Leave a good rating or comments for %s.'), '<a href="http://wordpress.org/extend/plugins/list-yo-files/" target="_blank">this plugin</a>' ); ?></p>
+    	<p><?php printf( __( 'Contact %s to sponsor a feature or write a plugin just for you.', LYF_DOMAIN ), '<a href="http://www.wandererllc.com/company/contact/" target="_blank">Wanderer LLC</a>', LYF_DOMAIN ); ?></p>
+    	<p><?php printf( __( 'Leave a good rating or comments for %s.', LYF_DOMAIN ), '<a href="http://wordpress.org/extend/plugins/list-yo-files/" target="_blank">this plugin</a>', LYF_DOMAIN ); ?></p>
 		</p>
+		<iframe src="http://player.vimeo.com/video/18408849?byline=0&amp;portrait=0" width="532" height="299" frameborder="0" webkitAllowFullScreen allowFullScreen></iframe>
 	</div>
 </div>
 

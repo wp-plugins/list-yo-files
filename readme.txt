@@ -1,5 +1,5 @@
-=== List Yo' Files ===
-Plugin Name: List Yo' Files
+=== List Yo' Files Pro ===
+Plugin Name: List Yo' Files Pro
 Contributors: Wanderer LLC
 Plugin URI: http://www.wandererllc.com/company/plugins/listyofiles/
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TC7MECF2DJHHY&lc=US
@@ -36,19 +36,40 @@ You can upload a 16x16 png file for the file type that you'd like to support.  T
 
 If you want to share a single icon across many different file types, then, for now, you need to duplicate each png file for each extension that you want to support.
 
-= How can I fix this error:  Warning: strpos() [function.strpos]: Empty delimiter. in /home/....../wp-includes/compat.php on line 55
+= How can I fix this error: Warning: strpos() [function.strpos]: Empty delimiter. in /home/....../wp-includes/compat.php on line 55 =
 
-You are likely running version 4.x of PHP.  Contact your hosting company to upgrade you to 5.x.  For more information, go here <http://wordpress.org/support/topic/strpos-functionstrpos-empty-delimiter-in-compatphp>
+You are likely running version 4.x of PHP. Contact your hosting company to upgrade you to 5.x. For more information, go [here](http://wordpress.org/support/topic/strpos-functionstrpos-empty-delimiter-in-compatphp).
 
 = Why are my users getting the message "Failed to upload. Contact your admin about enabling your user folder." when uploading on the front end? =
 
 Log in as admin to your WordPress site and ensure that the "Enable User Folders" checkbox is checked.  Without this option set, List Yo' Files doesn't know where to put the user's files.
+
+= I would like to help localize List Yo' Files.  How should I start? =
+
+Assuming you're familiar with [localizing in WordPress](http://codex.wordpress.org/Translating_WordPress#Translation_Tools), you simply need to go to the 'lang' folder of the plugin and use the .pot file to see the strings that need to be translated into your language.
+
+= How do I make suggestions or report bugs for this plugin? =
+
+Just go to [to the List Yo' Files site](<http://www.wandererllc.com/company/plugins/listyofiles/>) and follow the instructions.
+
+= Why are my users getting the message "Failed to upload. Contact your admin about enabling your user folder." when uploading on the front end? =
+
+Log in as admin to your WordPress site and ensure that the "Enable User Folders" checkbox is checked.  Without this option set, List Yo' Files doesn't know where to put the user's files.
+
+= I would like to help localize List Yo' Files.  How should I start? =
+
+Assuming you're familiar with [localizing in WordPress](http://codex.wordpress.org/Translating_WordPress#Translation_Tools), you simply need to go to the 'lang' file of the plugin and use the list-yo-files.pot file to see the strings that need to be translated into your language.
 
 = How do I make suggestions or report bugs for this plugin? =
 
 Just go to <http://www.wandererllc.com/company/plugins/listyofiles/> and follow the instructions.
 
 == Changelog ==
+
+= 1.12 =
+
+* French version available.
+* File tables now use style sheets.
 
 = 1.11 =
 
@@ -107,6 +128,10 @@ Just go to <http://www.wandererllc.com/company/plugins/listyofiles/> and follow 
 
 == Upgrade Notice ==
 
+= 1.12 =
+
+If you want to style your file tables or have a French site, then update.
+
 = 1.11 =
 
 This is a minor update, but is recommended for everyone.
@@ -143,15 +168,17 @@ Recommended for all users.  Fixed the Uploads page so that 10 files can be uploa
 
 Recommended for all users.  Several feature updates plus fixed this issue of displaying WordPress's root files if no "folder" argument is specified.
 
-== Acknowledgements ==
+== Acknowledgments ==
 
 There are many people who have suggested features for List Yo' Files.  Special consideration needs to be made to the following people who had an active role in contributing by providing a detailed design, monetary sponsorship, or offering to test and provide useful feedback:
 
-1) [Underground Music Nation](http://www.undergroundmusicnation.com/) for supporting the User Folders and MP3 Player Integration features.
-2) [MKKH Marketing](http://mkkhmarketing.com/) and Matthew Hart for excellent testing on the User Folders upload and delete features.
-3) [Christ Church of Conroe](http://christchurchconroe.org/) and Ron Frasier for good testing on the upload feature.
-4) [Peter Liu](http://liuhui998.com) for UTF-8 encoding suggestions. 
-5) Eli Webster for suggestions on detecting icon files.
+* [Underground Music Nation](http://www.undergroundmusicnation.com/) for supporting the User Folders and MP3 Player Integration features.
+* [MKKH Marketing](http://mkkhmarketing.com/) and Matthew Hart for excellent testing on the User Folders upload and delete features.
+* [Christ Church of Conroe](http://christchurchconroe.org/) and Ron Frasier for good testing on the upload feature.
+* [Peter Liu](http://liuhui998.com) for UTF-8 encoding suggestions. 
+* Eli Webster for suggestions on detecting icon files.
+* [Li-An](http://www.li-an.fr/wpplugins/) for the French translation.
+* [Matthew Mower](http://web.missouri.edu/~vignaleg/?page_id=159) for his suggestions on CSS styling.
 
 == License ==
 

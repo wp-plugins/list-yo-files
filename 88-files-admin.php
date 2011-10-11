@@ -1,5 +1,5 @@
 <div class="wrap" style="max-width:950px !important;">
-<h2>Administration</h2>
+<h2><?php _e('Administer', LYF_DOMAIN); ?></h2>
 <div id="poststuff" style="margin-top:10px;">
 <div id="mainblock" style="width:710px">
 <div class="dbx-content">
@@ -14,32 +14,32 @@ include_once "information-box.php"
 ?>
 
 <div id="listyofiles_admin" class="postbox" style="width:450px">
-<h3 class='hndle'><span>List Yo' Files <?php _e('Administration:'); ?></span></h3>
+<h3 class='hndle'><span>List Yo' Files <?php _e( 'Administration:', LYF_DOMAIN ); ?></span></h3>
 <div class="inside">
 
-<p><?php _e('Rename the master menu to:'); ?> <input type="text" name="menu_name" value="<?php echo $menuText;?>"size="25" /></p>
+<p><?php _e( 'Rename the master menu to:', LYF_DOMAIN ); ?> <input type="text" name="menu_name" value="<?php echo $menuText;?>"size="25" /></p>
 
 <p><input type=CHECKBOX name="on_restrict_types"
 <?php
 if ( "on" === $restrictTypes )
 	print 'checked';
 ?>
-> <?php _e( 'Restrict uploads to the following file types (no periods, separated by commas):'); ?> 
+> <?php _e( 'Restrict uploads to the following file types (no periods, separated by commas):', LYF_DOMAIN ); ?> 
 
-<input type="text" name="file_types" value="<?php echo $allowedFileTypes;?>"size="25" /> <small><?php _e('For example: "mp3,wav,aif,mov".'); ?></small></p>
+<input type="text" name="file_types" value="<?php echo $allowedFileTypes;?>"size="25" /> <small><?php _e( 'For example: "mp3,wav,aif,mov".', LYF_DOMAIN ); ?></small></p>
 
 <?php
 print '<p><input type=CHECKBOX name="on_enable_folders" ';
 if ( "on" === $enableUserFolders )
 	print 'checked';
 print '> ';
-_e('Enable user folders'); 
+_e( 'Enable user folders', LYF_DOMAIN ); 
 print '</p>';
 ?>
 
 <fieldset style="margin-left: 20px;">
 
-<p><?php _e('Choose the minimum <a href="http://codex.wordpress.org/Roles_and_Capabilities" target="_blank">role</a> that can manage files:'); ?>  <select name="minimum_role">
+<p><?php _e( 'Choose the minimum <a href="http://codex.wordpress.org/Roles_and_Capabilities" target="_blank">role</a> that can manage files:', LYF_DOMAIN ); ?>  <select name="minimum_role">
 <?php
 	$roles = LYFGetRolesAndCapabilities();
 	// Loop through each sub folder
@@ -51,15 +51,15 @@ print '</p>';
 	}
 ?>
 </select>
-<br><small><?php _e('The least powerful role is "Subscriber", the most powerful is "Administrator".'); ?></small></br>
+<br><small><?php _e( 'The least powerful role is "Subscriber", the most powerful is "Administrator".', LYF_DOMAIN ); ?></small></br>
 </p>
 
-<p><?php _e('Limit the number of user folders to:'); ?> <input type="text" name="num_folders" value="<?php echo $subfolderCount;?>"size="10" />
-<small><?php _e('Leave empty for unlimited'); ?></small>
+<p><?php _e( 'Limit the number of user folders to:', LYF_DOMAIN ); ?> <input type="text" name="num_folders" value="<?php echo $subfolderCount;?>"size="10" />
+<small><?php _e( 'Leave empty for unlimited', LYF_DOMAIN ); ?></small>
 </p>
 
-<p><?php _e('Upload space per user (in MB):'); ?> <input type="text" name="folder_size" value="<?php echo $folderSize;?>"size="10" />
-<small><?php _e('Leave empty for unlimited'); ?></small>
+<p><?php _e( 'Upload space per user (in MB):', LYF_DOMAIN ); ?> <input type="text" name="folder_size" value="<?php echo $folderSize;?>"size="10" />
+<small><?php _e( 'Leave empty for unlimited', LYF_DOMAIN ); ?></small>
 </p>
 
 <?php
@@ -67,7 +67,7 @@ print '<p><input type=CHECKBOX name="on_enable_simple_help" ';
 if ( "on" === $enableSimpleHelp )
 	print 'checked';
 print '> ';
-_e('Show simple help for users <small>(shows non-admins only the most basic options)');
+_e( 'Show simple help for users <small>(shows non-admins only the most basic options)', LYF_DOMAIN );
 print '</small></p>';
 ?>
 
@@ -78,10 +78,10 @@ print '</small></p>';
 if ( "on" === $emailNotifications )
 	print 'checked';
 ?>
-> <?php _e('Enable notification by email when a file is uploaded. Enter the notification email addresses here (separated by commas):'); ?></p>
+> <?php _e('Enable notification by email when a file is uploaded. Enter the notification email addresses here (separated by commas):', LYF_DOMAIN ); ?></p>
 <input type="text" name="notification_emails" value="<?php echo $notificationEmails;?>"size="65" />
 
-<div><input type="submit" class="button-primary" name="save_admin_settings" value="<?php _e('Save Settings'); ?>" /></div>
+<div><input type="submit" class="button-primary" name="save_admin_settings" value="<?php _e('Save Settings', LYF_DOMAIN ); ?>" /></div>
 
 <div class="clear"></div>
 </div>
