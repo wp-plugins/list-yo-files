@@ -24,7 +24,7 @@ include_once "information-box.php"
 if ( "on" === $useTableStyles )
 	print 'checked';
 ?>
-> <?php _e('Use the lyf_table_styles.css to style file tables.  You can edit this file; see the FAQ for more.', LYF_DOMAIN ); ?></p>
+> <?php _e('Use the lyf_table_styles.css located in the \'css\' folder to style file tables.  Feel free to edit this file.', LYF_DOMAIN ); ?></p>
 
 <p><input type=CHECKBOX name="on_restrict_types"
 <?php
