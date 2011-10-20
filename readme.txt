@@ -30,6 +30,10 @@ To use, add the List Yo' Files shortcode ("listyofiles") enclosed in brackets to
 
 It sure is.  To sort files, use the "sort" option.  To only display certain file types, use the "filter" option.  See the plugin Usage page for extensive instructions.
 
+= How do I style the file table elements?
+
+Have a look at the 'lyf_table_styles.css' file in the 'css' folder.  This file defines the styles that will be used when defining tables.  You can edit that file to your specification and then check the "Use table stylesheet" checkbox in the Administer area.
+
 = The file icon that I want to display isn't available.  What can I do? =
 
 You can upload a 16x16 png file for the file type that you'd like to support.  The name of the file needs to match the extension that you want to display.  All letters should be lowercase.  For example, if you want to provide an icon for mp3 files, you would need to upload a file called "mp3.png" to the List Yo' Files plugin's "icons" folder.
@@ -69,7 +73,7 @@ Just go to <http://www.wandererllc.com/company/plugins/listyofiles/> and follow 
 = 1.12 =
 
 * French version available.
-* File tables now use style sheets.
+* File tables now use style sheets.  You can turn it off and on in the Administer page.
 
 = 1.11 =
 

@@ -19,6 +19,13 @@ include_once "information-box.php"
 
 <p><?php _e( 'Rename the master menu to:', LYF_DOMAIN ); ?> <input type="text" name="menu_name" value="<?php echo $menuText;?>"size="25" /></p>
 
+<p><input type=CHECKBOX name="on_use_table_styles" 
+<?php
+if ( "on" === $useTableStyles )
+	print 'checked';
+?>
+> <?php _e('Use the lyf_table_styles.css to style file tables.  You can edit this file; see the FAQ for more.', LYF_DOMAIN ); ?></p>
+
 <p><input type=CHECKBOX name="on_restrict_types"
 <?php
 if ( "on" === $restrictTypes )
@@ -79,9 +86,12 @@ if ( "on" === $emailNotifications )
 	print 'checked';
 ?>
 > <?php _e('Enable notification by email when a file is uploaded. Enter the notification email addresses here (separated by commas):', LYF_DOMAIN ); ?></p>
-<input type="text" name="notification_emails" value="<?php echo $notificationEmails;?>"size="65" />
 
-<div><input type="submit" class="button-primary" name="save_admin_settings" value="<?php _e('Save Settings', LYF_DOMAIN ); ?>" /></div>
+<fieldset style="margin-left: 20px;">
+	<input type="text" name="notification_emails" value="<?php echo $notificationEmails;?>"size="35" />
+</fieldset>
+
+<div><p><input type="submit" class="button-primary" name="save_admin_settings" value="<?php _e('Save Settings', LYF_DOMAIN ); ?>" /></p></div>
 
 <div class="clear"></div>
 </div>

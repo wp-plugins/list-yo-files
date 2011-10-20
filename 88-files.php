@@ -24,6 +24,7 @@ define( 'LYF_ENABLE_USER_FOLDERS', 'lyf_user_folders' );
 define( 'LYF_ENABLE_SIMPLE_HELP', 'lyf_simple_help' );
 define( 'LYF_MINIMUM_ROLE', 'lyf_minimum_role' );
 define( 'LYF_ENABLE_ALLOWED_FILE_TYPES', 'lyf_enable_allowed_file_types' );
+define( 'LYF_USE_TABLE_STYLES', 'lyf_use_table_styles');
 define( 'LYF_ALLOWED_FILE_TYPES', 'lyf_allowed_file_types' );
 define( 'LYF_USER_SUBFOLDER_LIMIT', 'lyf_subfolder_limit' );
 define( 'LYF_USER_USER_FOLDER_SIZE', 'lyf_user_folder_size' );
@@ -65,7 +66,7 @@ function LYF_AddStyles()
 {
 	$url = WP_PLUGIN_URL . '/list-yo-files/css/lyf_table_styles.css';
 	$styleFile = WP_PLUGIN_DIR . '/list-yo-files/css/lyf_table_styles.css';
-	if ( file_exists( $styleFile ) )
+	if ( file_exists( $styleFile ) && 'on' === get_option( LYF_USE_TABLE_STYLES ) )
 	{
 		wp_register_style('LYFStyleSheets', $url);
 		wp_enqueue_style( 'LYFStyleSheets');
@@ -536,6 +537,7 @@ function LYFAddSettingsPage()
 function LYFHandleAdminPage()
 {
 	$menuText = get_option( LYF_MENU_TEXT );
+	$useTableStyles = get_option( LYF_USE_TABLE_STYLES );
 	$restrictTypes = get_option( LYF_ENABLE_ALLOWED_FILE_TYPES );
 	$allowedFileTypes = get_option( LYF_ALLOWED_FILE_TYPES );
 	$enableUserFolders = get_option( LYF_ENABLE_USER_FOLDERS );
@@ -564,6 +566,10 @@ function LYFHandleAdminPage()
 		// Save the menu text
 		$menuText = $_POST['menu_name'];
 		update_option( LYF_MENU_TEXT, $menuText );
+		
+		// CSS
+		$useTableStyles = $_POST['on_use_table_styles'];
+		update_option( LYF_USE_TABLE_STYLES, $useTableStyles );
 
 		// File types
 		$restrictTypes = $_POST['on_restrict_types'];
