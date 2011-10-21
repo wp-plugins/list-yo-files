@@ -242,19 +242,19 @@ function LYFConvertError( $error, $userMessage )
 	switch( $error )
 	{
 		case LYF_ERROR_CREATE_FOLDER_PERMISSIONS:
-			$message = sprintf( __('<strong>Failed</strong> to create the subfolder "%s".  Make sure your server file permissions are correct or contact support.'), $userMessage );
+			$message = sprintf( __('<strong>Failed</strong> to create the subfolder "%s".  Make sure your server file permissions are correct or contact support.', LYF_DOMAIN ), $userMessage );
 			break;
 		case LYF_ERROR_CREATE_FOLDER_EXISTS:
-			$message = sprintf( __('<strong>Failed</strong> to create the subfolder "%s" because it already exists.  Choose a different folder name.'), $userMessage );
+			$message = sprintf( __('<strong>Failed</strong> to create the subfolder "%s" because it already exists.  Choose a different folder name.', LYF_DOMAIN ), $userMessage );
 			break;
 		case LYF_ERROR_ILLEGAL_CHARACTERS:
-			$message = __('<strong>Failed</strong> to create the subfolder because it contains some illegal characters.');
+			$message = __('<strong>Failed</strong> to create the subfolder because it contains some illegal characters.', LYF_DOMAIN );
 			break;
 		case LYF_ERROR_NO_FOLDER_NAME:
-			$message = __('<strong>Failed</strong> to create the subfolder because it has no name.');
+			$message = __('<strong>Failed</strong> to create the subfolder because it has no name.', LYF_DOMAIN );
 			break;
 		case LYF_SUCCESS_CREATE_FOLDER:
-			$message = sprintf( __('The subfolder "%s" was successfully created.'), $userMessage );
+			$message = sprintf( __('The subfolder "%s" was successfully created.', LYF_DOMAIN ), $userMessage );
 			break;
 		default:
 			break;
@@ -271,25 +271,25 @@ function LYFConvertUploadError( $error )
 	switch( $error )
 	{
 		case 1:
-			$message = __('the file exceeded the maximum upload size allowed');
+			$message = __('the file exceeded the maximum upload size allowed', LYF_DOMAIN );
 			break;
 		case 2:
-			$message = __('the file exceeded the form\'s maximum upload size');
+			$message = __('the file exceeded the form\'s maximum upload size', LYF_DOMAIN );
 			break;
 		case 3:
-			$message = __('the file was only partially uploaded');
+			$message = __('the file was only partially uploaded', LYF_DOMAIN );
 			break;
 		case 4:
-			$message = __('no file was uploaded');
+			$message = __('no file was uploaded', LYF_DOMAIN );
 			break;
 		case 6:
-			$message = __('no temporary directory exists');
+			$message = __('no temporary directory exists', LYF_DOMAIN );
 			break;
 		case 7:
-			$message = __('the file failed to write to disk');
+			$message = __('the file failed to write to disk', LYF_DOMAIN );
 			break;
 		case 8:
-			$message = __('the upload was prevented by an extension');
+			$message = __('the upload was prevented by an extension', LYF_DOMAIN );
 			break;
 		default:
 			break;
@@ -348,7 +348,7 @@ function LYFUploadFiles( $folder )
 		$roles = LYFGetRolesAndCapabilities();
 		if ( !current_user_can( $roles[ADMINISTRATOR] ) )
 		{
-			$accessMessage = sprintf( __('There was a problem accessing the folder: "%s".'), $folder );
+			$accessMessage = sprintf( __('There was a problem accessing the folder: "%s".', LYF_DOMAIN ), $folder );
 			$output .= '<p>' . $accessMessage . '</p></div>';
 			return $output;
 		}
@@ -356,7 +356,7 @@ function LYFUploadFiles( $folder )
 		// If not, create the folder.  Let the user know if something goes wrong.
 		if ( !mkdir( $folder ) )
 		{
-			$output .= '<p>' . __('<strong>Failed</strong> to create the folder.  Make sure your server file permissions are correct.') . '</p></div>';
+			$output .= '<p>' . __('<strong>Failed</strong> to create the folder.  Make sure your server file permissions are correct.', LYF_DOMAIN ) . '</p></div>';
 			return $output;
 		}
 	}
@@ -379,7 +379,7 @@ function LYFUploadFiles( $folder )
 			$ext = substr( strrchr( $file['name'], '.' ), 1 );
 			if ( FALSE === stristr( $allowedFileTypes, $ext ) )
 			{
-				$failedMessage = sprintf( __("<strong>Failed</strong> to upload '%s' because '%s' files are not allowed."), $file['name'], $ext );
+				$failedMessage = sprintf( __("<strong>Failed</strong> to upload '%s' because '%s' files are not allowed.", LYF_DOMAIN ), $file['name'], $ext );
 				$output .= '<p>' . $failedMessage . '</p>';
 				continue;
 			}
@@ -388,7 +388,7 @@ function LYFUploadFiles( $folder )
 		if ( 0 != $file['error'] )
 		{
 			$errorString = LYFConvertUploadError( $file['error'] );
-			$failedMessage = sprintf( __("<strong>Failed</strong> to upload '%s' because %s."), $file['name'], $errorString );
+			$failedMessage = sprintf( __("<strong>Failed</strong> to upload '%s' because %s.", LYF_DOMAIN ), $file['name'], $errorString );
 			$output .= '<p>' . $failedMessage . '</p>';
 			continue;
 		}
@@ -402,14 +402,14 @@ function LYFUploadFiles( $folder )
 		// ...and report the results of the upload.
 		if ( $success )
 		{
-			$successMessage = sprintf( __("<strong>Successfully</strong> uploaded %s."), $file['name'] );
+			$successMessage = sprintf( __("<strong>Successfully</strong> uploaded %s.", LYF_DOMAIN ), $file['name'] );
 			$output .= "<p>$successMessage</p>";
 			$uploadedFiles [] = $file['name'];
 			$uploadedCount++;
 		}
 		else
 		{
-			$failedMessage = sprintf( __("<strong>Failed</strong> to copy over the file %s. Check your folder permissions."), $file['name'] );
+			$failedMessage = sprintf( __("<strong>Failed</strong> to copy over the file %s. Check your folder permissions.", LYF_DOMAIN ), $file['name'] );
 			$output .= "<p>$failedMessage</p>";
 		}
 	}
@@ -417,7 +417,7 @@ function LYFUploadFiles( $folder )
 	// Show an error on an empty list of files
 	if ( 0 == $count )
 	{
-		$output .= '<p>' . __('There are no files to upload.  Browse for files to upload first.') . '</p>';
+		$output .= '<p>' . __('There are no files to upload.  Browse for files to upload first.', LYF_DOMAIN ) . '</p>';
 	}
 
 	$output .= '</div>';
@@ -435,12 +435,12 @@ function LYFUploadFiles( $folder )
 		$uploadedMessage = trim( $uploadedMessage, ', ' );
 		
 		// Format the email text
-		$body  = __('User') . ' "' . $user->user_login . '" ';
-		$body .= sprintf( _n( __("uploaded %d file:"), __("uploaded %d files:"), $uploadedCount ), $uploadedCount );
+		$body  = __('User', LYF_DOMAIN ) . ' "' . $user->user_login . '" ';
+		$body .= sprintf( _n( __("uploaded %d file:", LYF_DOMAIN ), __("uploaded %d files:", LYF_DOMAIN ), $uploadedCount ), $uploadedCount );
 		$body .= '  ' . $uploadedMessage;
 		
 		// Format the subject
-		$subject = sprintf( __("Uploaded files notification for %2"), $blogName );
+		$subject = sprintf( __("Uploaded files notification for %2", LYF_DOMAIN ), $blogName );
 		
 		// Send the email to the addresses that the admin saved in the List Yo' Files settings
 		$addresses = get_option( LYF_NOTIFICATION_EMAILS );
@@ -495,7 +495,7 @@ function LYFListFilesToDelete( $filelist, $folder )
 	{
 		$fileSize = LYFFormatFileSize( $item['size'] );
 		$link = wp_nonce_url( "admin.php?page=Delete&amp;tab=del&amp;id=$itemName", 'filez-nonce' );
-		$files .= '<tr class="alternate"><td>' . $itemName . '</td><td>' . $fileSize . '</td><td><a href="' . $link . '&amp;folder=' . $folder . '" class="delete">' . __('Delete') . '</a></td></tr>';
+		$files .= '<tr class="alternate"><td>' . $itemName . '</td><td>' . $fileSize . '</td><td><a href="' . $link . '&amp;folder=' . $folder . '" class="delete">' . __('Delete', LYF_DOMAIN ) . '</a></td></tr>';
 	}
 
 	// Set the output
@@ -507,9 +507,9 @@ function LYFListFilesToDelete( $filelist, $folder )
 	$retVal .= '<table class="widefat" style="width:710px">
 			<thead>
 			<tr>
-				<th scope="col">' . __('Name') . '</th>
-				<th scope="col">' . __('Size') . '</th>
-				<th scope="col">' . __('Delete') . '</th>
+				<th scope="col">' . __('Name', LYF_DOMAIN) . '</th>
+				<th scope="col">' . __('Size', LYF_DOMAIN) . '</th>
+				<th scope="col">' . __('Delete', LYF_DOMAIN) . '</th>
 			</tr>
 			</thead>';
 	$retVal .= $output . PHP_EOL;

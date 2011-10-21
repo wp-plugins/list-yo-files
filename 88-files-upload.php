@@ -1,5 +1,5 @@
 <div class="wrap" style="max-width:950px !important;">
-<h2>Uploading Files</h2>
+<h2><?php _e('Upload Files', LYF_DOMAIN); ?></h2>
 <div id="poststuff" style="margin-top:10px;">
 <div id="mainblock" style="width:710px">
 <div class="dbx-content">
@@ -14,7 +14,7 @@ $enableUserFolders = get_option( LYF_ENABLE_USER_FOLDERS );
 $subfolderCount = get_option( LYF_USER_SUBFOLDER_LIMIT );
 if ( empty( $subfolderCount ) )
 {
-	$subfolderCount = __("unlimited");
+	$subfolderCount = __( "unlimited", LYF_DOMAIN );
 }
 
 // What's the size quota?
@@ -41,18 +41,18 @@ if ( "on" == $enableUserFolders && !current_user_can( 'delete_users' ) )
 ?>
 
 <div id="create_folders" class="postbox" style="width:450px;height:165px">
-<h3 class='hndle'><span><?php _e('Create a Subfolder'); ?></span></h3>
+<h3 class='hndle'><span><?php _e( 'Create a Subfolder', LYF_DOMAIN ); ?></span></h3>
 <div class="inside">
 
-<p><?php _e('You must create at least one subfolder to upload your files to.'); ?>  <?php printf( _e('You may create %i folders.'), $subfolderCount ); ?></p>
-<p>Folder name: <input type="text" name="folder" size="35" /></p><div class="submit"><input type="submit" name="create_folder" value="<?php _e('Create Folder'); ?>" /></div>
+<p><?php _e( 'You must create at least one subfolder to upload your files to.', LYF_DOMAIN ); ?>  <?php printf( _e( 'You may create %i folders.', LYF_DOMAIN ), $subfolderCount ); ?></p>
+<p>Folder name: <input type="text" name="folder" size="35" /></p><div class="submit"><input type="submit" name="create_folder" value="<?php _e( 'Create Folder', LYF_DOMAIN ); ?>" /></div>
 
 <div class="clear"></div>
 </div>
 </div>
 
 <div id="upload_files" class="postbox" style="width:450px">
-<h3 class='hndle'><span><?php _e('Upload Files'); ?></span></h3>
+<h3 class='hndle'><span><?php _e( 'Upload Files', LYF_DOMAIN ); ?></span></h3>
 <div class="inside">
 
 <?php
@@ -62,11 +62,11 @@ if ( "on" == $enableUserFolders && !current_user_can( 'delete_users' ) )
 	$allowedMessage = '';
 
 	if ( 0 == strlen( $maxFolderSize ) )
-		$allowedMessage = 'You are allowed to upload as many files as you want.';
+		$allowedMessage = __('You are allowed to upload as many files as you want.', LYF_DOMAIN );
 	else
-		$allowedMessage = sprintf( __("You are allowed to upload up to %s MB in files."), $maxFolderSize );
+		$allowedMessage = sprintf( __( "You are allowed to upload up to %s MB in files.", LYF_DOMAIN ), $maxFolderSize );
 	
-	$usingMessage = sprintf( __("You are currently using %s."), $sizeMessage );
+	$usingMessage = sprintf( __("You are currently using %s.", LYF_DOMAIN ), $sizeMessage );
 
 	echo '<p>' . $allowedMessage . '  ' . $usingMessage . '</p>';
 ?>
@@ -96,10 +96,10 @@ if ( "on" == $enableUserFolders && !current_user_can( 'delete_users' ) )
 
 <input id="my_file_element" type="file" name="file_1" />
 <div id="files_list">
-	<h3><?php _e('Selected Files <small>(You can upload up to 10 files at once)</small>:'); ?></h3>
+	<h3><?php _e( 'Selected Files <small>(You can upload up to 10 files at once)</small>:', LYF_DOMAIN ); ?></h3>
 </div>
 
-<div><input type="submit" <?php if ( 0 === $folderCount ) echo 'disabled="disabled" ';?>name="upload_user_files" value="<?php _e('Upload Files'); ?>" /></div>
+<div><input type="submit" <?php if ( 0 === $folderCount ) echo 'disabled="disabled" ';?>name="upload_user_files" value="<?php _e( 'Upload Files', LYF_DOMAIN ); ?>" /></div>
 
 </form>
 
@@ -126,19 +126,19 @@ else
 ?>
 
 <div id="upload_files" class="postbox" style="width:450px">
-<h3 class='hndle'><span><?php _e('Upload Files'); ?></span></h3>
+<h3 class='hndle'><span><?php _e( 'Upload Files', LYF_DOMAIN ); ?></span></h3>
 <div class="inside">
 
-<p><?php _e('Type in the name of the folder that you want to upload to.  The folder is a relative path located in your WordPress installation folder.  For example:  "wp-content/gallery/my-new-gallery".  <strong>NOTE:</strong>  Do not add opening or closing slashes ("/") to the path.'); ?></p>
-<p><?php _e('If the folder does not exist, then List Yo\' Files will attempt to create it for you.'); ?></p>
-<p><?php _e('Folder name:'); ?> <input type="text" name="upload_folder" size="45" /></p>
+<p><?php _e( 'Type in the name of the folder that you want to upload to.  The folder is a relative path located in your WordPress installation folder.  For example:  "wp-content/gallery/my-new-gallery".  <strong>NOTE:</strong>  Do not add opening or closing slashes ("/") to the path.', LYF_DOMAIN ); ?></p>
+<p><?php _e( 'If the folder does not exist, then List Yo\' Files will attempt to create it for you.', LYF_DOMAIN ); ?></p>
+<p><?php _e( 'Folder name:', LYF_DOMAIN ); ?> <input type="text" name="upload_folder" size="45" /></p>
 
 <input id="my_file_element" type="file" name="file_1" />
 <div id="files_list">
-	<h3><?php _e('Selected Files <small>(You can upload up to 10 files at once)</small>:'); ?></h3>
+	<h3><?php _e( 'Selected Files <small>(You can upload up to 10 files at once)</small>:', LYF_DOMAIN ); ?></h3>
 </div>
 <p />
-<p><input type="submit" class="button-primary" name="upload_files" value="<?php _e('Upload Files'); ?>" /></p>
+<p><input type="submit" class="button-primary" name="upload_files" value="<?php _e( 'Upload Files', LYF_DOMAIN ); ?>" /></p>
 
 </form>
 
@@ -149,7 +149,7 @@ else
 	multi_selector.addElement( document.getElementById( 'my_file_element' ) );
 </script>
 
-<p><?php _e('<strong>Note:</strong>  If you want to upload additional icon files for your file lists, you can do that here.  Just use input folder name: "wp-content/plugins/list-yo-files/icons" and then upload 16x16 .png files.  See the help for more details.'); ?></p>
+<p><?php _e( '<strong>Note:</strong>  If you want to upload additional icon files for your file lists, you can do that here.  Just use input folder name: "wp-content/plugins/list-yo-files/icons" and then upload 16x16 .png files.  See the help for more details.', LYF_DOMAIN ); ?></p>
 
 <div class="clear"></div>
 </div>
