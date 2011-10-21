@@ -6,7 +6,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: admin, files, MP3, mp3 player, music, music player, Audio Player, WPAudio, Flash, audio, embed, upload, download, FTP, display, list, show, ul, li, table, users, sub folders, membership, sermon, quotes, foreign, language
 Requires at least: 2.8
 Tested up to: 3.0
-Stable tag: 1.11
+Stable tag: 1.12
 
 == Description ==
 

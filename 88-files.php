@@ -3,7 +3,7 @@
 Plugin Name: List Yo' Files
 Plugin URI: http://www.wandererllc.com/company/plugins/listyofiles/
 Description: Lets WordPress users display lists of files in their pages and posts in a myriad of interesting ways.
-Version: 1.11
+Version: 1.12
 Author: Wanderer LLC Dev Team
 */
 
