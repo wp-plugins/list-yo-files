@@ -30,7 +30,7 @@ To use, add the List Yo' Files shortcode ("listyofiles") enclosed in brackets to
 
 It sure is.  To sort files, use the "sort" option.  To only display certain file types, use the "filter" option.  See the plugin Usage page for extensive instructions.
 
-= How do I style the file table elements?
+= How do I style the file table elements? =
 
 Have a look at the 'lyf_table_styles.css' file in the 'css' folder.  This file defines the styles that will be used when defining tables.  You can edit that file to your specification and then check the "Use table stylesheet" checkbox in the Administer area.
 
@@ -55,18 +55,6 @@ Assuming you're familiar with [localizing in WordPress](http://codex.wordpress.o
 = How do I make suggestions or report bugs for this plugin? =
 
 Just go to [to the List Yo' Files site](<http://www.wandererllc.com/company/plugins/listyofiles/>) and follow the instructions.
-
-= Why are my users getting the message "Failed to upload. Contact your admin about enabling your user folder." when uploading on the front end? =
-
-Log in as admin to your WordPress site and ensure that the "Enable User Folders" checkbox is checked.  Without this option set, List Yo' Files doesn't know where to put the user's files.
-
-= I would like to help localize List Yo' Files.  How should I start? =
-
-Assuming you're familiar with [localizing in WordPress](http://codex.wordpress.org/Translating_WordPress#Translation_Tools), you simply need to go to the 'lang' file of the plugin and use the list-yo-files.pot file to see the strings that need to be translated into your language.
-
-= How do I make suggestions or report bugs for this plugin? =
-
-Just go to <http://www.wandererllc.com/company/plugins/listyofiles/> and follow the instructions.
 
 == Changelog ==
 
