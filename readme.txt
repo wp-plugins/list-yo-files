@@ -1,5 +1,5 @@
-=== List Yo' Files Pro ===
-Plugin Name: List Yo' Files Pro
+=== List Yo' Files ===
+Plugin Name: List Yo' Files
 Contributors: Wanderer LLC
 Plugin URI: http://www.wandererllc.com/company/plugins/listyofiles/
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TC7MECF2DJHHY&lc=US
