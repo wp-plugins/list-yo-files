@@ -30,27 +30,9 @@ To use, add the List Yo' Files shortcode ("listyofiles") enclosed in brackets to
 
 It sure is.  To sort files, use the "sort" option.  To only display certain file types, use the "filter" option.  See the plugin Usage page for extensive instructions.
 
-= How do I style the file table elements? =
+= Where can I find the complete FAQ? =
 
-Have a look at the 'lyf_table_styles.css' file in the 'css' folder.  This file defines the styles that will be used when defining tables.  You can edit that file to your specification and then check the "Use table stylesheet" checkbox in the Administer area.
-
-= The file icon that I want to display isn't available.  What can I do? =
-
-You can upload a 16x16 png file for the file type that you'd like to support.  The name of the file needs to match the extension that you want to display.  All letters should be lowercase.  For example, if you want to provide an icon for mp3 files, you would need to upload a file called "mp3.png" to the List Yo' Files plugin's "icons" folder.
-
-If you want to share a single icon across many different file types, then, for now, you need to duplicate each png file for each extension that you want to support.
-
-= How can I fix this error: Warning: strpos() [function.strpos]: Empty delimiter. in /home/....../wp-includes/compat.php on line 55 =
-
-You are likely running version 4.x of PHP. Contact your hosting company to upgrade you to 5.x. For more information, go [here](http://wordpress.org/support/topic/strpos-functionstrpos-empty-delimiter-in-compatphp).
-
-= Why are my users getting the message "Failed to upload. Contact your admin about enabling your user folder." when uploading on the front end? =
-
-Log in as admin to your WordPress site and ensure that the "Enable User Folders" checkbox is checked.  Without this option set, List Yo' Files doesn't know where to put the user's files.
-
-= I would like to help localize List Yo' Files.  How should I start? =
-
-Assuming you're familiar with [localizing in WordPress](http://codex.wordpress.org/Translating_WordPress#Translation_Tools), you simply need to go to the 'lang' folder of the plugin and use the .pot file to see the strings that need to be translated into your language.
+You can find the complete FAQ [here](http://www.faqme.com/listyofiles).
 
 = How do I make suggestions or report bugs for this plugin? =
 
