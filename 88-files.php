@@ -155,7 +155,7 @@ function LYFDisplayFiles( $params, $mode )
 	{
 	    // First, get the full path to user's upload folder.  Create it if it doesn't exist yet.
 		$folder = LYFGetUserUploadFolder( TRUE );
-	
+
 		// If the folder doesn't exist and user folders has been enabled in the
 		// admin panel, then create the user folder.
 		if ( !is_dir( $folder ) && 'on' === get_option( LYF_ENABLE_USER_FOLDERS ) )
@@ -163,7 +163,7 @@ function LYFDisplayFiles( $params, $mode )
 			$result = LYFCreateUserFolder( $folder );
 		}
 
-		// No "folder" argument needed for this one, just get the user's folder. 
+		// No "folder" argument needed for this one, just get the user's folder.
 		// Relative path this time.
 		$folder = LYFGetUserUploadFolder( FALSE );
 	}
@@ -265,13 +265,13 @@ function LYFGenerateFileList( $path, $linkTarget, $filter )
 			{
 				// Set up the relative path to the item.
 				// START:
-				// Code suggested by Peter Liu on 7/1/2011 for encoding UTF-8 files.  
+				// Code suggested by Peter Liu on 7/1/2011 for encoding UTF-8 files.
 				// I changed it slightly to use rawurlencode() instead of urlencode()
 				// since this code fetches from the filesystem, not a URL.  See
 				// php.net/rawurlencode for more on spaces and "+" symbols.
 				$newPath = $path . '/' . $item;
 				$temparr = explode( '/' , $linkTarget );
-				
+
 				// Have to assemble the path this way because we can't encode the "/" character!
 				$assembledPath = "";
 				for( $i = 0; $i<count($temparr); ++$i )
@@ -381,7 +381,7 @@ function LYFListFiles( $filelist, $sort, $options )
 				$ext = substr( strrchr( $item['link'], '.' ), 1 );
 				$ext = strtolower( $ext );
 				$pluginFolder = $wpurl . '/wp-content/plugins/' . dirname( plugin_basename( __FILE__ ) ) . '/';
-				if ( file_exists( dirname ( __FILE__ ) . '/' . "icons/$ext.png" ) ) 
+				if ( file_exists( dirname ( __FILE__ ) . '/' . "icons/$ext.png" ) )
 				{
 					$extensionFile = $pluginFolder . "icons/$ext.png";
 				}
@@ -391,7 +391,7 @@ function LYFListFiles( $filelist, $sort, $options )
 				}
 				$retVal .= '<td class="lyf_td_icons" width="16"><img src="'.$extensionFile.'"></td>'.PHP_EOL;
 			}
-			
+
 			// Strip extension if necessary
 			if ( $isHideExtension )
 			{
@@ -421,9 +421,9 @@ function LYFListFiles( $filelist, $sort, $options )
 			{
 				// Show links in a new window or not?
 				if ( $isNewWindow )
-					$retVal .= '<td class="lyf_td_filename"><a href="'.$link.'" target="_blank">'.$itemName.'</a></td>'.PHP_EOL;
+					$retVal .= '<td class="lyf_td_filename"><a href="'.$link.'" target="_blank">'.utf8_encode($itemName).'</a></td>'.PHP_EOL;
 				else
-					$retVal .= '<td class="lyf_td_filename"><a href="'.$link.'">'.$itemName.'</a></td>'.PHP_EOL;
+					$retVal .= '<td class="lyf_td_filename"><a href="'.$link.'">'.utf8_encode($itemName).'</a></td>'.PHP_EOL;
 			}
 
 			// Show the file size
@@ -472,9 +472,9 @@ function LYFListFiles( $filelist, $sort, $options )
 			}
 
 			if ( $isNewWindow )
-				$files .= '<li><a href="'.$link.'" target="_blank">'.$itemName.'</a>';
+				$files .= '<li><a href="'.$link.'" target="_blank">'.utf8_encode( $itemName ).'</a>';
 			else
-				$files .= '<li><a href="'.$link.'">'.$itemName.'</a>';
+				$files .= '<li><a href="'.$link.'">'.utf8_encode( $itemName ).'</a>';
 
 			if ( $isFilesize )
 				$files .= '<span class="size">' . __('Size: ', LYF_DOMAIN ) . $size . '</span>' . PHP_EOL;
@@ -566,7 +566,7 @@ function LYFHandleAdminPage()
 		// Save the menu text
 		$menuText = $_POST['menu_name'];
 		update_option( LYF_MENU_TEXT, $menuText );
-		
+
 		// CSS
 		$useTableStyles = $_POST['on_use_table_styles'];
 		update_option( LYF_USE_TABLE_STYLES, $useTableStyles );
@@ -596,7 +596,7 @@ function LYFHandleAdminPage()
 			$folderSize = $_POST['folder_size'];
 			update_option( LYF_USER_USER_FOLDER_SIZE, $folderSize );
 		}
-		
+
 		// Email notifications
 		$emailNotifications = $_POST['email_notifications'];
 		update_option( LYF_ENABLE_EMAIL_NOTIFICATIONS, $emailNotifications );

@@ -30,8 +30,6 @@ function MultiSelector( list_target, max ){this.list_target = list_target;this.c
 
 <form enctype="multipart/form-data" action="<?php echo $action_url ?>" method="post">
 
-<input type="hidden" name="MAX_FILE_SIZE" value="8000000" />
-
 <?php wp_nonce_field('filez-nonce');?>
 
 <?php
@@ -65,7 +63,7 @@ if ( "on" == $enableUserFolders && !current_user_can( 'delete_users' ) )
 		$allowedMessage = __('You are allowed to upload as many files as you want.', LYF_DOMAIN );
 	else
 		$allowedMessage = sprintf( __( "You are allowed to upload up to %s MB in files.", LYF_DOMAIN ), $maxFolderSize );
-	
+
 	$usingMessage = sprintf( __("You are currently using %s.", LYF_DOMAIN ), $sizeMessage );
 
 	echo '<p>' . $allowedMessage . '  ' . $usingMessage . '</p>';
