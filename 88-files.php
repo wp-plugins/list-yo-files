@@ -40,12 +40,12 @@ define( 'SHORTCODE_ERROR', 'Incorrect shortcode.  Check what you typed between t
 define( 'PERMISSIONS_MESAGE', 'You do not have sufficient permissions to access this page. Resave your administration options to be safe.' );
 
 // Various hooks and actions for this plug-in
-add_shortcode( 'listyofiles', LYFShowAdminFiles );
-add_shortcode( 'showfiles', LYFShowUserFiles );
-add_shortcode( 'showmp3s', LYFShowMP3Files );
-add_shortcode( 'listyofiles_uploadform', LYFUploadForm );
+add_shortcode( 'listyofiles', 'LYFShowAdminFiles' );
+add_shortcode( 'showfiles', 'LYFShowUserFiles' );
+add_shortcode( 'showmp3s', 'LYFShowMP3Files' );
+add_shortcode( 'listyofiles_uploadform', 'LYFUploadForm' );
 
-add_action( 'admin_menu', LYFAddSettingsPage );
+add_action( 'admin_menu', 'LYFAddSettingsPage' );
 add_action( 'init', 'LoadDomain' );									// Localization
 add_action( 'wp_print_styles', 'LYF_AddStyles' );					// Needed for adding a styles
 add_filter( 'plugin_row_meta', 'AddListYoFilesPluginLinks', 10, 2 );// Expand the links on the plugins page
@@ -522,11 +522,11 @@ function LYFAddSettingsPage()
 	$roles = LYFGetRolesAndCapabilities();
 
 	$pluginFolder = get_bloginfo('wpurl') . '/wp-content/plugins/' . dirname( plugin_basename( __FILE__ ) ) . '/';
-	add_menu_page( $pageText, $menuText, $roles[$minimumRole], basename(__FILE__), LYFHandleAboutPage, $pluginFolder . 'dn-up-2.png' );
-    add_submenu_page( basename(__FILE__), __('Usage', LYF_DOMAIN ), __('Usage', LYF_DOMAIN ), $roles[$minimumRole], basename(__FILE__), LYFHandleAboutPage );
-	add_submenu_page( basename(__FILE__), __('Upload Files', LYF_DOMAIN ), __('Upload Files', LYF_DOMAIN ), $roles[$minimumRole], 'Upload', LYFHandleUploadFilesPage );
-    add_submenu_page( basename(__FILE__), __('Delete Files', LYF_DOMAIN ), __('Delete Files', LYF_DOMAIN ), $roles[$minimumRole], 'Delete', LYFHandleDeleteFilesPage );
-    add_submenu_page( basename(__FILE__), __('Administer', LYF_DOMAIN ) . ' List Yo\' Files', __('Administer', LYF_DOMAIN ), $roles[ADMINISTRATOR] , 'Administer', LYFHandleAdminPage );
+	add_menu_page( $pageText, $menuText, $roles[$minimumRole], basename(__FILE__), 'LYFHandleAboutPage', $pluginFolder . 'dn-up-2.png' );
+    add_submenu_page( basename(__FILE__), __('Usage', LYF_DOMAIN ), __('Usage', LYF_DOMAIN ), $roles[$minimumRole], basename(__FILE__), 'LYFHandleAboutPage' );
+	add_submenu_page( basename(__FILE__), __('Upload Files', LYF_DOMAIN ), __('Upload Files', LYF_DOMAIN ), $roles[$minimumRole], 'Upload', 'LYFHandleUploadFilesPage' );
+    add_submenu_page( basename(__FILE__), __('Delete Files', LYF_DOMAIN ), __('Delete Files', LYF_DOMAIN ), $roles[$minimumRole], 'Delete', 'LYFHandleDeleteFilesPage' );
+    add_submenu_page( basename(__FILE__), __('Administer', LYF_DOMAIN ) . ' List Yo\' Files', __('Administer', LYF_DOMAIN ), $roles[ADMINISTRATOR] , 'Administer', 'LYFHandleAdminPage' );
 }
 
 //
