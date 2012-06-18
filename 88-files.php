@@ -364,9 +364,10 @@ function LYFListFiles( $filelist, $sort, $options )
 	// Generate either a table or a list based on the user's options
 	if ( $isTable )
 	{
-		$retVal .= '<table width="100%" border="0" cellpadding="7">'.PHP_EOL;
+		$retVal .= '<table width="100%" border="0" cellpadding="7">>'.PHP_EOL;
 		foreach( $filelist as $itemName => $item )
 		{
+			$retVal .= '<tr>'; // <- missing '<tr>' reported by user (4/10/12)
 			// Get file variables
 			$size = LYFFormatFileSize( $item['size'] );
 			//$date = date( "F j, Y", $item['date'] );

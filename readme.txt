@@ -153,6 +153,7 @@ There are many people who have suggested features for List Yo' Files.  Special c
 * Eli Webster for suggestions on detecting icon files.
 * [Li-An](http://www.li-an.fr/wpplugins/) for the French translation.
 * [Matthew Mower](http://web.missouri.edu/~vignaleg/?page_id=159) for his suggestions on CSS styling.
+* Roberta Bremner for discovering a missing <tr> tag and providing the fix.
 
 == License ==
 
